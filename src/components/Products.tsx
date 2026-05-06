@@ -6,9 +6,11 @@ import { ShoppingCart, ArrowRight } from 'lucide-react'
 function MagicCard({
   children,
   accentColor,
+  fullHeight = false,
 }: {
   children: React.ReactNode
   accentColor: string
+  fullHeight?: boolean
 }) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
@@ -54,7 +56,7 @@ function MagicCard({
           ? `0 ${shadowY.get()}px ${shadowBlur.get()}px -12px ${accentColor}80, 0 20px 40px -8px rgba(0,0,0,0.3)`
           : '0 4px 16px rgba(0,0,0,0.15)',
       }}
-      className="relative rounded-2xl overflow-hidden bg-[#fefefe] cursor-none"
+      className={`relative rounded-2xl overflow-hidden bg-[#fefefe] cursor-none${fullHeight ? ' flex flex-col h-full' : ''}`}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleLeave}
@@ -373,15 +375,16 @@ export default function Products() {
         </motion.div>
 
         {/* 3 Smaller Product Cards — MagicCard */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 items-stretch">
           {currentProducts.cards.map((product: Product, index: number) => (
             <motion.div
               key={product.title}
+              className="h-full"
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.4 + index * 0.12, ease: [0.16, 1, 0.3, 1] }}
             >
-              <MagicCard accentColor={product.color}>
+              <MagicCard accentColor={product.color} fullHeight>
                 {/* Image with scale + color tint */}
                 <div className="relative h-[200px] overflow-hidden">
                   <motion.img
@@ -412,7 +415,7 @@ export default function Products() {
                 </div>
 
                 {/* Content */}
-                <div className="p-6">
+                <div className="p-6 flex flex-col flex-1">
                   {/* Title and Detail */}
                   <div className="flex justify-between items-start mb-3">
                     <motion.h3
@@ -434,12 +437,12 @@ export default function Products() {
                     </motion.button>
                   </div>
 
-                  {/* Description */}
-                  <p className="text-[#9f9f9f] text-sm leading-relaxed text-justify mb-4">
+                  {/* Description — flex-1 pushes price+button to bottom */}
+                  <p className="text-[#9f9f9f] text-sm leading-relaxed text-justify mb-4 flex-1">
                     {product.description}
                   </p>
 
-                  {/* Price — pulses on mount */}
+                  {/* Price */}
                   <motion.div
                     className="flex items-baseline gap-2 mb-4"
                     whileHover={{ scale: 1.04 }}
