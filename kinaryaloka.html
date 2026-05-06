@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KINARYALOKA Digital Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Fredoka:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{background:#f5f5f5;font-family:'Poppins',sans-serif;overflow-x:hidden;margin:0;padding:0;}
+.wrapper{width:100vw;height:100vh;background:#f5f5f5;overflow:auto;display:flex;justify-content:center;align-items:flex-start;}
+.page{width:1600px;height:7110px;background:#fdfdfd;position:relative;flex-shrink:0;overflow:hidden;margin:0 auto;}
+@media (min-width:1620px){.wrapper{padding:20px;box-sizing:border-box;}.page{box-shadow:0 0 40px rgba(0,0,0,0.15);}}
+.btn{transition:opacity .18s,transform .1s;cursor:pointer;}
+.btn:hover{opacity:.85;transform:translateY(-2px);}
+.btn:active{transform:translateY(0);}
+.nav-link{cursor:pointer;transition:color .2s;text-decoration:none;}
+.nav-link:hover{color:#831449!important;}
+.detail{cursor:pointer;transition:color .2s;}
+.detail:hover{text-decoration:underline;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+.tab-item{cursor:pointer;transition:background .2s;}
+.card-lift{transition:transform .22s ease,box-shadow .22s ease;}.card-lift:hover{transform:translateY(-7px)!important;box-shadow:0 18px 40px rgba(0,0,0,.35)!important;}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .6s cubic-bezier(.22,1,.36,1);}.reveal.in{opacity:1;transform:none;}
+.btn{overflow:hidden;}.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.25);transform:scale(0);animation:rpl .5s linear forwards;pointer-events:none;}
+@keyframes rpl{to{transform:scale(5);opacity:0;}}
+.nav-link.nav-active{color:#831449!important;}
+.tab-content{transition:opacity .22s ease;}
+.step-card{cursor:pointer;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;}
+.step-card:hover{transform:translateX(10px);box-shadow:0 8px 28px rgba(0,0,0,.1);border-color:rgba(131,20,73,.4)!important;}
+.step-num{transition:background .22s ease;}
+.step-card:hover .step-num{background:#831449!important;}
+@keyframes float-hero{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+#hero-iso{animation:float-hero 5s ease-in-out infinite;}
+
+</style>
+</head>
+<body>
+<div class="wrapper">
+<div class="page" id="top">
+
+<!-- ══ NAVBAR ══ -->
+<div style="position:absolute;left:42px;top:30px;width:77px;height:74px;border-radius:10px;overflow:hidden;">
+  <img src="https://www.figma.com/api/mcp/asset/a48ac0b1-99d8-4e49-b8d9-9c0b8c7743fa" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:10px;">
+</div>
+<div style="position:absolute;left:149px;top:48px;width:275px;height:40px;">
+  <img src="https://www.figma.com/api/mcp/asset/270687ce-f177-4cd8-8a99-d57237dd2210" alt="KINARYALOKA" style="width:100%;height:100%;object-fit:cover;">
+</div>
+<a href="#tentang" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:777px;top:48px;white-space:nowrap;">Tentang</a>
+<a href="#produk" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:939px;top:48px;white-space:nowrap;">Produk</a>
+<a href="#tim" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:1073px;top:48px;white-space:nowrap;">Tim Kami</a>
+<a href="#digital" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:1233px;top:48px;white-space:nowrap;">Mengapa Digital</a>
+<div style="position:absolute;left:1482px;top:28px;width:86px;height:71px;background:#000;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+  <img src="https://www.figma.com/api/mcp/asset/93b516b2-6320-4a87-965f-782796be6dfe" alt="" style="width:49px;height:43px;">
+</div>
+
+<!-- ══ HERO ══ -->
+<div style="position:absolute;left:63px;top:200px;width:1540px;height:593px;">
+  <div id="hero-iso" style="position:absolute;height:593px;left:721px;top:0;width:700px;overflow:hidden;">
+    <img src="Assets/isometric.png" alt="" style="position:absolute;height:100%;left:-7.18%;max-width:none;top:0;width:109.97%;">
+  </div>
+  <div style="position:absolute;left:0;top:47px;width:420px;height:78px;">
+    <img src="Assets/Bisnis Kamu.png" alt="Bisnis Kamu" style="width:100%;height:100%;object-fit:cover;">
+  </div>
+  <div style="position:absolute;left:0;top:125px;width:586px;height:78px;">
+    <img src="Assets/Butuh Lebih Dari.png" alt="Butuh Lebih Dari Sekedar" style="width:100%;height:100%;object-fit:cover;">
+  </div>
+  <div style="position:absolute;left:0;top:224px;width:310px;height:80px;">
+    <img src="Assets/Sekedar.png" alt="Hadir" style="width:100%;height:100%;object-fit:cover;">
+  </div>
+  <div style="position:absolute;background:#272727;height:110px;left:313px;overflow:hidden;border-radius:10px;top:213px;width:232px;">
+    <div style="position:absolute;height:78px;left:15px;top:19px;width:202px;">
+      <img src="Assets/Hadir.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+  </div>
+  <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:500;font-size:16px;color:#828282;left:16px;top:354px;width:587px;line-height:20px;text-align:justify;">KINARYALOKA Digital Studio hadir untuk UMKM yang sudah siap kami bantu terjemahkan cara bisnis kamu jalan ke dalam sistem digital yang rapi, jelas, dan kepakai.</p>
+  <div class="btn" style="position:absolute;background:#3a3a3a;height:80px;left:11px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:480px;width:334px;">
+    <img src="https://www.figma.com/api/mcp/asset/f5f074c2-3691-4ec7-9669-a5c18215eb6b" alt="" style="position:absolute;left:31px;top:25px;width:33px;height:32px;">
+    <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:80px;top:31px;line-height:20px;">Ngobrol Dulu Yuk?</p>
+  </div>
+  <div class="btn" id="btn-paket" style="position:absolute;background:#efefef;height:80px;left:358px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:480px;width:249px;">
+    <img src="https://www.figma.com/api/mcp/asset/4e76a15d-5506-4ca1-8133-cd82cf740571" alt="" style="position:absolute;left:30px;top:23px;width:35px;height:34px;">
+    <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#3a3a3a;left:78px;top:32px;line-height:20px;">Lihat Paket</p>
+  </div>
+</div>
+
+<!-- ══ ABOUT + PRODUCTS (black) ══ -->
+<div id="tentang" style="position:absolute;background:#000;height:2704px;left:0;overflow:hidden;top:977px;width:1600px;">
+
+  <!-- Value cards -->
+  <div style="position:absolute;left:73px;top:206px;width:595px;height:567px;">
+    <div class="card-lift" style="position:absolute;background:#3b3b3b;height:274px;left:0;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0;width:288px;">
+      <div style="position:absolute;background:#212121;height:90px;left:0;border-radius:0 10px 10px 0;top:41px;width:276px;"></div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;color:#fff;left:35px;top:55px;line-height:30px;"><p>Tepat</p><p>Sasaran.</p></div>
+      <div style="position:absolute;background:#000;height:88px;left:15px;border-radius:5px;top:155px;width:90px;"></div>
+      <img src="https://www.figma.com/api/mcp/asset/2040391b-5202-4896-ad76-93d8313fb11a" alt="" style="position:absolute;left:28px;top:169px;width:63px;height:63px;">
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:#fff;left:116px;top:174px;width:160px;line-height:13px;text-align:justify;">Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.</p>
+    </div>
+    <div class="card-lift" style="position:absolute;background:#3b3b3b;height:274px;left:307px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0;width:288px;">
+      <div style="position:absolute;background:#212121;height:90px;left:0;border-radius:0 10px 10px 0;top:41px;width:276px;"></div>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;color:#fff;left:35px;top:56px;line-height:30px;width:227px;">Partner, Bukan Vendor.</p>
+      <div style="position:absolute;background:#000;height:88px;left:15px;border-radius:5px;top:155px;width:90px;"></div>
+      <img src="https://www.figma.com/api/mcp/asset/ad3efa8f-4594-4d89-8775-5b04aea9c4fc" alt="" style="position:absolute;left:28px;top:169px;width:63px;height:63px;">
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:#fff;left:116px;top:174px;width:160px;line-height:13px;text-align:justify;">Kami tidak pergi setelah project selesai. Support dan komunikasi tetap berjalan.</p>
+    </div>
+    <div class="card-lift" style="position:absolute;background:#3b3b3b;height:274px;left:0;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:293px;width:288px;">
+      <div style="position:absolute;background:#212121;height:90px;left:0;border-radius:0 10px 10px 0;top:41px;width:276px;"></div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;color:#fff;left:37px;top:58px;line-height:30px;"><p>Langsung</p><p>Kepakai.</p></div>
+      <div style="position:absolute;background:#000;height:88px;left:15px;border-radius:5px;top:155px;width:90px;"></div>
+      <img src="https://www.figma.com/api/mcp/asset/02e7146e-bfe6-44fb-80a1-8a392c5b1977" alt="" style="position:absolute;left:28px;top:169px;width:63px;height:63px;">
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:#fff;left:116px;top:174px;width:160px;line-height:13px;text-align:justify;">Semua yang kami bangun dirancang agar bisa dipakai sehari-hari, tanpa perlu teknikal tinggi.</p>
+    </div>
+    <div class="card-lift" style="position:absolute;background:#3b3b3b;height:274px;left:307px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:293px;width:288px;">
+      <div style="position:absolute;background:#212121;height:90px;left:0;border-radius:0 10px 10px 0;top:41px;width:276px;"></div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;color:#fff;left:35px;top:56px;line-height:30px;"><p>Transparan</p><p>&amp; Jelas.</p></div>
+      <div style="position:absolute;background:#000;height:88px;left:15px;border-radius:5px;top:155px;width:90px;"></div>
+      <img src="https://www.figma.com/api/mcp/asset/f4336b48-3731-4905-8ec3-39730d4087ea" alt="" style="position:absolute;left:28px;top:169px;width:63px;height:63px;">
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:11px;color:#fff;left:116px;top:174px;width:160px;line-height:13px;text-align:justify;">Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi ataupun janji kosong.</p>
+    </div>
+  </div>
+
+  <!-- About text -->
+  <div id="about-text" style="position:absolute;left:737px;top:137px;width:773px;height:748px;">
+    <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:64px;color:#fff;left:0;top:0;line-height:75px;width:741px;">
+      <p>Bukan Agency Biasa. </p><p>Partner yang Ngerti </p><p>Bisnis Kamu.</p>
+    </div>
+    <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:500;font-size:20px;color:#fff;left:0;top:284px;width:768px;line-height:20px;text-align:justify;">
+      <p>KINARYALOKA Digital Studio lahir dari pemahaman satu hal: kebanyakan UMKM bukan tidak mau digital, tetapi mereka tidak tahu mulai dari mana, atau sudah coba tapi hasilnya tidak kepakai.</p>
+      <p style="margin-top:16px;">Kami tidak duduk di balik layar dan desain sesuatu yang kelihatan bagus di portofolio. Kami duduk bareng kamu untuk mempelajari cara bisnis kamu berjalan di lapangan, lalu bantu terjemahkannya ke sistem digital yang rapi, jelas, dan bisa dikontrol.</p>
+    </div>
+    <div style="position:absolute;background:#898989;height:219px;left:0;top:517px;width:7px;"></div>
+    <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:36px;color:#fff;left:46px;top:517px;width:722px;line-height:40px;text-align:right;">"Website itu bukan tujuan akhir, tapi alat biar operasional jadi lebih rapi dan jelas."</p>
+    <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#fff;left:396px;top:708px;width:377px;line-height:40px;">— KINARYALOKA Digital Studio</p>
+  </div>
+
+  <!-- Produk Kami -->
+  <div id="produk" style="position:absolute;height:79px;left:578px;top:1026px;width:444px;">
+    <img src="https://www.figma.com/api/mcp/asset/802cb1ed-f83b-40d9-89ce-94d61037dc2f" alt="Produk Kami" style="width:100%;height:100%;object-fit:cover;">
+  </div>
+
+  <!-- Tabs -->
+  <div style="position:absolute;background:#2a2a2a;height:72px;left:422px;overflow:hidden;border-radius:10px;top:1150px;width:755px;">
+    <div class="tab-item active" data-tab="ecommerce" style="position:absolute;background:#e9e9e9;height:58px;left:9px;overflow:hidden;border-radius:10px 5px 5px 10px;top:7px;width:237px;display:flex;align-items:center;justify-content:center;">
+      <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;color:#000;">E-Commerce</p>
+    </div>
+    <div class="tab-item" data-tab="webdesign" style="position:absolute;background:#0d0d0d;height:58px;left:255px;overflow:hidden;border-radius:5px;top:7px;width:244px;display:flex;align-items:center;justify-content:center;">
+      <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;color:#fff;">Web Design</p>
+    </div>
+    <div class="tab-item" data-tab="branding" style="position:absolute;background:#0d0d0d;height:58px;left:508px;overflow:hidden;border-radius:5px 10px 10px 5px;top:7px;width:237px;display:flex;align-items:center;justify-content:center;">
+      <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;color:#fff;">Branding</p>
+    </div>
+  </div>
+
+  <!-- E-Commerce Panel -->
+  <div class="tab-content active" id="panel-ecommerce" style="position:absolute;left:164px;top:1287px;width:1286px;height:1264px;">
+    <!-- E-Commerce Full Brand -->
+    <div style="position:absolute;background:#fefefe;height:441px;left:0;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0;width:1286px;">
+      <div style="position:absolute;height:443px;left:0;top:0;width:515px;overflow:hidden;">
+        <img src="https://www.figma.com/api/mcp/asset/307ac566-9994-432b-b0f2-72406043a5f6" alt="" style="position:absolute;height:206.4%;left:-5.88%;max-width:none;top:-106.53%;width:222%;">
+      </div>
+      <div style="position:absolute;background:#e70000;height:40px;left:565px;overflow:hidden;border-radius:5px;top:23px;width:169px;display:flex;align-items:center;justify-content:center;">
+        <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;">Flagship</p>
+      </div>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:44px;color:#404040;left:560px;top:87px;width:364px;line-height:40px;">E-Commerce Full Brand</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;color:#9f9f9f;left:560px;top:184px;width:671px;line-height:24px;text-align:justify;">E-commerce profesional + identitas brand lengkap. Dari toko online canggih hingga visual brand yang siap bersaing.</p>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#831449;left:1139px;top:136px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:565px;top:281px;line-height:50px;"><span style="color:#831449;">IDR</span> 15000K</p>
+      <div class="btn" style="position:absolute;background:#831449;height:80px;left:560px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:340px;width:671px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:206px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:280px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+    <!-- Katalog Digital -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:0;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:477px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="https://www.figma.com/api/mcp/asset/307ac566-9994-432b-b0f2-72406043a5f6" alt="" style="position:absolute;height:195.13%;left:-2.09%;max-width:none;top:0;width:209.88%;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Katalog</p><p>Digital</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#b76431;left:281px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Website katalog produk online. Pelanggan lihat produk &amp; pesan langsung via WhatsApp. Tanpa ribet dengan payment gateway.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#bb6732;">IDR</span> 2500K</p>
+      <div class="btn" style="position:absolute;background:#b76431;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+    <!-- Toko Online -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:442px;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:477px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="https://www.figma.com/api/mcp/asset/307ac566-9994-432b-b0f2-72406043a5f6" alt="" style="position:absolute;height:195.13%;left:-109.88%;max-width:none;top:0;width:209.88%;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Toko</p><p>Online</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#004896;left:282px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Toko online lengkap dengan keranjang belanja &amp; payment gateway. Pelanggan bisa checkout langsung di website kamu.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#004896;">IDR</span> 5000K</p>
+      <div class="btn" style="position:absolute;background:#004896;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+    <!-- Olshop Full -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:884px;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:477px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="https://www.figma.com/api/mcp/asset/307ac566-9994-432b-b0f2-72406043a5f6" alt="" style="position:absolute;height:210.12%;left:-121.51%;max-width:none;top:-110.06%;width:226%;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Olshop</p><p>Full</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#207224;left:281px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Platform jual beli penuh fitur seperti inventori, multi-varian produk, voucher diskon, hingga laporan penjualan real-time.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#004896;">IDR</span> 8000K</p>
+      <div class="btn" style="position:absolute;background:#207224;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Web Design Panel -->
+  <div class="tab-content" id="panel-webdesign" style="position:absolute;left:164px;top:1287px;width:1286px;height:800px;display:none;align-items:center;justify-content:center;">
+  <!-- Full Digital Package -->
+    <div style="position:absolute;background:#fefefe;height:441px;left:0;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0;width:1286px;">
+      <div style="position:absolute;height:443px;left:0;top:0;width:515px;overflow:hidden;">
+        <img src="Assets/wd_ungu.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="position:absolute;background:#e70000;height:40px;left:565px;overflow:hidden;border-radius:5px;top:23px;width:169px;display:flex;align-items:center;justify-content:center;">
+        <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;">Flagship</p>
+      </div>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:44px;color:#404040;left:560px;top:87px;width:364px;line-height:40px;">Full Digital Package</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;color:#9f9f9f;left:560px;top:184px;width:671px;line-height:24px;text-align:justify;">Transformasi digital menyeluruh dari mulai sistem, website, hingga identitas visual dan strategi konten.</p>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#831449;left:1139px;top:136px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:565px;top:281px;line-height:50px;"><span style="color:#831449;">IDR</span> 12000K</p>
+      <div class="btn" style="position:absolute;background:#831449;height:80px;left:560px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:340px;width:671px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:206px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:280px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+    <!-- Paket Reservasi -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:0;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:477px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="Assets/wd_oren.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Paket</p><p>Reservasi</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#b76431;left:281px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Sistem booking online siap pakai tanpa perlu website. Ideal untuk bisnis layanan yang masih pakai manual.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#bb6732;">IDR</span> 2500K</p>
+      <div class="btn" style="position:absolute;background:#b76431;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+    <!-- Website & Reservasi -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:442px;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:477px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="Assets/wd_biru.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Website &</p><p>Reservasi</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#004896;left:282px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Website profesional lengkap dengan sistem booking simpel. Bisnis kamu terlihat serius di mata pelanggan.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#004896;">IDR</span> 5000K</p>
+      <div class="btn" style="position:absolute;background:#004896;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+    <!-- Website Pro -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:884px;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:477px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="Assets/wd_hijau.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Website</p><p>Pro</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#207224;left:281px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Web design multi-halaman dengan sistem reservasi bertenaga database. Data pelanggan tersimpan rapi, bisa diakses kapan saja.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#004896;">IDR</span> 8000K</p>
+      <div class="btn" style="position:absolute;background:#207224;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Branding Panel -->
+  <div class="tab-content" id="panel-branding" style="position:absolute;left:164px;top:1287px;width:1286px;height:800px;display:none;align-items:center;justify-content:center;">
+    <!-- Paket Branding -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:0;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="Assets/br_oren.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Paket</p><p>Branding</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#b76431;left:281px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Identitas brand lengkap untuk membuat bisnismu profesional dan mudah diingat, dari logo hingga nama yang filosofis.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#bb6732;">IDR</span> 1500K</p>
+      <div class="btn" style="position:absolute;background:#b76431;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+    <!-- Branding + Copywriting -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:442px;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="Assets/br_biru.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Branding +</p><p>Copywriting</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#004896;left:282px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Branding lengkap dengan copywriting profesional untuk website, social media, dan marketing material.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#004896;">IDR</span> 2500K</p>
+      <div class="btn" style="position:absolute;background:#004896;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+    <!-- Complete Branding  -->
+    <div style="position:absolute;background:#fefefe;height:787px;left:884px;overflow:hidden;border-radius:20px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0px;width:402px;">
+      <div style="position:absolute;height:346px;left:0;top:0;width:402px;overflow:hidden;">
+        <img src="Assets/br_hijau.png" alt="" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:38px;color:#404040;left:27px;top:385px;line-height:40px;"><p>Complete</p><p>Branding</p></div>
+      <p class="detail" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#207224;left:281px;top:430px;line-height:20px;">Detail &gt;</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#9f9f9f;left:29px;top:480px;width:342px;line-height:20px;text-align:justify;">Solusi branding end-to-end: visual identity, semua copywriting, dan marketing kit siap pakai.</p>
+      <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:40px;color:#454545;left:29px;top:601px;line-height:50px;"><span style="color:#004896;">IDR</span> 4000K</p>
+      <div class="btn" style="position:absolute;background:#207224;height:80px;left:25px;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:678px;width:346px;display:flex;align-items:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f3704dfa-10f4-4ea6-a70b-eb2e748166c2" alt="" style="position:absolute;left:42px;top:18px;width:53px;height:47px;">
+        <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:24px;color:#fff;left:118px;top:26px;">Pilih Paket Ini</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</div><!-- /black section -->
+
+<!-- ══ TIM KAMI ══ -->
+<div id="tim" style="position:absolute;left:606px;top:3700px;width:388px;height:94px;">
+  <img src="https://www.figma.com/api/mcp/asset/3b0d2c5b-8876-4e49-b046-927060d370c7" alt="Tim Kami" style="width:100%;height:100%;object-fit:cover;">
+</div>
+<div style="position:absolute;background:#000;height:582px;left:280px;overflow:hidden;border-radius:20px;top:3850px;width:1040px;">
+  <div style="position:absolute;height:491px;left:109px;top:91px;width:875px;">
+    <div style="position:absolute;height:491px;left:36px;top:0;width:737px;">
+      <img src="https://www.figma.com/api/mcp/asset/2f9ed319-3be3-426b-a32f-31ae1d817d47" alt="Tim KINARYALOKA" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:40px;color:#fff;left:650px;top:79px;line-height:50px;">Mas Adhit</p>
+    <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#fff;left:652px;top:130px;line-height:20px;"><p>Marketing Manager</p><p>Backend Developer</p></div>
+    <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:40px;color:#fff;left:0;top:348px;line-height:50px;">Atha</p>
+    <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#fff;left:2px;top:399px;line-height:20px;"><p>UI/UX Designer</p><p>Frontend Developer</p></div>
+  </div>
+</div>
+<!-- <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:20px;color:#5a5a5a;left:580px;top:4450px;line-height:30px;">KINARYALOKA's Management Team.jpg</p> -->
+
+<!-- ══ KENAPA DIGITAL ══ -->
+<div id="digital" style="position:absolute;background:#000;height:1069px;left:0;overflow:hidden;top:4550px;width:1600px;">
+
+  <!-- Subtle grid bg -->
+  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;"></div>
+
+  <!-- Center top glow -->
+  <div style="position:absolute;left:50%;top:-280px;transform:translateX(-50%);width:1000px;height:560px;background:radial-gradient(ellipse,rgba(131,20,73,.22) 0%,transparent 68%);pointer-events:none;"></div>
+
+  <!-- Title -->
+  <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:64px;left:768px;transform:translateX(-50%);top:138px;width:1100px;text-align:center;line-height:76px;">
+    <p style="color:#fff;">Kenapa Harus Digital</p>
+    <p style="color:#831449;">Sekarang?</p>
+  </div>
+
+  <!-- Subtitle -->
+  <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:400;font-size:18px;color:#555;left:770px;transform:translateX(-50%);top:318px;white-space:nowrap;text-align:center;">Bukan soal tren. Ini soal kelangsungan bisnis kamu.</p>
+
+  <!-- 4 Cards horizontal -->
+  <div style="position:absolute;left:60px;top:392px;width:1400px;display:flex;gap:20px;align-items:stretch;">
+
+    <!-- Card 1: 5.35M -->
+    <div class="reveal" style="flex:1;background:linear-gradient(150deg,#1c1c1c 0%,#111 100%);border-radius:20px;border:1px solid #282828;border-top:3px solid #831449;padding:40px 28px 36px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-30px;bottom:-30px;width:180px;height:180px;background:radial-gradient(circle,rgba(131,20,73,.12),transparent 65%);pointer-events:none;"></div>
+      <p class="countup-val" data-target="5.35" data-suffix=" M" style="font-family:'Poppins',sans-serif;font-weight:800;font-size:68px;color:#fff;line-height:1;margin-bottom:6px;">5,35 M</p>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:17px;color:#fff;line-height:26px;margin-bottom:22px;">Pengguna Internet<br>Aktif Dunia</p>
+      <div style="height:1px;background:linear-gradient(90deg,rgba(131,20,73,.65),transparent);margin-bottom:20px;"></div>
+      <p style="font-family:'Poppins',sans-serif;font-weight:400;font-size:14px;color:#686868;line-height:22px;">Hampir 2/3 populasi bumi sudah online dan mereka mencari bisnis seperti punya kamu.</p>
+    </div>
+
+    <!-- Card 2: 2x -->
+    <div class="reveal" style="flex:1;background:linear-gradient(150deg,#1c1c1c 0%,#111 100%);border-radius:20px;border:1px solid #282828;border-top:3px solid #004896;padding:40px 28px 36px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-30px;bottom:-30px;width:180px;height:180px;background:radial-gradient(circle,rgba(0,72,150,.12),transparent 65%);pointer-events:none;"></div>
+      <p class="countup-val" data-target="2" data-suffix="×" style="font-family:'Poppins',sans-serif;font-weight:800;font-size:68px;color:#fff;line-height:1;margin-bottom:2px;">2×</p>
+      <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:16px;color:#6a9ecf;line-height:1;margin-bottom:10px;">lebih cepat</p>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:17px;color:#fff;line-height:26px;margin-bottom:22px;">Pertumbuhan UMKM<br>yang Go Digital</p>
+      <div style="height:1px;background:linear-gradient(90deg,rgba(0,72,150,.65),transparent);margin-bottom:20px;"></div>
+      <p style="font-family:'Poppins',sans-serif;font-weight:400;font-size:14px;color:#686868;line-height:22px;">UMKM yang punya kehadiran digital tumbuh rata-rata 2x lebih cepat dibanding yang belum.</p>
+    </div>
+
+    <!-- Card 3: 80% -->
+    <div class="reveal" style="flex:1;background:linear-gradient(150deg,#1c1c1c 0%,#111 100%);border-radius:20px;border:1px solid #282828;border-top:3px solid #b76431;padding:40px 28px 36px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-30px;bottom:-30px;width:180px;height:180px;background:radial-gradient(circle,rgba(183,100,49,.12),transparent 65%);pointer-events:none;"></div>
+      <p class="countup-val" data-target="80" data-suffix="%" style="font-family:'Poppins',sans-serif;font-weight:800;font-size:68px;color:#fff;line-height:1;margin-bottom:6px;">80%</p>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:17px;color:#fff;line-height:26px;margin-bottom:22px;">Konsumen Cari<br>Bisnis Online Dulu</p>
+      <div style="height:1px;background:linear-gradient(90deg,rgba(183,100,49,.65),transparent);margin-bottom:20px;"></div>
+      <p style="font-family:'Poppins',sans-serif;font-weight:400;font-size:14px;color:#686868;line-height:22px;">Sebelum datang atau beli, 80% orang searching dulu. Kalau tidak terlihat, mereka ke kompetitor.</p>
+    </div>
+
+    <!-- Card 4: 65 Juta+ -->
+    <div class="reveal" style="flex:1;background:linear-gradient(150deg,#1c1c1c 0%,#111 100%);border-radius:20px;border:1px solid #282828;border-top:3px solid #207224;padding:40px 28px 36px;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-30px;bottom:-30px;width:180px;height:180px;background:radial-gradient(circle,rgba(32,114,36,.12),transparent 65%);pointer-events:none;"></div>
+      <p class="countup-val" data-target="65" data-suffix=" Juta+" style="font-family:'Poppins',sans-serif;font-weight:800;font-size:68px;color:#fff;line-height:1;margin-bottom:6px;">65 Juta+</p>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:17px;color:#fff;line-height:26px;margin-bottom:22px;">UMKM<br>di Indonesia</p>
+      <div style="height:1px;background:linear-gradient(90deg,rgba(32,114,36,.65),transparent);margin-bottom:20px;"></div>
+      <p style="font-family:'Poppins',sans-serif;font-weight:400;font-size:14px;color:#686868;line-height:22px;">Tulang punggung 60% GDP Indonesia, tetapi hanya 23% yang punya kehadiran digital yang layak.</p>
+    </div>
+
+  </div>
+
+  <!-- Bottom CTA Banner -->
+  <div style="position:absolute;left:60px;top:790px;width:1400px;background:linear-gradient(90deg,rgba(131,20,73,.14),rgba(131,20,73,.04));border:1px solid rgba(131,20,73,.22);border-radius:16px;padding:32px 48px;display:flex;align-items:center;justify-content:space-between;">
+    <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:26px;color:#fff;line-height:36px;">Bisnis kamu bisa jadi salah satu yang 23% itu <span style="color:#c9547a;">mulai dari satu langkah kecil.</span></p>
+    <div class="btn" style="background:#831449;height:60px;border-radius:10px;padding:0 36px;display:flex;align-items:center;justify-content:center;white-space:nowrap;flex-shrink:0;margin-left:40px;box-shadow:0 4px 20px rgba(131,20,73,.35);">
+      <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:18px;color:#fff;">Ngobrol Dulu Yuk?</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ CTA NGOBROL DULU ══ -->
+<div id="cta-section" style="position:absolute;left:0;top:5749px;width:1600px;height:903px;background:#fdfdfd;overflow:hidden;">
+
+  <!-- Subtle grid bg -->
+  <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(0,0,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;"></div>
+  <!-- Bottom-right glow -->
+  <div style="position:absolute;right:-200px;bottom:-200px;width:800px;height:800px;background:radial-gradient(circle,rgba(131,20,73,.07),transparent 60%);pointer-events:none;"></div>
+  <!-- Left accent bar -->
+  <div style="position:absolute;left:0;top:0;width:4px;height:100%;background:linear-gradient(180deg,transparent 10%,rgba(131,20,73,.5) 50%,transparent 90%);pointer-events:none;"></div>
+
+  <!-- ── Left column ── -->
+  <div class="reveal" style="position:absolute;left:80px;top:100px;width:720px;">
+    <!-- Headline -->
+    <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:64px;line-height:76px;margin-top:24px;">
+      <p style="color:#111;">Kita Ngobrol Dulu.</p>
+      <p style="color:#111;">Tanpa <span style="color:#484848;">Komitmen,</span></p>
+      <p style="color:#484848;">Loh Ya.</p>
+    </div>
+    <!-- Accent line -->
+    <div style="width:56px;height:4px;background:#484848;border-radius:2px;margin-top:28px;"></div>
+    <!-- Description -->
+    <p style="font-family:'Poppins',sans-serif;font-weight:400;font-size:17px;color:#666;line-height:30px;margin-top:24px;width:640px;">Kami gak akan langsung nawarin paket di awal Kok. Kami dengarkan dulu, cara bisnis kamu berjalan, apa yang sudah jalan, dan apa yang masih mentok. Dari situ baru kami rekomendasikan yang paling masuk akal.</p>
+    <!-- CTA Button -->
+    <div class="btn" style="margin-top:44px;display:inline-flex;align-items:center;gap:14px;background:#111;height:72px;border-radius:14px;padding:0 40px;box-shadow:0 6px 28px rgba(0,0,0,.18);">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path fill="#25d366" d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2.05 21.95a.5.5 0 0 0 .614.614l4.782-1.388A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2Zm4.537 14.11c-.195.548-.972 1.005-1.574 1.136-.42.09-.968.161-2.81-.604-2.358-.97-3.877-3.374-3.995-3.531-.117-.157-.956-1.272-.956-2.427 0-1.155.606-1.721.82-1.956.215-.234.47-.293.626-.293l.45.008c.144.006.338.017.527.476.216.523.73 1.793.795 1.924.064.13.106.285.021.456-.086.17-.13.276-.257.425l-.384.448c-.13.15-.265.312-.114.614.15.302.67 1.105 1.437 1.788.988.88 1.82 1.151 2.08 1.279.26.127.41.106.561-.064.15-.17.645-.753.817-1.012.172-.26.343-.215.578-.13.234.087 1.49.703 1.746.831.255.128.425.193.487.3.064.107.064.617-.131 1.132Z"/></svg>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;color:#fff;white-space:nowrap;">Ngobrol Dulu Yuk?</p>
+    </div>
+  </div>
+
+  <!-- ── Right column: Steps ── -->
+  <div style="position:absolute;left:840px;top:100px;width:610px;">
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:12px;color:#bbb;letter-spacing:3px;text-transform:uppercase;margin-bottom:28px;">Proses Kerja Kami</p>
+
+    <!-- Step 1 -->
+    <div class="step-card" style="display:flex;gap:20px;align-items:center;background:#fff;border:1.5px solid #eaeaea;border-radius:16px;padding:20px 24px;margin-bottom:8px;">
+      <div class="step-num" style="background:#111;border-radius:10px;width:52px;height:52px;min-width:52px;display:flex;align-items:center;justify-content:center;">
+        <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;color:#fff;">01</p>
+      </div>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:19px;color:#1a1a1a;line-height:26px;">Hubungi kami via WhatsApp</p>
+    </div>
+    <div style="width:2px;height:14px;background:linear-gradient(180deg,#ddd,#eee);margin-left:45px;margin-bottom:8px;"></div>
+
+    <!-- Step 2 -->
+    <div class="step-card" style="display:flex;gap:20px;align-items:center;background:#fff;border:1.5px solid #eaeaea;border-radius:16px;padding:20px 24px;margin-bottom:8px;">
+      <div class="step-num" style="background:#111;border-radius:10px;width:52px;height:52px;min-width:52px;display:flex;align-items:center;justify-content:center;">
+        <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;color:#fff;">02</p>
+      </div>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:19px;color:#1a1a1a;line-height:26px;">Cerita soal bisnis &amp; kebutuhanmu</p>
+    </div>
+    <div style="width:2px;height:14px;background:linear-gradient(180deg,#ddd,#eee);margin-left:45px;margin-bottom:8px;"></div>
+
+    <!-- Step 3 -->
+    <div class="step-card" style="display:flex;gap:20px;align-items:center;background:#fff;border:1.5px solid #eaeaea;border-radius:16px;padding:20px 24px;margin-bottom:8px;">
+      <div class="step-num" style="background:#111;border-radius:10px;width:52px;height:52px;min-width:52px;display:flex;align-items:center;justify-content:center;">
+        <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;color:#fff;">03</p>
+      </div>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:19px;color:#1a1a1a;line-height:26px;">Kami rekomendasikan paket yang tepat</p>
+    </div>
+    <div style="width:2px;height:14px;background:linear-gradient(180deg,#ddd,#eee);margin-left:45px;margin-bottom:8px;"></div>
+
+    <!-- Step 4 (final — accented) -->
+    <div class="step-card" style="display:flex;gap:20px;align-items:center;background:#fff9fb;border:1.5px solid rgba(131,20,73,.22);border-radius:16px;padding:20px 24px;">
+      <div class="step-num" style="background:#831449;border-radius:10px;width:52px;height:52px;min-width:52px;display:flex;align-items:center;justify-content:center;">
+        <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;color:#fff;">04</p>
+      </div>
+      <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:19px;color:#1a1a1a;line-height:26px;">Project dimulai dengan rapi dan terstruktur</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div style="position:absolute;background:#2b2b2b;height:454px;left:0;overflow:hidden;top:6652px;width:1600px;">
+  <div style="position:absolute;left:126px;top:99px;width:476px;height:282px;">
+    <div style="position:absolute;left:0;top:0;width:430px;height:63px;">
+      <img src="https://www.figma.com/api/mcp/asset/064d0f7f-dd2b-42d0-81c1-0009926b4ae9" alt="KINARYALOKA" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+    <div style="position:absolute;background:#000;height:62px;left:13px;overflow:hidden;border-radius:5px;top:79px;width:60px;display:flex;align-items:center;justify-content:center;">
+      <img src="https://www.figma.com/api/mcp/asset/44e23c2d-1cf2-4900-a7e0-c4f4990f8b80" alt="" style="width:32px;height:32px;object-fit:contain;">
+    </div>
+    <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;color:#fff;left:96px;top:86px;width:391px;line-height:17px;text-align:justify;">Due to our belief's policy, we would like to announce that we will not be taking part on any business which is againts the sharia law, thank you for your understanding :)</p>
+    <div style="position:absolute;left:6px;top:162px;display:flex;gap:12px;">
+      <div class="btn" style="background:#555;height:33px;overflow:hidden;border-radius:5px;width:38px;display:flex;align-items:center;justify-content:center;">
+        <img src="https://www.figma.com/api/mcp/asset/89b8a79d-783d-4727-b4ad-e8132087f1bf" alt="Instagram" style="width:24px;height:24px;">
+      </div>
+      <div class="btn" style="background:#555;height:33px;overflow:hidden;border-radius:5px;width:38px;display:flex;align-items:center;justify-content:center;">
+        <img src="https://www.figma.com/api/mcp/asset/f4b927ee-7a5d-45de-885b-caf60caeb972" alt="WhatsApp" style="width:24px;height:24px;">
+      </div>
+      <div class="btn" style="background:#555;height:33px;overflow:hidden;border-radius:5px;width:38px;display:flex;align-items:center;justify-content:center;">
+        <img src="https://www.figma.com/api/mcp/asset/93fba17f-9f50-42f6-9bd4-3c2306c14bb4" alt="TikTok" style="width:24px;height:24px;">
+      </div>
+    </div>
+    <div style="position:absolute;background:#3e3e3e;height:44px;left:6px;overflow:hidden;border-radius:10px;top:238px;width:470px;display:flex;align-items:center;">
+      <input type="email" placeholder="Email kamu" style="font-family:'Poppins',sans-serif;font-weight:600;font-size:17px;color:#676767;background:transparent;border:none;outline:none;width:350px;padding:0 24px;height:100%;">
+      <div class="btn" style="background:#7a7a7a;height:44px;min-width:121px;border-radius:0 5px 5px 0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:17px;color:#fff;">Subscribe</p>
+      </div>
+    </div>
+  </div>
+  <div style="position:absolute;left:1100px;top:92px;color:#fff;">
+    <p style="font-family:'Poppins',sans-serif;font-weight:800;font-size:32px;margin-bottom:6px;">Produk</p>
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;margin-bottom:3px;">E-Commerce</p>
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;margin-bottom:3px;">Web Design</p>
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;">Branding</p>
+  </div>
+  <div style="position:absolute;left:1250px;top:92px;color:#fff;">
+    <p style="font-family:'Poppins',sans-serif;font-weight:800;font-size:32px;margin-bottom:6px;">Bantuan</p>
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;margin-bottom:3px;">FAQ</p>
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;margin-bottom:3px;">Kebijakan Pemesanan</p>
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;margin-bottom:3px;">Kebijakan Revisi &amp; Maintenance</p>
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;margin-bottom:3px;">Syarat &amp; Ketentuan</p>
+    <p style="font-family:'Poppins',sans-serif;font-weight:600;font-size:15px;">Kebijakan Privasi</p>
+  </div>
+  <div style="position:absolute;left:1326px;top:350px;display:flex;align-items:center;gap:6px;">
+    <img src="https://www.figma.com/api/mcp/asset/c5c11798-f6a6-41ca-afeb-0df901f1abe0" alt="©" style="width:18px;height:18px;">
+    <p style="font-family:'Fredoka',sans-serif;font-size:11px;color:#fff;font-weight:500;">KINARYALOKA <span style="font-weight:400;font-size:9px;">All Rights Reserved.</span></p>
+  </div>
+  <div style="position:absolute;left:1365px;top:373px;display:flex;align-items:center;gap:8px;">
+    <p style="font-family:'Poppins',sans-serif;font-weight:700;font-size:15px;color:#fff;">Powered by</p>
+    <div style="height:31px;width:34px;">
+      <img src="https://www.figma.com/api/mcp/asset/1f24c8a7-831d-46af-94f4-b6b7cfd44ed6" alt="" style="width:100%;height:100%;object-fit:cover;">
+    </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+<script>
+// ── Tab switching (with fade) ──
+document.querySelectorAll('.tab-item').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    var target = tab.dataset.tab;
+    document.querySelectorAll('.tab-item').forEach(function(t) {
+      t.style.background = '#0d0d0d';
+      t.querySelector('p').style.color = '#fff';
+      t.classList.remove('active');
+    });
+    tab.style.background = '#e9e9e9';
+    tab.querySelector('p').style.color = '#000';
+    tab.classList.add('active');
+    var prev = document.querySelector('.tab-content.active');
+    if (prev) {
+      prev.style.opacity = '0';
+      var prevRef = prev;
+      setTimeout(function() {
+        prevRef.classList.remove('active');
+        prevRef.style.display = 'none';
+        prevRef.style.opacity = '';
+        var panel = document.getElementById('panel-' + target);
+        panel.style.display = 'block';
+        panel.style.opacity = '0';
+        panel.classList.add('active');
+        requestAnimationFrame(function() { requestAnimationFrame(function() { panel.style.opacity = '1'; }); });
+      }, 220);
+    } else {
+      var panel = document.getElementById('panel-' + target);
+      panel.classList.add('active');
+      panel.style.display = 'block';
+    }
+  });
+});
+
+// ── Smooth scroll ──
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    var el = document.querySelector(a.getAttribute('href'));
+    if (el) el.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+// ── Lihat Paket ──
+var btnPaket = document.getElementById('btn-paket');
+if (btnPaket) {
+  btnPaket.addEventListener('click', function() {
+    document.getElementById('produk').scrollIntoView({behavior:'smooth'});
+  });
+}
+
+// ── Responsive scale ──
+function scaleToFit() {
+  var page = document.querySelector('.page');
+  var vw = window.innerWidth;
+  if (vw < 1600) {
+    var scale = vw / 1600;
+    page.style.transform = 'scale(' + scale + ')';
+    page.style.transformOrigin = 'top left';
+    document.body.style.height = (7110 * scale) + 'px';
+  } else {
+    page.style.transform = '';
+    page.style.transformOrigin = '';
+    document.body.style.height = '';
+  }
+}
+scaleToFit();
+window.addEventListener('resize', scaleToFit);
+
+// ── Scroll Reveal ──
+var revealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { e.target.classList.add('in'); revealObs.unobserve(e.target); }
+  });
+}, {threshold: 0.15});
+document.querySelectorAll('#digital .reveal').forEach(function(el, i) {
+  el.style.transitionDelay = (i * 0.1) + 's';
+  revealObs.observe(el);
+});
+document.querySelectorAll('#cta-section .reveal').forEach(function(el) {
+  revealObs.observe(el);
+});
+
+// ── Step card staggered reveal ──
+var stepRevealObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      var delay = parseFloat(e.target.dataset.revealDelay || 0);
+      e.target.style.transition = 'opacity .45s ease '+delay+'s, transform .45s ease '+delay+'s';
+      e.target.style.opacity = '1';
+      e.target.style.transform = '';
+      setTimeout(function() { e.target.style.transition = ''; }, 550 + delay * 1000);
+      stepRevealObs.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.3});
+document.querySelectorAll('.step-card').forEach(function(el, i) {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(14px)';
+  el.dataset.revealDelay = i * 0.1;
+  stepRevealObs.observe(el);
+});
+
+// ── Tentang: value cards staggered reveal ──
+var tentangRevObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      var delay = parseFloat(e.target.dataset.revealDelay || 0);
+      e.target.style.transition = 'opacity .5s ease '+delay+'s, transform .5s ease '+delay+'s';
+      e.target.style.opacity = '1';
+      e.target.style.transform = '';
+      setTimeout(function() { e.target.style.transition = ''; }, 650 + delay * 1000);
+      tentangRevObs.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.18});
+document.querySelectorAll('#tentang .card-lift').forEach(function(el, i) {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(22px)';
+  el.dataset.revealDelay = i * 0.1;
+  tentangRevObs.observe(el);
+});
+
+// ── Tentang: about text slide-in reveal ──
+var aboutText = document.getElementById('about-text');
+if (aboutText) {
+  aboutText.style.opacity = '0';
+  aboutText.style.transform = 'translateX(28px)';
+  tentangRevObs.observe(aboutText);
+}
+
+// ── Produk: product card hover lift ──
+['panel-ecommerce','panel-webdesign','panel-branding'].forEach(function(pid) {
+  var panel = document.getElementById(pid);
+  if (!panel) return;
+  panel.querySelectorAll(':scope > div').forEach(function(card) {
+    card.style.transition = 'transform .22s ease, box-shadow .22s ease';
+    card.style.cursor = 'pointer';
+    card.addEventListener('mouseenter', function() {
+      card.style.transform = 'translateY(-8px)';
+      card.style.boxShadow = '0 20px 48px rgba(0,0,0,.22)';
+    });
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = '';
+      card.style.boxShadow = '0 4px 4px rgba(0,0,0,.25)';
+    });
+  });
+});
+
+// ── Count-up animation ──
+function runCountUp(el) {
+  var target = parseFloat(el.dataset.target);
+  var suffix = el.dataset.suffix || '';
+  var isDecimal = (target % 1 !== 0);
+  var dur = 1600;
+  var t0 = performance.now();
+  function tick(now) {
+    var p = Math.min((now - t0) / dur, 1);
+    var ease = 1 - Math.pow(1 - p, 3);
+    var val = target * ease;
+    var str = isDecimal ? val.toFixed(2).replace('.', ',') : Math.floor(val).toString();
+    el.textContent = str + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+    else el.textContent = (isDecimal ? target.toFixed(2).replace('.', ',') : target) + suffix;
+  }
+  requestAnimationFrame(tick);
+}
+var countObs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) { runCountUp(e.target); countObs.unobserve(e.target); }
+  });
+}, {threshold: 0.5});
+document.querySelectorAll('.countup-val').forEach(function(el) { countObs.observe(el); });
+
+// ── Ripple effect on .btn clicks ──
+document.querySelectorAll('.btn').forEach(function(btn) {
+  btn.addEventListener('click', function(e) {
+    var r = document.createElement('span');
+    r.className = 'ripple';
+    var rect = btn.getBoundingClientRect();
+    var size = Math.max(rect.width, rect.height);
+    r.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+(e.clientX-rect.left-size/2)+'px;top:'+(e.clientY-rect.top-size/2)+'px;';
+    btn.appendChild(r);
+    setTimeout(function() { r.remove(); }, 550);
+  });
+});
+
+// ── Active nav link tracking ──
+var navAnchors = {
+  tentang: {el: document.querySelector('a[href="#tentang"]'), top: 977},
+  produk:  {el: document.querySelector('a[href="#produk"]'),  top: 2003},
+  tim:     {el: document.querySelector('a[href="#tim"]'),     top: 3782},
+  digital: {el: document.querySelector('a[href="#digital"]'), top: 4680}
+};
+function updateNav() {
+  var scale = (window.innerWidth < 1600) ? window.innerWidth / 1600 : 1;
+  var pageY = window.scrollY / scale + 200;
+  var active = null;
+  var order = ['digital','tim','produk','tentang'];
+  for (var i = 0; i < order.length; i++) {
+    if (pageY >= navAnchors[order[i]].top) { active = order[i]; break; }
+  }
+  Object.keys(navAnchors).forEach(function(k) {
+    var l = navAnchors[k].el;
+    if (l) l.classList.toggle('nav-active', k === active);
+  });
+}
+window.addEventListener('scroll', updateNav, {passive:true});
+
+// Center page on load
+window.addEventListener('load', function() {
+  var wrapper = document.querySelector('.wrapper');
+  if (wrapper) {
+    wrapper.scrollLeft = (1600 - window.innerWidth) / 2;
+  }
+});
+</script>
+</div><!-- /page -->
+</div><!-- /wrapper -->
+</body>
+</html>
