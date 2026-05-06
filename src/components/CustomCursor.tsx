@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
 export default function CustomCursor() {
+  const [isTouch, setIsTouch] = useState(false)
   const [position, setPosition] = useState({ x: -100, y: -100 })
   const [isPointer, setIsPointer] = useState(false)
   const [isClicking, setIsClicking] = useState(false)
@@ -11,6 +12,10 @@ export default function CustomCursor() {
   const rafRef = useRef<number>(0)
 
   useEffect(() => {
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      setIsTouch(true)
+      return
+    }
     const onMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY })
 
@@ -37,7 +42,7 @@ export default function CustomCursor() {
       window.removeEventListener('mouseup', onUp)
       cancelAnimationFrame(rafRef.current)
     }
-  }, [])
+  }, [isTouch])
 
   useEffect(() => {
     const lerp = (a: number, b: number, n: number) => a + (b - a) * n
@@ -52,6 +57,8 @@ export default function CustomCursor() {
     rafRef.current = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(rafRef.current)
   }, [position])
+
+  if (isTouch) return null
 
   return (
     <>

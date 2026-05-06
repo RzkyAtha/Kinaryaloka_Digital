@@ -49,8 +49,8 @@ export default function Process() {
       {/* Bottom Right Glow */}
       <div className="absolute -right-40 -bottom-40 w-[600px] h-[600px] bg-[#831449]/5 rounded-full blur-3xl" />
 
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-10 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left - Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -61,7 +61,7 @@ export default function Process() {
               Proses Kerja Kami
             </p>
             
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-5 md:mb-6 leading-tight">
               Kita Ngobrol Dulu.
               <br />
               <span className="text-gray-400">Tanpa Komitmen,</span>
@@ -77,14 +77,20 @@ export default function Process() {
               mentok. Dari situ baru kami rekomendasikan yang paling masuk akal.
             </p>
 
-            <motion.button
-              className="bg-[#1a1a1a] text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-3 hover:bg-black transition-colors"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <MessageCircle className="w-5 h-5 text-green-400" />
-              Ngobrol Dulu Yuk?
-            </motion.button>
+            <div className="space-y-3">
+              <motion.button
+                className="bg-[#1a1a1a] text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-3 hover:bg-black transition-colors"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => window.open('https://wa.me/6281357662424?text=' + encodeURIComponent('Halo KINARYALOKA! Saya mau konsultasi gratis 30 menit untuk bisnis saya.'), '_blank')}
+              >
+                <MessageCircle className="w-5 h-5 text-green-400" />
+                Ngobrol Dulu Yuk?
+              </motion.button>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                ✓ Gratis konsultasi 30 menit &nbsp;·&nbsp; ✓ Tanpa komitmen &nbsp;·&nbsp; ✓ Tanpa dipaksa beli
+              </p>
+            </div>
           </motion.div>
 
           {/* Right - Steps */}

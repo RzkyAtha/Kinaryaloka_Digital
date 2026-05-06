@@ -5,7 +5,6 @@
 @layer base {
   * {
     @apply box-border;
-    cursor: none !important;
   }
   
   html {

@@ -27,9 +27,9 @@ export default function Footer() {
   }
 
   return (
-    <footer className="bg-[#2a2a2a] text-white py-16">
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
-        <div className="grid md:grid-cols-3 gap-12 mb-12">
+    <footer className="bg-[#2a2a2a] text-white py-10 md:py-16">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 mb-8 md:mb-12">
           {/* Brand Column */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

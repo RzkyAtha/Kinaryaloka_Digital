@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { motion, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ShoppingCart, ArrowRight } from 'lucide-react'
 
 // ─── Magic Card: 3D tilt + spotlight + glow border ──────────────────
@@ -86,9 +86,9 @@ function MagicCard({
 }
 
 const tabs = [
-  { id: 'ecommerce', label: 'E-Commerce' },
-  { id: 'webdesign', label: 'Web Design' },
-  { id: 'branding', label: 'Branding' },
+  { id: 'ecommerce', label: 'E-Commerce', color: '#831449', glow: '#83144950', icon: '🛒' },
+  { id: 'webdesign', label: 'Web Design', color: '#004896', glow: '#00489650', icon: '💻' },
+  { id: 'branding', label: 'Branding',   color: '#207224', glow: '#20722450', icon: '✦'  },
 ]
 
 interface Product {
@@ -228,41 +228,73 @@ export default function Products() {
   const currentProducts = products[activeTab as keyof typeof products]
 
   return (
-    <section id="produk" className="bg-black py-20" ref={ref}>
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-10">
+    <section id="produk" className="bg-black py-12 md:py-20" ref={ref}>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Title */}
         <motion.div
-          className="text-center mb-8"
+          className="text-center mb-6 md:mb-8"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white">Produk Kami</h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">Produk Kami</h2>
         </motion.div>
 
         {/* Tabs */}
         <motion.div
-          className="flex justify-center gap-2 mb-10"
+          className="flex justify-center mb-6 md:mb-10"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <div className="bg-[#2a2a2a] p-1 rounded-xl flex gap-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-300 ${
-                  activeTab === tab.id
-                    ? 'bg-[#e9e9e9] text-black'
-                    : 'bg-transparent text-white hover:text-gray-300'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="bg-[#1a1a1a] p-1.5 rounded-2xl flex gap-1 border border-[#2a2a2a]">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className="relative px-5 md:px-7 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base whitespace-nowrap transition-colors duration-200 outline-none"
+                  style={{ color: isActive ? '#fff' : '#666' }}
+                >
+                  {/* Sliding pill background */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="tab-pill"
+                      className="absolute inset-0 rounded-xl z-0"
+                      style={{ backgroundColor: tab.color }}
+                      transition={{ type: 'spring', stiffness: 380, damping: 34 }}
+                    />
+                  )}
+                  {/* Glow when active */}
+                  {isActive && (
+                    <motion.span
+                      layoutId="tab-glow"
+                      className="absolute inset-0 rounded-xl z-0 blur-md"
+                      style={{ backgroundColor: tab.glow }}
+                      transition={{ type: 'spring', stiffness: 380, damping: 34 }}
+                    />
+                  )}
+                  {/* Label */}
+                  <span className="relative z-10 flex items-center gap-2">
+                    <span className="text-base leading-none">{tab.icon}</span>
+                    {tab.label}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </motion.div>
+
+        {/* Cards — crossfade on tab change */}
+        <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -12 }}
+          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+        >
 
         {/* Featured Product Card (Large) — with spotlight */}
         <motion.div
@@ -272,9 +304,9 @@ export default function Products() {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <MagicCard accentColor={currentProducts.featured.color}>
-          <div className="grid md:grid-cols-[515px_1fr]">
-            {/* Left - Image with zoom on hover */}
-            <div className="relative h-[300px] md:h-[441px] overflow-hidden group">
+          <div className="flex flex-col md:grid md:grid-cols-[380px_1fr] lg:grid-cols-[515px_1fr]">
+            {/* Top/Left - Image */}
+            <div className="relative h-[200px] sm:h-[260px] md:h-[441px] overflow-hidden group">
               <motion.img
                 src={currentProducts.featured.image}
                 alt={currentProducts.featured.title}
@@ -292,8 +324,8 @@ export default function Products() {
               />
             </div>
 
-            {/* Right - Content */}
-            <div className="p-8 relative">
+            {/* Bottom/Right - Content */}
+            <div className="p-4 sm:p-6 md:p-8 relative">
               {/* Badge */}
               {currentProducts.featured.badge && (
                 <div className="bg-[#e70000] text-white px-4 py-2 rounded-md font-semibold text-sm inline-block mb-4">
@@ -302,28 +334,24 @@ export default function Products() {
               )}
 
               {/* Title */}
-              <h3 className="font-bold text-[32px] md:text-[44px] text-[#404040] leading-tight mb-4">
+              <h3 className="font-bold text-[22px] sm:text-[28px] md:text-[36px] lg:text-[44px] text-[#404040] leading-tight mb-3 md:mb-4">
                 {currentProducts.featured.title}
               </h3>
 
               {/* Description */}
-              <p className="text-[#9f9f9f] text-base md:text-lg leading-relaxed text-justify max-w-[671px] mb-6">
+              <p className="text-[#9f9f9f] text-sm md:text-base lg:text-lg leading-relaxed text-justify max-w-[671px] mb-4 md:mb-6">
                 {currentProducts.featured.description}
               </p>
 
               {/* Price */}
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-2xl md:text-[40px] font-semibold text-[#454545]">
-                  <span style={{ color: currentProducts.featured.textColor }}>IDR</span>
-                </span>
-                <span className="text-2xl md:text-[40px] font-semibold text-[#454545]">
-                  {currentProducts.featured.price}K
-                </span>
+              <div className="flex items-baseline gap-2 mb-4 md:mb-6">
+                <span className="text-xl md:text-2xl lg:text-[40px] font-semibold" style={{ color: currentProducts.featured.textColor }}>IDR</span>
+                <span className="text-xl md:text-2xl lg:text-[40px] font-semibold text-[#454545]">{currentProducts.featured.price}K</span>
               </div>
 
               {/* CTA Button */}
               <motion.button
-                className="w-full md:w-[671px] py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-3 text-lg"
+                className="w-full py-3 md:py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-3 text-base md:text-lg"
                 style={{ backgroundColor: currentProducts.featured.color, boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
@@ -436,6 +464,10 @@ export default function Products() {
             </motion.div>
           ))}
         </div>
+
+        </motion.div>
+        </AnimatePresence>
+
       </div>
     </section>
   )

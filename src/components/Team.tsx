@@ -39,7 +39,7 @@ export default function Team() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#831449]/10 rounded-full blur-[120px]" />
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-8 lg:px-16 relative z-10">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 60 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}

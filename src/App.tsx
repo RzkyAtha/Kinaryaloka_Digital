@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -8,7 +8,23 @@ import Team from './components/Team'
 import WhyDigital from './components/WhyDigital'
 import Process from './components/Process'
 import Footer from './components/Footer'
-import CustomCursor from './components/CustomCursor'
+import TrustBar from './components/TrustBar'
+import PainPoints from './components/PainPoints'
+import FloatingWA from './components/FloatingWA'
+
+function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll()
+  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30 })
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-[3px] z-[9998] origin-left"
+      style={{
+        scaleX,
+        background: 'linear-gradient(90deg, #831449, #c9547a, #004896)',
+      }}
+    />
+  )
+}
 
 function App() {
   const [activeSection, setActiveSection] = useState('')
@@ -41,7 +57,8 @@ function App() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f5]">
-      <CustomCursor />
+      <ScrollProgressBar />
+      <FloatingWA />
       <AnimatePresence>
         <Navbar activeSection={activeSection} />
         <motion.main
@@ -50,7 +67,9 @@ function App() {
           transition={{ duration: 0.5 }}
         >
           <Hero />
+          <TrustBar />
           <About />
+          <PainPoints />
           <Products />
           <Team />
           <WhyDigital />
