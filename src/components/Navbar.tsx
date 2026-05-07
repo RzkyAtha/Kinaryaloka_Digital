@@ -1,6 +1,7 @@
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
 import { User, Menu, X } from 'lucide-react'
 import { useState } from 'react'
+import AuthModal from './AuthModal'
 
 interface NavbarProps {
   activeSection: string
@@ -16,6 +17,7 @@ const navItems = [
 export default function Navbar({ activeSection }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [authModalOpen, setAuthModalOpen] = useState(false)
   const { scrollY } = useScroll()
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
@@ -88,6 +90,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
             <motion.button
               whileHover={{ scale: 1.06 }}
               whileTap={{ scale: 0.94 }}
+              onClick={() => setAuthModalOpen(true)}
               className="hidden lg:flex w-[70px] h-[58px] bg-black rounded-xl items-center justify-center"
             >
               <User className="w-7 h-7 text-white" />
@@ -148,6 +151,10 @@ export default function Navbar({ activeSection }: NavbarProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
+                onClick={() => {
+                  setMobileOpen(false)
+                  setAuthModalOpen(true)
+                }}
               >
                 <User className="w-5 h-5" />
                 Akun Saya
@@ -156,6 +163,12 @@ export default function Navbar({ activeSection }: NavbarProps) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </>
   )
 }
