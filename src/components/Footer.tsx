@@ -37,7 +37,11 @@ export default function Footer() {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-3xl font-bold mb-4">KINARYALOKA</h3>
+            <img 
+              src="/Assets/logo_kinarya.png" 
+              alt="KINARYALOKA"
+              className="h-10 md:h-12 w-auto object-contain mb-4"
+            />
             
             <div className="flex items-start gap-3 mb-6">
               <Moon className="w-8 h-8 text-gray-400 flex-shrink-0 mt-1" />
