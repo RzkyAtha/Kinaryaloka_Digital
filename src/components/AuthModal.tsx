@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, User, ShoppingCart, Check } from 'lucide-react'
+import { X, User, ShoppingCart, Check, Sparkles, PartyPopper } from 'lucide-react'
 import { useState } from 'react'
 import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from 'jwt-decode'
+import confetti from 'canvas-confetti'
 
 interface AuthModalProps {
   isOpen: boolean
@@ -10,16 +11,56 @@ interface AuthModalProps {
   selectedPackage?: { title: string; price: string } | null
 }
 
+// 🎉 Confetti Party Animation
+const triggerConfetti = () => {
+  const duration = 3000
+  const end = Date.now() + duration
+
+  const colors = ['#000000', '#ffffff', '#333333', '#666666']
+
+  const frame = () => {
+    confetti({
+      particleCount: 4,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: colors
+    })
+    confetti({
+      particleCount: 4,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: colors
+    })
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame)
+    }
+  }
+
+  frame()
+  
+  // Big burst in center
+  confetti({
+    particleCount: 100,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: colors
+  })
+}
+
 export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModalProps) {
   const [isLogin, setIsLogin] = useState(true)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [successData, setSuccessData] = useState<{name: string, email: string} | null>(null)
 
   // Handle Google Login Success
   const handleGoogleSuccess = (credentialResponse: any) => {
     try {
-      // Decode JWT token to get user info
       const decoded: any = jwtDecode(credentialResponse.credential)
       
       console.log('Google User Data:', {
@@ -29,29 +70,11 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
         googleId: decoded.sub
       })
 
-      // TODO: Send to your backend API
-      // Example:
-      // fetch('/api/auth/google', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     name: decoded.name,
-      //     email: decoded.email,
-      //     googleId: decoded.sub,
-      //     avatar: decoded.picture,
-      //     package: selectedPackage
-      //   })
-      // })
+      setSuccessData({ name: decoded.name, email: decoded.email })
+      setShowSuccess(true)
+      triggerConfetti()
 
-      // Show success message
-      alert(`Selamat datang, ${decoded.name}! 🎉\n\nEmail: ${decoded.email}\nPaket: ${selectedPackage?.title || 'Belum dipilih'}`)
-      
-      // Close modal
-      onClose()
-      
-      // Optional: Redirect to dashboard or save token
-      // localStorage.setItem('user', JSON.stringify(decoded))
-      // window.location.href = '/dashboard'
+      // TODO: Send to backend API
     } catch (error) {
       console.error('Error decoding Google token:', error)
       alert('Terjadi kesalahan saat login dengan Google.')
@@ -65,7 +88,15 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    alert(`${isLogin ? 'Login' : 'Signup'} dengan email: ${email}`)
+    // Simulate signup success
+    setSuccessData({ name: name || 'User', email: email })
+    setShowSuccess(true)
+    triggerConfetti()
+  }
+
+  const handleCloseSuccess = () => {
+    setShowSuccess(false)
+    onClose()
   }
 
   return (
@@ -74,155 +105,304 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9995]"
+            className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9995]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
           />
 
-          {/* Modal */}
-          <motion.div
-            className="fixed inset-0 z-[9996] flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl"
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="bg-[#831449] px-6 py-4 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                    {selectedPackage ? (
-                      <ShoppingCart className="w-5 h-5 text-white" />
-                    ) : (
-                      <User className="w-5 h-5 text-white" />
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="text-white font-bold text-lg">
-                      {isLogin ? 'Masuk' : 'Daftar'}
-                    </h3>
-                    {selectedPackage && (
-                      <p className="text-white/80 text-xs">
-                        {selectedPackage.title} - IDR {selectedPackage.price}K
-                      </p>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={onClose}
-                  className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"
+          {/* Success Celebration Modal */}
+          <AnimatePresence>
+            {showSuccess && (
+              <motion.div
+                className="fixed inset-0 z-[9997] flex items-center justify-center p-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <motion.div
+                  className="bg-white rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl border-4 border-black"
+                  initial={{ scale: 0.5, rotate: -10 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  exit={{ scale: 0.5, rotate: 10 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                 >
-                  <X className="w-5 h-5 text-white" />
-                </button>
-              </div>
+                  {/* Success Header */}
+                  <div className="bg-black px-6 py-6 text-center">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2, type: 'spring' }}
+                      className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4"
+                    >
+                      <PartyPopper className="w-10 h-10 text-black" />
+                    </motion.div>
+                    <motion.h2
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                      className="text-white font-black text-2xl md:text-3xl uppercase tracking-tight"
+                    >
+                      Selamat Bergabung!
+                    </motion.h2>
+                  </div>
 
-              {/* Content */}
-              <div className="p-6">
-                {/* Google Auth Button */}
-                <div className="flex justify-center mb-4">
-                  <GoogleLogin
-                    onSuccess={handleGoogleSuccess}
-                    onError={handleGoogleError}
-                    size="large"
-                    width="300"
-                    theme="outline"
-                    text={isLogin ? "signin_with" : "signup_with"}
-                    shape="rectangular"
-                  />
-                </div>
+                  {/* Success Content */}
+                  <div className="p-6 md:p-8 text-center">
+                    <motion.div
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <div className="flex items-center justify-center gap-2 mb-4">
+                        <Sparkles className="w-5 h-5 text-black" />
+                        <span className="text-black font-bold text-lg">Digitalisasi 5.0 Indonesia</span>
+                        <Sparkles className="w-5 h-5 text-black" />
+                      </div>
+                      
+                      <p className="text-gray-700 text-base md:text-lg leading-relaxed mb-2">
+                        <span className="font-bold text-black">Selamat {successData?.name}!</span>
+                      </p>
+                      <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-6">
+                        Anda telah menjadi bagian dari perjalanan <span className="font-bold text-black">Digitalisasi 5.0 Indonesia</span>. Bersama KINARYALOKA, bisnis Anda siap melaju ke era digital yang lebih maju.
+                      </p>
 
-                {/* Divider */}
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex-1 h-px bg-gray-200" />
-                  <span className="text-gray-400 text-sm">atau</span>
-                  <div className="flex-1 h-px bg-gray-200" />
-                </div>
+                      <div className="bg-black text-white rounded-2xl p-4 mb-6">
+                        <p className="text-sm uppercase tracking-wider mb-1">Email Terdaftar</p>
+                        <p className="font-bold text-lg">{successData?.email}</p>
+                      </div>
 
-                {/* Email Form */}
-                <form onSubmit={handleSubmit} className="space-y-3">
-                  {!isLogin && (
+                      {selectedPackage && (
+                        <div className="bg-gray-100 rounded-xl p-4 mb-6">
+                          <p className="text-xs uppercase tracking-wider text-gray-500 mb-1">Paket Dipilih</p>
+                          <p className="font-bold text-black text-lg">{selectedPackage.title}</p>
+                          <p className="text-gray-600">IDR {selectedPackage.price}K</p>
+                        </div>
+                      )}
+
+                      <motion.button
+                        onClick={handleCloseSuccess}
+                        className="w-full py-4 bg-black text-white font-bold text-lg rounded-xl hover:bg-gray-900 transition-colors"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Mulai Perjalanan Digital 🚀
+                      </motion.button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Main Auth Modal */}
+          {!showSuccess && (
+            <motion.div
+              className="fixed inset-0 z-[9996] flex items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl border border-gray-200"
+                initial={{ scale: 0.9, y: 30, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.9, y: 30, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* Header - Black & White */}
+                <div className="bg-black px-6 py-5 flex items-center justify-between">
+                  <motion.div 
+                    className="flex items-center gap-3"
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <motion.div 
+                      className="w-11 h-11 bg-white rounded-xl flex items-center justify-center"
+                      whileHover={{ rotate: 10 }}
+                    >
+                      {selectedPackage ? (
+                        <ShoppingCart className="w-5 h-5 text-black" />
+                      ) : (
+                        <User className="w-5 h-5 text-black" />
+                      )}
+                    </motion.div>
                     <div>
-                      <label className="text-sm font-semibold text-gray-700 block mb-1">Nama Lengkap</label>
+                      <h3 className="text-white font-black text-xl tracking-tight">
+                        {isLogin ? 'MASUK' : 'DAFTAR'}
+                      </h3>
+                      {selectedPackage && (
+                        <motion.p 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="text-white/70 text-xs"
+                        >
+                          {selectedPackage.title} • IDR {selectedPackage.price}K
+                        </motion.p>
+                      )}
+                    </div>
+                  </motion.div>
+                  <motion.button
+                    onClick={onClose}
+                    className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                    whileHover={{ rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <X className="w-5 h-5 text-white" />
+                  </motion.button>
+                </div>
+
+                {/* Content */}
+                <div className="p-6 md:p-7">
+                  {/* Google Auth Button */}
+                  <motion.div 
+                    className="flex justify-center mb-5"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <GoogleLogin
+                      onSuccess={handleGoogleSuccess}
+                      onError={handleGoogleError}
+                      size="large"
+                      width="300"
+                      theme="outline"
+                      text={isLogin ? "signin_with" : "signup_with"}
+                      shape="rectangular"
+                    />
+                  </motion.div>
+
+                  {/* Divider */}
+                  <motion.div 
+                    className="flex items-center gap-3 mb-5"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <div className="flex-1 h-px bg-gray-200" />
+                    <span className="text-gray-400 text-xs uppercase tracking-wider">atau dengan email</span>
+                    <div className="flex-1 h-px bg-gray-200" />
+                  </motion.div>
+
+                  {/* Email Form */}
+                  <motion.form 
+                    onSubmit={handleSubmit} 
+                    className="space-y-4"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    {!isLogin && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                      >
+                        <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Nama Lengkap</label>
+                        <input
+                          type="text"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
+                          placeholder="Nama lengkap Anda"
+                          required={!isLogin}
+                        />
+                      </motion.div>
+                    )}
+                    <div>
+                      <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Email</label>
                       <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#831449] focus:outline-none transition-colors"
-                        placeholder="Nama Anda"
-                        required={!isLogin}
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
+                        placeholder="nama@email.com"
+                        required
                       />
                     </div>
-                  )}
-                  <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1">Email</label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#831449] focus:outline-none transition-colors"
-                      placeholder="email@anda.com"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1">Password</label>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-[#831449] focus:outline-none transition-colors"
-                      placeholder="••••••••"
-                      required
-                    />
-                  </div>
-
-                  <motion.button
-                    type="submit"
-                    className="w-full py-3 bg-[#831449] text-white font-semibold rounded-xl hover:bg-[#6a1139] transition-colors"
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.99 }}
-                  >
-                    {isLogin ? 'Masuk' : 'Daftar Sekarang'}
-                  </motion.button>
-                </form>
-
-                {/* Toggle */}
-                <p className="text-center text-gray-500 text-sm mt-4">
-                  {isLogin ? 'Belum punya akun? ' : 'Sudah punya akun? '}
-                  <button
-                    onClick={() => setIsLogin(!isLogin)}
-                    className="text-[#831449] font-semibold hover:underline"
-                  >
-                    {isLogin ? 'Daftar' : 'Masuk'}
-                  </button>
-                </p>
-
-                {/* Benefits (shown on signup) */}
-                {!isLogin && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <p className="text-xs text-gray-500 mb-2">Keuntungan mendaftar:</p>
-                    <div className="space-y-1">
-                      {['Simpan riwayat pesanan', 'Tracking project real-time', 'Akses diskon eksklusif'].map((benefit) => (
-                        <div key={benefit} className="flex items-center gap-2 text-xs text-gray-600">
-                          <Check className="w-3 h-3 text-[#831449]" />
-                          {benefit}
-                        </div>
-                      ))}
+                    <div>
+                      <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Password</label>
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
+                        placeholder="Minimal 8 karakter"
+                        required
+                      />
                     </div>
-                  </div>
-                )}
-              </div>
+
+                    <motion.button
+                      type="submit"
+                      className="w-full py-4 bg-black text-white font-bold text-base rounded-xl hover:bg-gray-900 transition-all duration-200 shadow-lg shadow-black/20"
+                      whileHover={{ scale: 1.02, y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {isLogin ? 'Masuk Sekarang →' : 'Daftar & Gabung →'}
+                    </motion.button>
+                  </motion.form>
+
+                  {/* Toggle */}
+                  <motion.p 
+                    className="text-center text-gray-500 text-sm mt-5"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    {isLogin ? 'Belum punya akun? ' : 'Sudah punya akun? '}
+                    <motion.button
+                      onClick={() => setIsLogin(!isLogin)}
+                      className="text-black font-bold hover:underline"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      {isLogin ? 'Daftar Gratis' : 'Masuk'}
+                    </motion.button>
+                  </motion.p>
+
+                  {/* Benefits (shown on signup) */}
+                  <AnimatePresence>
+                    {!isLogin && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="mt-5 pt-5 border-t-2 border-gray-100"
+                      >
+                        <p className="text-xs font-bold text-black uppercase tracking-wider mb-3">Keuntungan Member:</p>
+                        <div className="space-y-2">
+                          {[
+                            'Simpan riwayat pesanan',
+                            'Tracking project real-time', 
+                            'Akses diskon eksklusif',
+                            'Prioritas customer support'
+                          ].map((benefit, i) => (
+                            <motion.div 
+                              key={benefit} 
+                              className="flex items-center gap-2 text-sm text-gray-600"
+                              initial={{ x: -20, opacity: 0 }}
+                              animate={{ x: 0, opacity: 1 }}
+                              transition={{ delay: 0.1 * i }}
+                            >
+                              <motion.div
+                                className="w-5 h-5 bg-black rounded-md flex items-center justify-center"
+                                whileHover={{ rotate: 360 }}
+                              >
+                                <Check className="w-3 h-3 text-white" />
+                              </motion.div>
+                              {benefit}
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
             </motion.div>
-          </motion.div>
+          )}
         </>
       )}
     </AnimatePresence>
