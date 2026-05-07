@@ -2,9 +2,9 @@ import { motion, useInView } from 'framer-motion'
 import { useRef, useEffect, useState } from 'react'
 
 const stats = [
-  { value: 13, suffix: '+', label: 'UMKM Dipercayakan', icon: '🏪' },
-  { value: 98, suffix: '%', label: 'Kepuasan Klien', icon: '⭐' },
-  { value: 2020, suffix: '', label: 'Berdiri Sejak', icon: '📅' },
+  { value: 24, suffix: '/7', label: 'Tim Kami Aktif Berkomunikasi', icon: '�' },
+  { value: 90, suffix: '%', label: 'Akurasi Desain dengan Figma', icon: '🎯' },
+  { value: 100, suffix: '%', label: 'Integrasi Data yang Dapat Diandalkan', icon: '�' },
 ]
 
 function AnimatedNumber({ target, suffix, start }: { target: number; suffix: string; start: boolean }) {
