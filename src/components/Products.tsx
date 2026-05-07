@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ShoppingCart, ArrowRight } from 'lucide-react'
+import { ShoppingCart, ArrowRight, X, Check } from 'lucide-react'
 import AuthModal from './AuthModal'
 
 // ─── Magic Card: 3D tilt + spotlight + glow border ──────────────────
@@ -102,6 +102,7 @@ interface Product {
   color: string
   textColor: string
   badge?: string
+  details?: string[]
 }
 
 interface TabData {
@@ -119,6 +120,18 @@ const products: Record<string, TabData> = {
       color: '#831449',
       textColor: '#831449',
       badge: 'Flagship',
+      details: [
+        'Semua fitur E-Commerce Pro',
+        'Desain identitas visual (logo + color system)',
+        'Social media kit (10 template siap pakai)',
+        'Halaman landing promo / campaign',
+        'Setup Google My Business & Google Shopping',
+        'SEO on-page lengkap + submit sitemap',
+        'Google Analytics + Meta Pixel integration',
+        'Pelatihan kelola toko & admin (2 sesi)',
+        'Konsultasi strategi penjualan digital',
+        'Support prioritas 6 bulan',
+      ],
     },
     cards: [
       {
@@ -128,6 +141,16 @@ const products: Record<string, TabData> = {
         description: 'Website katalog produk online. Pelanggan lihat produk & pesan langsung via WhatsApp. Tanpa ribet dengan payment gateway.',
         color: '#b76431',
         textColor: '#bb6732',
+        details: [
+          'Web katalog produk (hingga 50 produk)',
+          'Halaman detail produk + foto & deskripsi',
+          'Kategori & filter produk',
+          'Tombol pesan/tanya via WhatsApp per produk',
+          'Profil toko & info kontak',
+          'Mobile responsive + fast loading',
+          'Revisi desain hingga puas',
+          'Konsultasi domain & hosting',
+        ],
       },
       {
         title: 'Toko Online',
@@ -136,6 +159,18 @@ const products: Record<string, TabData> = {
         description: 'Toko online lengkap dengan keranjang belanja & payment gateway. Pelanggan bisa checkout langsung di website kamu.',
         color: '#004896',
         textColor: '#004896',
+        details: [
+          'Custom web toko online multi-halaman',
+          'Keranjang belanja (shopping cart)',
+          'Checkout & payment gateway (Midtrans/Xendit)',
+          'Manajemen produk & kategori (CMS)',
+          'Halaman produk detail + galeri foto',
+          'Filter & pencarian produk',
+          'Notifikasi order via WhatsApp & Email',
+          'Dashboard admin kelola pesanan',
+          'Domain & hosting (1 tahun)',
+          'Support teknis 2 bulan',
+        ],
       },
       {
         title: 'Olshop Full',
@@ -144,6 +179,18 @@ const products: Record<string, TabData> = {
         description: 'Platform jual beli penuh fitur seperti inventori, multi-varian produk, voucher diskon, hingga laporan penjualan real-time.',
         color: '#207224',
         textColor: '#004896',
+        details: [
+          'Semua fitur Toko Online',
+          'Manajemen inventori & stok otomatis',
+          'Multi-varian produk (warna, ukuran, tipe)',
+          'Sistem voucher & kode diskon',
+          'Hitung ongkos kirim otomatis (RajaOngkir)',
+          'Laporan penjualan & analitik dashboard',
+          'Halaman ulasan & rating produk',
+          'SEO produk (siap muncul di Google)',
+          'Mobile responsive + optimasi kecepatan',
+          'Support prioritas 3 bulan',
+        ],
       },
     ],
   },
@@ -156,6 +203,18 @@ const products: Record<string, TabData> = {
       color: '#831449',
       textColor: '#831449',
       badge: 'Flagship',
+      details: [
+        'Semua fitur Web + Reservasi Pro',
+        'Desain identitas visual (logo + color system)',
+        'Social media kit (8 template siap pakai)',
+        'Setup Google My Business & Google Maps',
+        'SEO dasar on-page (siap dicari di Google)',
+        'Google Analytics + laporan bulanan',
+        'Landing page campaign (1 halaman promo)',
+        'Pelatihan penggunaan sistem (2 sesi)',
+        'Konsultasi strategi konten digital',
+        'Support prioritas 6 bulan',
+      ],
     },
     cards: [
       {
@@ -165,6 +224,15 @@ const products: Record<string, TabData> = {
         description: 'Sistem booking online siap pakai tanpa perlu website. Ideal untuk bisnis layanan yang masih pakai manual.',
         color: '#b76431',
         textColor: '#bb6732',
+        details: [
+          'Setup sistem booking online (widget)',
+          'Konfigurasi jam operasional & kapasitas slot',
+          'Link reservasi siap disebarkan ke pelanggan',
+          'Notifikasi WhatsApp (pelanggan & admin)',
+          'Interface mobile-friendly',
+          'Panduan penggunaan lengkap',
+          'Support teknis 30 hari',
+        ],
       },
       {
         title: 'Website & Reservasi',
@@ -173,6 +241,18 @@ const products: Record<string, TabData> = {
         description: 'Website profesional lengkap dengan sistem booking simpel. Bisnis kamu terlihat serius di mata pelanggan.',
         color: '#004896',
         textColor: '#004896',
+        details: [
+          'Custom web design 1 halaman (landing page)',
+          'Sistem reservasi simpel (tanpa database)',
+          'Profil bisnis & galeri layanan/produk',
+          'Informasi harga & paket layanan',
+          'Integrasi Google Maps & arah lokasi',
+          'Tombol kontak & chat WhatsApp',
+          'Desain mobile responsive',
+          'Revisi desain hingga puas',
+          'Konsultasi domain & hosting',
+          'Support teknis 1 bulan',
+        ],
       },
       {
         title: 'Website Pro',
@@ -181,6 +261,18 @@ const products: Record<string, TabData> = {
         description: 'Web design multi-halaman dengan sistem reservasi bertenaga database. Data pelanggan tersimpan rapi, bisa diakses kapan saja.',
         color: '#207224',
         textColor: '#004896',
+        details: [
+          'Custom web design multi-halaman',
+          'Sistem reservasi lengkap dengan database',
+          'Dashboard admin kelola booking & jadwal',
+          'Manajemen slot otomatis & blokir waktu',
+          'Notifikasi otomatis WhatsApp & Email',
+          'Riwayat booking & database pelanggan',
+          'Mobile responsive + optimasi kecepatan',
+          'Domain & hosting (1 tahun)',
+          'Integrasi pembayaran (opsional)',
+          'Support teknis 3 bulan',
+        ],
       },
     ],
   },
@@ -193,6 +285,14 @@ const products: Record<string, TabData> = {
         description: 'Identitas brand lengkap untuk membuat bisnismu profesional dan mudah diingat, dari logo hingga nama yang filosofis.',
         color: '#b76431',
         textColor: '#bb6732',
+        details: [
+          'Desain logo (3 konsep, 2x revisi)',
+          'Color palette & typography system',
+          'Copywriting brand (tagline + brand story)',
+          'Business card design (digital)',
+          'Social media kit (5 template feed)',
+          'Brand guidelines (PDF)',
+        ],
       },
       {
         title: 'Branding + Copywriting',
@@ -201,6 +301,18 @@ const products: Record<string, TabData> = {
         description: 'Branding lengkap dengan copywriting profesional untuk website, social media, dan marketing material.',
         color: '#004896',
         textColor: '#004896',
+        details: [
+          'Semua fitur Paket Branding',
+          'Desain logo (5 konsep, unlimited revisi)',
+          'Website copywriting (5 halaman)',
+          'Social media copy (15 caption templates)',
+          'Email marketing templates (3 desain)',
+          'Stationery design lengkap',
+          'Packaging label design',
+          'Brand voice guidelines',
+          'SEO-friendly product description (10 produk)',
+          'Support 1 bulan',
+        ],
       },
       {
         title: 'Complete Branding',
@@ -209,15 +321,115 @@ const products: Record<string, TabData> = {
         description: 'Solusi branding end-to-end: visual identity, semua copywriting, dan marketing kit siap pakai.',
         color: '#207224',
         textColor: '#004896',
+        details: [
+          'Semua fitur Branding + Copywriting',
+          'Packaging & label design lengkap',
+          'Social media kit (20 template)',
+          'Instagram Highlight covers (5 desain)',
+          'Ads copywriting (Google + Meta)',
+          'Landing page copy + wireframe',
+          'Brand strategy consultation',
+          'Product photography direction',
+          'Print-ready files (PDF, AI, PNG)',
+          'Support 2 bulan',
+        ],
       },
     ],
   },
+}
+
+function DetailModal({ product, onClose, onSelect }: { product: Product | null; onClose: () => void; onSelect: (title: string, price: string) => void }) {
+  if (!product) return null
+  return (
+    <AnimatePresence>
+      {product && (
+        <motion.div
+          className="fixed inset-0 z-[999] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+          {/* Modal */}
+          <motion.div
+            className="relative w-full max-w-lg max-h-[90vh] rounded-2xl overflow-hidden flex flex-col"
+            style={{ backgroundColor: '#fff' }}
+            initial={{ opacity: 0, scale: 0.88, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 20 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header image strip */}
+            <div className="relative h-32 overflow-hidden flex-shrink-0">
+              <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${product.color}99, ${product.color}ee)` }} />
+              {/* Title overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-4">
+                {product.badge && (
+                  <span className="bg-[#e70000] text-white text-xs font-bold px-2 py-0.5 rounded mr-2">{product.badge}</span>
+                )}
+                <h3 className="text-white font-bold text-2xl leading-tight">{product.title}</h3>
+                <p className="text-white/80 text-sm font-semibold mt-0.5">IDR {product.price}K</p>
+              </div>
+              {/* Close button */}
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Feature list */}
+            <div className="overflow-y-auto flex-1 p-5">
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: product.color }}>Yang Kamu Dapatkan</p>
+              <ul className="space-y-2.5">
+                {product.details?.map((item, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex items-start gap-3"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.25 }}
+                  >
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: product.color + '20' }}>
+                      <Check className="w-3 h-3" style={{ color: product.color }} />
+                    </div>
+                    <span className="text-[#404040] text-sm leading-relaxed">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+
+            {/* CTA */}
+            <div className="p-5 pt-0 flex-shrink-0">
+              <motion.button
+                onClick={() => { onSelect(product.title, product.price); onClose() }}
+                className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 text-base"
+                style={{ backgroundColor: product.color, boxShadow: `0 4px 20px ${product.color}60` }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                Pilih Paket Ini
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
 }
 
 export default function Products() {
   const [activeTab, setActiveTab] = useState('ecommerce')
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState<{ title: string; price: string } | null>(null)
+  const [detailProduct, setDetailProduct] = useState<Product | null>(null)
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
@@ -364,7 +576,8 @@ export default function Products() {
               </motion.button>
 
               {/* Detail Link */}
-              <button 
+              <button
+                onClick={() => setDetailProduct(currentProducts.featured!)}
                 className="absolute top-8 right-8 text-lg font-semibold flex items-center gap-1 hover:underline"
                 style={{ color: currentProducts.featured.textColor }}
               >
@@ -430,6 +643,7 @@ export default function Products() {
                       ))}
                     </motion.h3>
                     <motion.button
+                      onClick={() => setDetailProduct(product)}
                       className="text-lg font-semibold flex items-center gap-1 whitespace-nowrap mt-2"
                       style={{ color: product.textColor }}
                       whileHover={{ x: 4 }}
@@ -479,6 +693,13 @@ export default function Products() {
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           selectedPackage={selectedPackage}
+        />
+
+        {/* Detail Modal */}
+        <DetailModal
+          product={detailProduct}
+          onClose={() => setDetailProduct(null)}
+          onSelect={handleSelectPackage}
         />
       </div>
     </section>
