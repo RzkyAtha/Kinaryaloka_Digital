@@ -89,9 +89,9 @@ function MagicCard({
 }
 
 const tabs = [
-  { id: 'ecommerce', label: 'E-Commerce', color: '#831449', glow: '#83144950', icon: '🛒' },
-  { id: 'webdesign', label: 'Web Design', color: '#004896', glow: '#00489650', icon: '💻' },
-  { id: 'branding', label: 'Branding',   color: '#207224', glow: '#20722450', icon: '✦'  },
+  { id: 'ecommerce', label: 'E-Commerce', color: '#831449', glow: '#83144950' },
+  { id: 'webdesign', label: 'Web Design', color: '#004896', glow: '#00489650' },
+  { id: 'branding', label: 'Branding',   color: '#207224', glow: '#20722450' },
 ]
 
 interface Product {
@@ -489,8 +489,7 @@ export default function Products() {
                     />
                   )}
                   {/* Label */}
-                  <span className="relative z-10 flex items-center gap-2">
-                    <span className="text-base leading-none">{tab.icon}</span>
+                  <span className="relative z-10">
                     {tab.label}
                   </span>
                 </button>
