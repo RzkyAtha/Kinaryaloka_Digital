@@ -145,9 +145,14 @@ export default function Footer() {
             <p className="text-gray-400 text-sm">
               © KINARYALOKA. All Rights Reserved.
             </p>
-            <p className="text-gray-500 text-xs mt-1">
-              Powered by <span className="text-white font-semibold">V</span>
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-gray-500 text-xs">Powered by</span>
+              <img 
+                src="/Assets/logo_kinarya.png" 
+                alt="KINARYALOKA"
+                className="h-4 w-auto object-contain"
+              />
+            </div>
           </div>
         </motion.div>
       </div>
