@@ -117,6 +117,7 @@ export default function Hero() {
                 whileTap={{ scale: 0.98 }}
                 className="bg-[#efefef] text-[#3a3a3a] w-full sm:w-auto px-6 md:px-10 py-4 md:py-5 rounded-xl font-semibold text-[16px] md:text-[18px] lg:text-[22px] flex items-center justify-center gap-3 shadow-lg"
                 style={{ boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
+                onClick={() => document.getElementById('produk')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 <ShoppingBag className="w-5 h-5 md:w-6 md:h-6" />
                 Lihat Paket
