@@ -33,7 +33,7 @@ export default function Team() {
   }
 
   return (
-    <section id="tim" className="bg-black py-20 relative overflow-hidden" ref={sectionRef}>
+    <section id="komitmen" className="bg-black py-20 relative overflow-hidden" ref={sectionRef}>
       {/* Background ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#831449]/10 rounded-full blur-[120px]" />
@@ -75,7 +75,7 @@ export default function Team() {
             />
 
             <img
-              src="/Assets/tim_kami.png"
+              src="/Assets/komitmen_kami.png"
               alt="Tim Kami"
               className="w-full h-auto object-contain rounded-3xl relative z-10"
               draggable={false}

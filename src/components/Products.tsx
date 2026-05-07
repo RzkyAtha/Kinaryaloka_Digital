@@ -105,7 +105,7 @@ interface Product {
 }
 
 interface TabData {
-  featured: Product
+  featured?: Product
   cards: Product[]
 }
 
@@ -185,15 +185,6 @@ const products: Record<string, TabData> = {
     ],
   },
   branding: {
-    featured: {
-      title: 'Paket Branding Lengkap',
-      price: '4000',
-      image: '/Assets/br_hijau.png',
-      description: 'Solusi branding end-to-end: visual identity, semua copywriting, dan marketing kit siap pakai.',
-      color: '#207224',
-      textColor: '#207224',
-      badge: 'Flagship',
-    },
     cards: [
       {
         title: 'Paket Branding',
@@ -307,6 +298,7 @@ export default function Products() {
         >
 
         {/* Featured Product Card (Large) — with spotlight */}
+        {currentProducts.featured && (
         <motion.div
           className="mb-6 rounded-2xl overflow-hidden"
           initial={{ opacity: 0, y: 30 }}
@@ -361,7 +353,7 @@ export default function Products() {
 
               {/* CTA Button */}
               <motion.button
-                onClick={() => handleSelectPackage(currentProducts.featured.title, currentProducts.featured.price)}
+                onClick={() => handleSelectPackage(currentProducts.featured!.title, currentProducts.featured!.price)}
                 className="w-full py-3 md:py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-3 text-base md:text-lg"
                 style={{ backgroundColor: currentProducts.featured.color, boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
                 whileHover={{ scale: 1.01 }}
@@ -382,6 +374,7 @@ export default function Products() {
           </div>
           </MagicCard>
         </motion.div>
+        )}
 
         {/* 3 Smaller Product Cards — MagicCard */}
         <div className="grid md:grid-cols-3 gap-6 items-stretch">

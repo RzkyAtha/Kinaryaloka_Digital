@@ -8,21 +8,25 @@ const valueCards = [
     icon: Target,
     title: ['Tepat', 'Sasaran.'],
     description: 'Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
+    color: '#831449',
   },
   {
     icon: HeartHandshake,
     title: ['Partner,', 'Bukan Vendor.'],
     description: 'Kami tidak pergi setelah project selesai. Support dan komunikasi tetap berjalan.',
+    color: '#B76431',
   },
   {
     icon: Zap,
     title: ['Langsung', 'Kepakai.'],
     description: 'Semua yang kami bangun dirancang agar bisa dipakai sehari-hari, tanpa perlu teknikal tinggi.',
+    color: '#004896',
   },
   {
     icon: ShieldCheck,
     title: ['Transparan', '& Jelas.'],
     description: 'Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi ataupun janji kosong.',
+    color: '#207224',
   },
 ]
 
@@ -39,30 +43,58 @@ export default function About() {
             {valueCards.map((card, index) => (
               <motion.div
                 key={card.title.join(' ')}
-                className="bg-[#3b3b3b] rounded-xl relative overflow-hidden cursor-pointer group flex flex-col"
+                className="rounded-2xl relative overflow-hidden cursor-pointer group flex flex-col"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                style={{ boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
+                whileHover={{ y: -6, transition: { duration: 0.25 } }}
+                style={{
+                  backgroundColor: card.color,
+                  boxShadow: `0 4px 24px ${card.color}55`,
+                }}
               >
-                {/* Dark header bar with title */}
-                <div className="bg-[#212121] rounded-r-xl py-3 md:py-5 pl-3 md:pl-6 pr-2 md:pr-4 mt-4 md:mt-8 mr-2 md:mr-3">
-                  <h3 className="text-white font-bold text-[16px] sm:text-[20px] md:text-[26px] leading-tight">
+                {/* Gradient overlay */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{ background: `linear-gradient(135deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.10) 100%)` }}
+                />
+
+                {/* Watermark icon */}
+                <div className="absolute -bottom-4 -right-4 opacity-[0.10] pointer-events-none">
+                  <card.icon className="w-28 h-28 md:w-36 md:h-36 text-white" />
+                </div>
+
+                {/* Glow on hover */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none rounded-2xl"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ boxShadow: `inset 0 0 40px ${card.color}80` }}
+                />
+
+                {/* Top accent stripe */}
+                <div
+                  className="absolute top-0 left-0 right-0 h-[3px] rounded-t-2xl"
+                  style={{ background: 'rgba(255,255,255,0.35)' }}
+                />
+
+                {/* Content */}
+                <div className="relative z-10 flex flex-col flex-1 p-4 md:p-5">
+                  {/* Icon box */}
+                  <div className="bg-black/30 backdrop-blur-sm rounded-xl w-10 h-10 md:w-12 md:h-12 flex items-center justify-center mb-3 md:mb-4 border border-white/10">
+                    <card.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-white font-bold text-[18px] sm:text-[22px] md:text-[26px] leading-tight mb-2 md:mb-3">
                     {card.title.map((line, i) => (
                       <span key={i} className="block">{line}</span>
                     ))}
                   </h3>
-                </div>
 
-                {/* Icon and description row */}
-                <div className="p-3 md:p-4 flex gap-2 md:gap-3 items-start mt-1 md:mt-2 flex-1">
-                  {/* Icon in black square */}
-                  <div className="bg-black rounded-lg w-[48px] h-[48px] md:w-[72px] md:h-[72px] lg:w-[90px] lg:h-[88px] flex items-center justify-center flex-shrink-0">
-                    <card.icon className="w-5 h-5 md:w-8 md:h-8 lg:w-10 lg:h-10 text-white" />
-                  </div>
                   {/* Description */}
-                  <p className="text-white text-[11px] sm:text-[12px] md:text-[14px] leading-[1.4] font-medium text-left pt-0.5">
+                  <p className="text-white/80 text-[11px] sm:text-[12px] md:text-[13px] leading-[1.5] font-medium">
                     {card.description}
                   </p>
                 </div>

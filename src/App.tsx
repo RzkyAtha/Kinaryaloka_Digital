@@ -8,7 +8,6 @@ import Team from './components/Team'
 import WhyDigital from './components/WhyDigital'
 import Process from './components/Process'
 import Footer from './components/Footer'
-import TrustBar from './components/TrustBar'
 import PainPoints from './components/PainPoints'
 import FloatingWA from './components/FloatingWA'
 
@@ -67,7 +66,6 @@ function App() {
           transition={{ duration: 0.5 }}
         >
           <Hero />
-          <TrustBar />
           <About />
           <PainPoints />
           <Products />

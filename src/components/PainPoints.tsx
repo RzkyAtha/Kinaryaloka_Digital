@@ -4,25 +4,25 @@ import { ArrowRight } from 'lucide-react'
 
 const pains = [
   {
-    emoji: '💬',
+    emoji: '',
     pain: 'Masih jawab pertanyaan harga lewat DM satu-satu setiap hari?',
     hint: 'Ada cara lebih efisien — katalog produk online yang bisa dibagikan sekali, diakses selamanya.',
     color: '#831449',
   },
   {
-    emoji: '📦',
+    emoji: '',
     pain: 'Pembeli minta foto produk tapi kamu kebingungan kirim ke mana?',
     hint: 'Toko online yang rapi bikin calon pembeli percaya sebelum mereka tanya apa-apa.',
     color: '#004896',
   },
   {
-    emoji: '📉',
+    emoji: '',
     pain: 'Promosi sudah jalan, tapi tidak tahu berapa yang lihat dan berapa yang beli?',
     hint: 'Sistem digital yang tepat kasih kamu data nyata — bukan cuma perasaan.',
     color: '#b76431',
   },
   {
-    emoji: '⏰',
+    emoji: '',
     pain: 'Jam kerja habis untuk hal-hal yang bisa diotomasi?',
     hint: 'Kami bantu identifikasi proses mana yang bisa didigitalisasi agar waktu kamu lebih fokus ke hal yang penting.',
     color: '#207224',

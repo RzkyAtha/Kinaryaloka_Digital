@@ -10,7 +10,7 @@ interface NavbarProps {
 const navItems = [
   { id: 'tentang', label: 'Tentang' },
   { id: 'produk', label: 'Produk' },
-  { id: 'tim', label: 'Tim Kami' },
+  { id: 'komitmen', label: 'Komitmen' },
   { id: 'digital', label: 'Mengapa Digital' },
 ]
 
