@@ -47,12 +47,16 @@ export default function Navbar({ activeSection }: NavbarProps) {
         <div className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-3 md:py-5 flex items-center justify-between">
           {/* Logo */}
           <motion.div className="flex items-center gap-2 md:gap-4" whileHover={{ scale: 1.02 }}>
-            <div className="w-10 h-10 md:w-[56px] md:h-[54px] lg:w-[77px] lg:h-[74px] bg-black rounded-lg md:rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-base md:text-2xl lg:text-3xl">K</span>
-            </div>
-            <span className="font-poppins font-bold text-lg md:text-2xl lg:text-[32px] text-gray-800">
-              KINARYALOKA
-            </span>
+            <img 
+              src="/Assets/logo_kinarya.png" 
+              alt="KINARYALOKA"
+              className="w-10 h-10 md:w-[56px] md:h-[54px] lg:w-[77px] lg:h-[74px] object-contain"
+            />
+            <img 
+              src="/Assets/font_kinarya.png" 
+              alt="KINARYALOKA"
+              className="h-6 md:h-9 lg:h-11 object-contain"
+            />
           </motion.div>
 
           {/* Desktop Nav Links */}
