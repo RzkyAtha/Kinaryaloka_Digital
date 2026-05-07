@@ -34,11 +34,11 @@ export default function TrustBar() {
   return (
     <section ref={ref} className="bg-[#0d0d0d] border-y border-[#1e1e1e] py-6 md:py-8 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-0 divide-y sm:divide-y-0 sm:divide-x divide-[#2a2a2a]">
+        <div className="grid grid-cols-3 sm:flex sm:flex-row items-center justify-center gap-4 sm:gap-0 sm:divide-x divide-[#2a2a2a]">
           {stats.map((stat, i) => (
             <motion.div
               key={stat.label}
-              className="flex-1 flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-6 md:px-10 py-2 text-center sm:text-left"
+              className="flex flex-col items-center gap-2 sm:flex-row sm:gap-4 px-2 sm:px-6 md:px-10 py-2 text-center sm:text-left"
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.15 }}

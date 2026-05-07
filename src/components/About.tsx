@@ -35,11 +35,11 @@ export default function About() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10" ref={ref}>
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left - 4 Value Cards in 2x2 Grid */}
-          <div className="grid grid-cols-2 gap-3 md:gap-4 w-full">
+          <div className="grid grid-cols-2 gap-4 md:gap-5 w-full">
             {valueCards.map((card, index) => (
               <motion.div
                 key={card.title.join(' ')}
-                className="bg-[#3b3b3b] rounded-xl relative overflow-hidden cursor-pointer group"
+                className="bg-[#3b3b3b] rounded-xl relative overflow-hidden cursor-pointer group flex flex-col"
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
@@ -47,8 +47,8 @@ export default function About() {
                 style={{ boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
               >
                 {/* Dark header bar with title */}
-                <div className="bg-[#212121] rounded-r-xl py-3 md:py-5 pl-4 md:pl-6 pr-3 md:pr-4 mt-6 md:mt-8 mr-2 md:mr-3">
-                  <h3 className="text-white font-bold text-[18px] sm:text-[22px] md:text-[26px] leading-tight">
+                <div className="bg-[#212121] rounded-r-xl py-3 md:py-5 pl-3 md:pl-6 pr-2 md:pr-4 mt-4 md:mt-8 mr-2 md:mr-3">
+                  <h3 className="text-white font-bold text-[16px] sm:text-[20px] md:text-[26px] leading-tight">
                     {card.title.map((line, i) => (
                       <span key={i} className="block">{line}</span>
                     ))}
@@ -56,13 +56,13 @@ export default function About() {
                 </div>
 
                 {/* Icon and description row */}
-                <div className="p-3 md:p-4 flex gap-2 md:gap-3 items-start mt-1 md:mt-2">
+                <div className="p-3 md:p-4 flex gap-2 md:gap-3 items-start mt-1 md:mt-2 flex-1">
                   {/* Icon in black square */}
-                  <div className="bg-black rounded-lg w-[56px] h-[56px] md:w-[72px] md:h-[72px] lg:w-[90px] lg:h-[88px] flex items-center justify-center flex-shrink-0">
-                    <card.icon className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 text-white" />
+                  <div className="bg-black rounded-lg w-[48px] h-[48px] md:w-[72px] md:h-[72px] lg:w-[90px] lg:h-[88px] flex items-center justify-center flex-shrink-0">
+                    <card.icon className="w-5 h-5 md:w-8 md:h-8 lg:w-10 lg:h-10 text-white" />
                   </div>
                   {/* Description */}
-                  <p className="text-white text-[10px] sm:text-[11px] leading-[13px] font-semibold text-justify pt-1">
+                  <p className="text-white text-[11px] sm:text-[12px] md:text-[14px] leading-[1.4] font-medium text-left pt-0.5">
                     {card.description}
                   </p>
                 </div>
