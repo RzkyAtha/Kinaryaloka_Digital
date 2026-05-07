@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ShoppingCart, ArrowRight } from 'lucide-react'
+import AuthModal from './AuthModal'
 
 // ─── Magic Card: 3D tilt + spotlight + glow border ──────────────────
 function MagicCard({
@@ -224,8 +225,15 @@ const products: Record<string, TabData> = {
 
 export default function Products() {
   const [activeTab, setActiveTab] = useState('ecommerce')
+  const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [selectedPackage, setSelectedPackage] = useState<{ title: string; price: string } | null>(null)
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+
+  const handleSelectPackage = (title: string, price: string) => {
+    setSelectedPackage({ title, price })
+    setAuthModalOpen(true)
+  }
 
   const currentProducts = products[activeTab as keyof typeof products]
 
@@ -353,6 +361,7 @@ export default function Products() {
 
               {/* CTA Button */}
               <motion.button
+                onClick={() => handleSelectPackage(currentProducts.featured.title, currentProducts.featured.price)}
                 className="w-full py-3 md:py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-3 text-base md:text-lg"
                 style={{ backgroundColor: currentProducts.featured.color, boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
                 whileHover={{ scale: 1.01 }}
@@ -454,6 +463,7 @@ export default function Products() {
 
                   {/* CTA Button */}
                   <motion.button
+                    onClick={() => handleSelectPackage(product.title, product.price)}
                     className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2"
                     style={{ backgroundColor: product.color, boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
                     whileHover={{ scale: 1.03, boxShadow: `0 8px 24px ${product.color}60` }}
@@ -471,6 +481,12 @@ export default function Products() {
         </motion.div>
         </AnimatePresence>
 
+        {/* Auth Modal */}
+        <AuthModal
+          isOpen={authModalOpen}
+          onClose={() => setAuthModalOpen(false)}
+          selectedPackage={selectedPackage}
+        />
       </div>
     </section>
   )
