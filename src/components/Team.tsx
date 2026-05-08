@@ -5,19 +5,19 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const cards = [
   {
-    image: '/Assets/90%.png',
+    image: '/Assets/kmt90.png',
     label: '90%',
     description: 'Akurasi produk akhir sesuai dengan design figma.',
     color: '#831449',
   },
   {
-    image: '/Assets/247.png',
+    image: '/Assets/kmt247.png',
     label: '24/7',
     description: 'Komunikasi aktif dan support tanpa batas waktu.',
     color: '#004896',
   },
   {
-    image: '/Assets/100%.png',
+    image: '/Assets/kmt100.png',
     label: '100%',
     description: 'Integrasi sistem yang dapat diandalkan sepenuhnya.',
     color: '#207224',
@@ -128,11 +128,11 @@ export default function Team() {
                   }}
                 >
                   {/* Image area */}
-                  <div className="flex items-center justify-center p-6 pb-3" style={{ height: 280 }}>
+                  <div className="overflow-hidden" style={{ height: 280 }}>
                     <img
                       src={card.image}
                       alt={card.label}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                       draggable={false}
                     />
                   </div>
