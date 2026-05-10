@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'framer-motion'
-import { useRef } from 'react'
-import { Target, HeartHandshake, Zap, ShieldCheck } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Target, HeartHandshake, Zap, ShieldCheck, ChevronDown } from 'lucide-react'
 
 const valueCards = [
   {
@@ -9,30 +9,35 @@ const valueCards = [
     title: ['Tepat', 'Sasaran.'],
     description: 'Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
     color: '#831449',
+    image: '/Assets/tepatsasaran.png',
   },
   {
     icon: HeartHandshake,
     title: ['Partner,', 'Bukan Vendor.'],
     description: 'Kami tidak pergi setelah project selesai. Support dan komunikasi tetap berjalan.',
     color: '#B76431',
+    image: '/Assets/partner_vendor.png',
   },
   {
     icon: Zap,
     title: ['Langsung', 'Kepakai.'],
     description: 'Semua yang kami bangun dirancang agar bisa dipakai sehari-hari, tanpa perlu teknikal tinggi.',
     color: '#004896',
+    image: '/Assets/langsungkepakai.png',
   },
   {
     icon: ShieldCheck,
     title: ['Transparan', '& Jelas.'],
     description: 'Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi ataupun janji kosong.',
     color: '#207224',
+    image: '/Assets/harga_jelas.png',
   },
 ]
 
 export default function About() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const [expandedCard, setExpandedCard] = useState<number | null>(null)
 
   return (
     <section id="tentang" className="bg-black py-12 md:py-20 relative overflow-hidden">
@@ -43,60 +48,100 @@ export default function About() {
             {valueCards.map((card, index) => (
               <motion.div
                 key={card.title.join(' ')}
-                className="rounded-2xl relative overflow-hidden cursor-pointer group flex flex-col"
-                initial={{ opacity: 0, y: 30 }}
+                className="rounded-3xl relative flex flex-col cursor-pointer overflow-hidden"
+                initial={{ opacity: 0, y: 36 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -6, transition: { duration: 0.25 } }}
+                transition={{ duration: 0.55, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ y: -8, transition: { duration: 0.22, ease: [0.16, 1, 0.3, 1] } }}
                 style={{
-                  backgroundColor: card.color,
-                  boxShadow: `0 4px 24px ${card.color}55`,
+                  background: `radial-gradient(ellipse at 55% 25%, ${card.color}ff 0%, ${card.color}cc 100%)`,
+                  boxShadow: `0 10px 40px ${card.color}55, 0 2px 8px rgba(0,0,0,0.4)`,
+                  minHeight: 300,
                 }}
               >
-                {/* Gradient overlay */}
+                {/* Shine highlight top */}
                 <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{ background: `linear-gradient(135deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.10) 100%)` }}
+                  className="absolute top-0 left-0 right-0 h-px pointer-events-none z-10"
+                  style={{ background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent)' }}
                 />
 
-                {/* Watermark icon */}
-                <div className="absolute -bottom-4 -right-4 opacity-[0.10] pointer-events-none">
-                  <card.icon className="w-28 h-28 md:w-36 md:h-36 text-white" />
+                {/* ── Illustration — top half, black bg matches image bg ── */}
+                <div className="relative overflow-hidden z-[2]" style={{ height: 152, backgroundColor: '#000' }}>
+                  <motion.img
+                    src={card.image}
+                    alt={card.title.join(' ')}
+                    className="absolute inset-0 w-full h-full object-cover"
+                    draggable={false}
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                    transition={{ duration: 0.65, delay: 0.18 + index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                  />
+
                 </div>
 
-                {/* Glow on hover */}
-                <motion.div
-                  className="absolute inset-0 pointer-events-none rounded-2xl"
-                  initial={{ opacity: 0 }}
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                  style={{ boxShadow: `inset 0 0 40px ${card.color}80` }}
-                />
+                {/* ── Icon watermark background ── */}
+                <div className="absolute bottom-3 right-3 pointer-events-none z-[1]" style={{ opacity: 0.08 }}>
+                  <card.icon className="w-48 h-48 text-white" />
+                </div>
 
-                {/* Top accent stripe */}
-                <div
-                  className="absolute top-0 left-0 right-0 h-[3px] rounded-t-2xl"
-                  style={{ background: 'rgba(255,255,255,0.35)' }}
-                />
-
-                {/* Content */}
-                <div className="relative z-10 flex flex-col flex-1 p-4 md:p-5">
-                  {/* Icon box */}
-                  <div className="bg-black/30 backdrop-blur-sm rounded-xl w-10 h-10 md:w-12 md:h-12 flex items-center justify-center mb-3 md:mb-4 border border-white/10">
-                    <card.icon className="w-5 h-5 md:w-6 md:h-6 text-white" />
+                {/* ── Circular icon — floats over the illustration/text boundary ── */}
+                <div className="px-4 relative z-10" style={{ marginTop: -18 }}>
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center border border-white/25"
+                    style={{
+                      background: 'rgba(0,0,0,0.38)',
+                      backdropFilter: 'blur(10px)',
+                      boxShadow: '0 4px 14px rgba(0,0,0,0.4)',
+                    }}
+                  >
+                    <card.icon className="w-[18px] h-[18px] text-white" />
                   </div>
+                </div>
 
-                  {/* Title */}
-                  <h3 className="text-white font-bold text-[18px] sm:text-[22px] md:text-[26px] leading-tight mb-2 md:mb-3">
+                {/* ── Text content ── */}
+                <div className="relative z-10 flex flex-col flex-1 px-4 pt-2 pb-4">
+                  <h3 className="text-white font-bold text-[16px] sm:text-[19px] md:text-[21px] leading-tight mb-1.5">
                     {card.title.map((line, i) => (
                       <span key={i} className="block">{line}</span>
                     ))}
                   </h3>
+                  {/* ── Dropdown description ── */}
+                  <AnimatePresence initial={false}>
+                    {expandedCard === index && (
+                      <motion.div
+                        key="desc"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <p className="text-white/80 text-[10px] sm:text-[11px] md:text-[12px] leading-[1.6] font-medium pt-1 pb-3">
+                          {card.description}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
-                  {/* Description */}
-                  <p className="text-white/80 text-[11px] sm:text-[12px] md:text-[13px] leading-[1.5] font-medium">
-                    {card.description}
-                  </p>
+                  {/* ── Toggle button ── */}
+                  <div className="mt-auto">
+                    <button
+                      onClick={() => setExpandedCard(expandedCard === index ? null : index)}
+                      className="w-full h-8 rounded-full flex items-center justify-center gap-1.5 transition-colors"
+                      style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.22)' }}
+                    >
+                      <span className="text-white text-[10px] sm:text-[11px] font-semibold tracking-wide">
+                        {expandedCard === index ? 'Dimengerti.' : 'Maksudnya?'}
+                      </span>
+                      <motion.span
+                        animate={{ rotate: expandedCard === index ? 180 : 0 }}
+                        transition={{ duration: 0.25 }}
+                        className="inline-flex"
+                      >
+                        <ChevronDown className="w-3 h-3 text-white/80" />
+                      </motion.span>
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))}
