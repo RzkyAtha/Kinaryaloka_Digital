@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import {
   AlertTriangle,
   ArrowRight,
@@ -56,9 +56,9 @@ function FadeUp({ children, delay = 0, className = "" }: { children: React.React
     <motion.div
       ref={ref}
       className={className}
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.4, delay: delay * 0.6, ease: [0.16, 1, 0.3, 1] }}
     >
       {children}
     </motion.div>
@@ -163,8 +163,6 @@ const comparisonRows = [
 export default function MarketplaceExodus() {
   const [showMore, setShowMore] = useState(false);
   const wrapRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: wrapRef, offset: ["start end", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
 
   const feeSectionRef   = useRef(null);
   const casesSectionRef = useRef(null);
@@ -187,15 +185,15 @@ export default function MarketplaceExodus() {
       className="relative overflow-hidden py-10 md:py-20 lg:py-28"
       style={{ background: C.bg }}
     >
-      {/* ── Ambient glow ── */}
-      <motion.div className="absolute inset-0 pointer-events-none" style={{ y: bgY }}>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] md:w-[900px] h-[300px] md:h-[500px] rounded-full blur-[80px] md:blur-[120px] opacity-[0.07]"
+      {/* ── Ambient glow (hidden on mobile for performance) ── */}
+      <div className="absolute inset-0 pointer-events-none hidden md:block">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[500px] rounded-full blur-[120px] opacity-[0.07]"
           style={{ background: `radial-gradient(ellipse, ${C.crimson} 0%, transparent 70%)` }} />
-        <div className="absolute bottom-32 left-0 w-[300px] md:w-[600px] h-[200px] md:h-[400px] rounded-full blur-[70px] md:blur-[100px] opacity-[0.05]"
+        <div className="absolute bottom-32 left-0 w-[600px] h-[400px] rounded-full blur-[100px] opacity-[0.05]"
           style={{ background: `radial-gradient(ellipse, ${C.orange} 0%, transparent 70%)` }} />
-        <div className="absolute bottom-0 right-0 w-[300px] md:w-[500px] h-[200px] md:h-[350px] rounded-full blur-[70px] md:blur-[100px] opacity-[0.05]"
+        <div className="absolute bottom-0 right-0 w-[500px] h-[350px] rounded-full blur-[100px] opacity-[0.05]"
           style={{ background: `radial-gradient(ellipse, ${C.blueD} 0%, transparent 70%)` }} />
-      </motion.div>
+      </div>
 
       <div className="absolute top-0 left-0 right-0 h-px"
         style={{ background: `linear-gradient(90deg, transparent, ${C.crimson}60, transparent)` }} />
@@ -287,7 +285,7 @@ export default function MarketplaceExodus() {
             className="rounded-2xl md:rounded-3xl p-5 md:p-8 lg:p-12 overflow-hidden relative"
             style={{ background: C.card, border: `1px solid ${C.border2}` }}
           >
-            <div className="absolute top-0 right-0 w-48 md:w-72 h-48 md:h-72 rounded-full blur-3xl opacity-[0.06] pointer-events-none"
+            <div className="absolute top-0 right-0 w-72 h-72 rounded-full blur-3xl opacity-[0.06] pointer-events-none hidden md:block"
               style={{ background: C.orange }} />
 
             <div className="text-center mb-5 md:mb-8 relative">
@@ -568,7 +566,7 @@ export default function MarketplaceExodus() {
           </div>
 
           {/* Benefit cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4">
             {dbBenefits.map((b, i) => (
               <FadeUp key={b.title} delay={i * 0.07}>
                 <div className="rounded-2xl p-4 md:p-5 h-full"
@@ -598,13 +596,13 @@ export default function MarketplaceExodus() {
             </h3>
           </FadeUp>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
             {ownBenefits.map((b, i) => (
               <motion.div
                 key={b.title}
-                initial={{ opacity: 0, y: 28 }}
+                initial={{ opacity: 0, y: 14 }}
                 animate={ownInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.55, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.4, delay: i * 0.05, ease: [0.16, 1, 0.3, 1] }}
                 className="rounded-2xl p-4 md:p-5 relative overflow-hidden group"
                 style={{ background: C.card, border: `1px solid ${C.border2}` }}
               >

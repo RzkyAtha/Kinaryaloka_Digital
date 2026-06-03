@@ -1,14 +1,9 @@
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { MessageCircle, ShoppingBag } from 'lucide-react'
 import { useRef } from 'react'
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start start', 'end start'] })
-  const rawY = useTransform(scrollYProgress, [0, 1], [0, -120])
-  const isoY = useSpring(rawY, { stiffness: 80, damping: 20 })
-  const isoScale = useTransform(scrollYProgress, [0, 1], [1, 0.88])
-  const isoOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
 
   return (
     <section ref={sectionRef} className="min-h-screen bg-white pt-28 md:pt-32 lg:pt-36 pb-12 md:pb-20 relative overflow-hidden w-full">
@@ -18,14 +13,13 @@ export default function Hero() {
           {/* Isometric - shows on top on mobile */}
           <motion.div
             className="relative w-full order-first lg:order-last min-w-0"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ y: isoY, scale: isoScale, opacity: isoOpacity }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
             <motion.div
-              animate={{ y: [0, -14, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
             >
               <img
                 src="/Assets/KNY_DESKTOP.png"

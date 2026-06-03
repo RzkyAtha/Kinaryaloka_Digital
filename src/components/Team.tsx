@@ -91,8 +91,8 @@ export default function Team() {
 
   return (
     <section id="komitmen" className="bg-[#050510] py-20 md:py-32 relative overflow-hidden" ref={sectionRef}>
-      {/* Mesh gradient background */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Mesh gradient background (desktop only for performance) */}
+      <div className="absolute inset-0 pointer-events-none hidden md:block">
         <motion.div
           className="absolute top-1/4 left-1/4 w-[600px] h-[600px] rounded-full blur-[180px] opacity-20"
           animate={{ backgroundColor: cards[active].color }}
@@ -106,9 +106,9 @@ export default function Team() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#050510_70%)]" />
       </div>
 
-      {/* Subtle grid pattern */}
+      {/* Subtle grid pattern (desktop only) */}
       <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        className="absolute inset-0 opacity-[0.03] pointer-events-none hidden md:block"
         style={{
           backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
           backgroundSize: '60px 60px',

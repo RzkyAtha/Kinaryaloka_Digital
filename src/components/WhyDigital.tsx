@@ -84,14 +84,13 @@ function StatCard({ stat, index }: {
     <motion.div
       style={{ borderTopWidth: '3px', borderTopColor: stat.color }}
       className="bg-gradient-to-br from-[#1c1c1c] to-[#111] rounded-xl md:rounded-2xl p-3 md:p-6 border border-[#282828] relative overflow-hidden"
-      initial={{ opacity: 0, y: 40, scale: 0.9 }}
+      initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      whileHover={{ scale: 1.04, transition: { duration: 0.2 } }}
+      transition={{ duration: 0.35, delay: index * 0.06 }}
     >
       <div
-        className="absolute -right-8 -bottom-8 w-40 h-40 rounded-full blur-3xl opacity-10"
+        className="absolute -right-8 -bottom-8 w-40 h-40 rounded-full blur-3xl opacity-10 hidden md:block"
         style={{ backgroundColor: stat.color }}
       />
       <div className="relative">
@@ -121,16 +120,16 @@ export default function WhyDigital() {
 
   return (
     <section id="digital" ref={sectionRef} className="bg-black py-16 md:py-24 relative overflow-hidden">
-      {/* Grid BG */}
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+      {/* Grid BG (desktop only) */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none hidden md:block">
         <div className="w-full h-full" style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                             linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
           backgroundSize: '80px 80px',
         }} />
       </div>
-      {/* Top glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[560px] bg-gradient-to-b from-[#F5C542]/12 to-transparent rounded-full blur-3xl pointer-events-none" />
+      {/* Top glow (desktop only) */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[560px] bg-gradient-to-b from-[#F5C542]/12 to-transparent rounded-full blur-3xl pointer-events-none hidden md:block" />
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10 w-full">
         {/* Title */}

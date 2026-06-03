@@ -71,24 +71,19 @@ export default function PainPoints() {
               style={{
                 background: 'linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)',
                 border: '1px solid rgba(255,255,255,0.06)',
-                backdropFilter: 'blur(20px)',
               }}
-              initial={{ opacity: 0, y: 32 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.55, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.4, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
               whileHover={{
                 y: -6,
                 border: `1px solid ${item.color}35`,
                 transition: { duration: 0.25 },
               }}
             >
-              {/* Corner glow on hover */}
+              {/* Corner glow on hover (desktop only) */}
               <div
-                className="absolute -top-20 -right-20 w-52 h-52 rounded-full blur-[80px] opacity-0 group-hover:opacity-[0.08] transition-opacity duration-700"
-                style={{ backgroundColor: item.color }}
-              />
-              <div
-                className="absolute -bottom-16 -left-16 w-40 h-40 rounded-full blur-[60px] opacity-0 group-hover:opacity-[0.05] transition-opacity duration-700"
+                className="hidden md:block absolute -top-20 -right-20 w-52 h-52 rounded-full blur-[80px] opacity-0 group-hover:opacity-[0.08] transition-opacity duration-700"
                 style={{ backgroundColor: item.color }}
               />
 
