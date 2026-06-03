@@ -9,7 +9,6 @@ const cards = [
     icon: Crosshair,
     title: 'Akurasi Desain.',
     subtitle: 'Presisi Tinggi',
-    badge: 'Design Figma Accuracy',
     label: '90%',
     description: 'Akurasi produk akhir sesuai dengan design figma.',
     color: '#FF2D78',
@@ -20,7 +19,6 @@ const cards = [
     icon: Headphones,
     title: 'Support Aktif.',
     subtitle: 'Tanpa Batas Waktu',
-    badge: 'Always Available',
     label: '24/7',
     description: 'Komunikasi aktif dan support tanpa batas waktu.',
     color: '#0080FF',
@@ -31,7 +29,6 @@ const cards = [
     icon: ShieldCheck,
     title: 'Integrasi Penuh.',
     subtitle: 'Sistem Andal',
-    badge: 'Full Integration',
     label: '100%',
     description: 'Integrasi sistem yang dapat diandalkan sepenuhnya.',
     color: '#00E639',
@@ -197,15 +194,6 @@ export default function Team() {
                       </div>
                     </div>
 
-                    {/* Badge */}
-                    <div className="mb-3">
-                      <span
-                        className="inline-block text-[11px] font-semibold rounded-full px-2.5 py-1"
-                        style={{ color: card.color, background: `${card.color}18`, border: `1px solid ${card.color}30` }}
-                      >
-                        {card.badge}
-                      </span>
-                    </div>
 
                     {/* Description with left border */}
                     <div className="border-l-2 pl-3" style={{ borderColor: `${card.color}50` }}>
