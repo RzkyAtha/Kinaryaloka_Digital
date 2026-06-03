@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Monitor, Palette, Zap, ShieldCheck, Crosshair, HeartHandshake, StickyNote } from 'lucide-react'
+import { Monitor, Crosshair, HeartHandshake, StickyNote } from 'lucide-react'
 
 const valueCards = [
   {

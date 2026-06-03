@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useInView, useScroll, useTransform } from "framer-motion";
 import {
   AlertTriangle,
   ArrowRight,
@@ -19,7 +19,6 @@ import {
   Zap,
   Layers,
   ChevronDown,
-  Music,
   Music2,
 } from "lucide-react";
 
@@ -100,7 +99,7 @@ const feeData = [
   },
 ];
 
-const brandCases = [
+export const brandCases = [
   {
     brand: "True To Skin",
     category: "Kosmetik Lokal",
@@ -175,7 +174,7 @@ export default function MarketplaceExodus() {
   const ctaRef          = useRef(null);
 
   const feeInView     = useInView(feeSectionRef,   { once: true, margin: "-40px" });
-  const casesInView   = useInView(casesSectionRef, { once: true, margin: "-40px" });
+  const casesInView   = useInView(casesSectionRef, { once: true, margin: "-40px" }); void casesInView;
   const analogyInView = useInView(analogyRef,      { once: true, margin: "-40px" });
   const ownInView     = useInView(ownRef,           { once: true, margin: "-40px" });
   const compareInView = useInView(compareRef,       { once: true, margin: "-40px" });
