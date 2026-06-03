@@ -40,19 +40,19 @@ export default function FloatingWA() {
         animate={clicked ? { scale: 0.88 } : { scale: 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 20 }}
         className="relative w-14 h-14 md:w-16 md:h-16 rounded-full shadow-2xl flex items-center justify-center"
-        style={{ backgroundColor: '#25D366' }}
+        style={{ background: 'linear-gradient(135deg, #25D366, #00E639)', boxShadow: '0 4px 24px rgba(37,211,102,0.4)' }}
         aria-label="Chat WhatsApp"
       >
         {/* Pulse ring */}
         <motion.span
           className="absolute inset-0 rounded-full"
-          style={{ backgroundColor: '#25D366' }}
+          style={{ background: 'linear-gradient(135deg, #25D366, #00E639)' }}
           animate={{ scale: [1, 1.5, 1.5], opacity: [0.5, 0, 0] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
         />
         <motion.span
           className="absolute inset-0 rounded-full"
-          style={{ backgroundColor: '#25D366' }}
+          style={{ background: 'linear-gradient(135deg, #25D366, #00E639)' }}
           animate={{ scale: [1, 1.8, 1.8], opacity: [0.3, 0, 0] }}
           transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut', delay: 0.4 }}
         />

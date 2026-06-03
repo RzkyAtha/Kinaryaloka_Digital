@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, User, ShoppingCart, Check, Sparkles, PartyPopper } from 'lucide-react'
-import { useState } from 'react'
+import { X, User, ShoppingCart, Check, Sparkles, PartyPopper, ShieldCheck, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { useState, useRef } from 'react'
 import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from 'jwt-decode'
 import confetti from 'canvas-confetti'
@@ -58,6 +58,16 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
   const [showSuccess, setShowSuccess] = useState(false)
   const [successData, setSuccessData] = useState<{name: string, email: string} | null>(null)
 
+  // Admin secret access
+  const [showAdminLogin, setShowAdminLogin] = useState(false)
+  const [adminUsername, setAdminUsername] = useState('')
+  const [adminPassword, setAdminPassword] = useState('')
+  const [adminError, setAdminError] = useState('')
+  const [showAdminPwd, setShowAdminPwd] = useState(false)
+  const clickCountRef = useRef(0)
+  const lastClickRef = useRef(0)
+  const clickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
   // Handle Google Login Success
   const handleGoogleSuccess = (credentialResponse: any) => {
     try {
@@ -97,6 +107,33 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
   const handleCloseSuccess = () => {
     setShowSuccess(false)
     onClose()
+  }
+
+  const handleLoginButtonClick = (e: React.MouseEvent) => {
+    const now = Date.now()
+    if (clickCountRef.current === 1 && now - lastClickRef.current < 2000) {
+      e.preventDefault()
+      clickCountRef.current = 0
+      if (clickTimerRef.current) clearTimeout(clickTimerRef.current)
+      setShowAdminLogin(true)
+      return
+    }
+    clickCountRef.current = 1
+    lastClickRef.current = now
+    if (clickTimerRef.current) clearTimeout(clickTimerRef.current)
+    clickTimerRef.current = setTimeout(() => { clickCountRef.current = 0 }, 2000)
+  }
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (adminUsername === 'admin' && adminPassword === '036012') {
+      sessionStorage.setItem('kinaryaloka_admin_auth', '1')
+      setAdminError('')
+      onClose()
+      window.location.hash = 'admin'
+    } else {
+      setAdminError('Username atau password salah.')
+    }
   }
 
   return (
@@ -224,7 +261,9 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
                       className="w-11 h-11 bg-white rounded-xl flex items-center justify-center"
                       whileHover={{ rotate: 10 }}
                     >
-                      {selectedPackage ? (
+                      {showAdminLogin ? (
+                        <ShieldCheck className="w-5 h-5 text-black" />
+                      ) : selectedPackage ? (
                         <ShoppingCart className="w-5 h-5 text-black" />
                       ) : (
                         <User className="w-5 h-5 text-black" />
@@ -232,9 +271,9 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
                     </motion.div>
                     <div>
                       <h3 className="text-white font-black text-xl tracking-tight">
-                        {isLogin ? 'MASUK' : 'DAFTAR'}
+                        {showAdminLogin ? 'ADMIN' : isLogin ? 'MASUK' : 'DAFTAR'}
                       </h3>
-                      {selectedPackage && (
+                      {!showAdminLogin && selectedPackage && (
                         <motion.p 
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
@@ -242,6 +281,9 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
                         >
                           {selectedPackage.title} • IDR {selectedPackage.price}K
                         </motion.p>
+                      )}
+                      {showAdminLogin && (
+                        <p className="text-white/50 text-xs">KINARYALOKA Admin Panel</p>
                       )}
                     </div>
                   </motion.div>
@@ -257,148 +299,211 @@ export default function AuthModal({ isOpen, onClose, selectedPackage }: AuthModa
 
                 {/* Content */}
                 <div className="p-6 md:p-7">
-                  {/* Google Auth Button */}
-                  <motion.div 
-                    className="flex justify-center mb-5"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <GoogleLogin
-                      onSuccess={handleGoogleSuccess}
-                      onError={handleGoogleError}
-                      size="large"
-                      width="300"
-                      theme="outline"
-                      text={isLogin ? "signin_with" : "signup_with"}
-                      shape="rectangular"
-                    />
-                  </motion.div>
-
-                  {/* Divider */}
-                  <motion.div 
-                    className="flex items-center gap-3 mb-5"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <div className="flex-1 h-px bg-gray-200" />
-                    <span className="text-gray-400 text-xs uppercase tracking-wider">atau dengan email</span>
-                    <div className="flex-1 h-px bg-gray-200" />
-                  </motion.div>
-
-                  {/* Email Form */}
-                  <motion.form 
-                    onSubmit={handleSubmit} 
-                    className="space-y-4"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    {!isLogin && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
+                  {/* ── Admin Login (hidden trigger) ─────────────────── */}
+                  <AnimatePresence mode="wait">
+                  {showAdminLogin && (
+                    <motion.div
+                      key="admin-form"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                    >
+                      <button
+                        onClick={() => { setShowAdminLogin(false); setAdminError('') }}
+                        className="flex items-center gap-1.5 text-gray-400 hover:text-black text-xs font-semibold mb-5 transition-colors"
                       >
-                        <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Nama Lengkap</label>
-                        <input
-                          type="text"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
-                          placeholder="Nama lengkap Anda"
-                          required={!isLogin}
+                        <ArrowLeft className="w-3.5 h-3.5" /> Kembali ke login
+                      </button>
+                      <form onSubmit={handleAdminLogin} className="space-y-4">
+                        <div>
+                          <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Username</label>
+                          <input
+                            value={adminUsername}
+                            onChange={e => setAdminUsername(e.target.value)}
+                            required autoComplete="username" placeholder="Username admin"
+                            className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all font-medium"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Password</label>
+                          <div className="relative">
+                            <input
+                              type={showAdminPwd ? 'text' : 'password'}
+                              value={adminPassword}
+                              onChange={e => setAdminPassword(e.target.value)}
+                              required autoComplete="current-password" placeholder="Password admin"
+                              className="w-full px-4 py-3.5 pr-12 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all font-medium"
+                            />
+                            <button
+                              type="button" onClick={() => setShowAdminPwd(v => !v)}
+                              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                            >
+                              {showAdminPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
+                        </div>
+                        {adminError && (
+                          <p className="text-red-500 text-xs font-medium">{adminError}</p>
+                        )}
+                        <motion.button
+                          type="submit"
+                          className="w-full py-4 bg-black text-white font-bold text-base rounded-xl hover:bg-gray-900 transition-all shadow-lg shadow-black/20 flex items-center justify-center gap-2"
+                          whileHover={{ scale: 1.02, y: -2 }} whileTap={{ scale: 0.98 }}
+                        >
+                          <ShieldCheck className="w-4 h-4" /> Masuk Admin
+                        </motion.button>
+                      </form>
+                    </motion.div>
+                  )}
+                  </AnimatePresence>
+                  {/* ── Normal Login / Register ──────────────────────── */}
+                  {!showAdminLogin && (
+                    <>
+                      {/* Google Auth Button */}
+                      <motion.div
+                        className="flex justify-center mb-5"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <GoogleLogin
+                          onSuccess={handleGoogleSuccess}
+                          onError={handleGoogleError}
+                          size="large"
+                          width="300"
+                          theme="outline"
+                          text={isLogin ? "signin_with" : "signup_with"}
+                          shape="rectangular"
                         />
                       </motion.div>
-                    )}
-                    <div>
-                      <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Email</label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
-                        placeholder="nama@email.com"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Password</label>
-                      <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
-                        placeholder="Minimal 8 karakter"
-                        required
-                      />
-                    </div>
 
-                    <motion.button
-                      type="submit"
-                      className="w-full py-4 bg-black text-white font-bold text-base rounded-xl hover:bg-gray-900 transition-all duration-200 shadow-lg shadow-black/20"
-                      whileHover={{ scale: 1.02, y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      {isLogin ? 'Masuk Sekarang →' : 'Daftar & Gabung →'}
-                    </motion.button>
-                  </motion.form>
-
-                  {/* Toggle */}
-                  <motion.p 
-                    className="text-center text-gray-500 text-sm mt-5"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    {isLogin ? 'Belum punya akun? ' : 'Sudah punya akun? '}
-                    <motion.button
-                      onClick={() => setIsLogin(!isLogin)}
-                      className="text-black font-bold hover:underline"
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      {isLogin ? 'Daftar Gratis' : 'Masuk'}
-                    </motion.button>
-                  </motion.p>
-
-                  {/* Benefits (shown on signup) */}
-                  <AnimatePresence>
-                    {!isLogin && (
+                      {/* Divider */}
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="mt-5 pt-5 border-t-2 border-gray-100"
+                        className="flex items-center gap-3 mb-5"
+                        initial={{ scaleX: 0 }}
+                        animate={{ scaleX: 1 }}
+                        transition={{ delay: 0.3 }}
                       >
-                        <p className="text-xs font-bold text-black uppercase tracking-wider mb-3">Keuntungan Member:</p>
-                        <div className="space-y-2">
-                          {[
-                            'Simpan riwayat pesanan',
-                            'Tracking project real-time', 
-                            'Akses diskon eksklusif',
-                            'Prioritas customer support'
-                          ].map((benefit, i) => (
-                            <motion.div 
-                              key={benefit} 
-                              className="flex items-center gap-2 text-sm text-gray-600"
-                              initial={{ x: -20, opacity: 0 }}
-                              animate={{ x: 0, opacity: 1 }}
-                              transition={{ delay: 0.1 * i }}
-                            >
-                              <motion.div
-                                className="w-5 h-5 bg-black rounded-md flex items-center justify-center"
-                                whileHover={{ rotate: 360 }}
-                              >
-                                <Check className="w-3 h-3 text-white" />
-                              </motion.div>
-                              {benefit}
-                            </motion.div>
-                          ))}
-                        </div>
+                        <div className="flex-1 h-px bg-gray-200" />
+                        <span className="text-gray-400 text-xs uppercase tracking-wider">atau dengan email</span>
+                        <div className="flex-1 h-px bg-gray-200" />
                       </motion.div>
-                    )}
-                  </AnimatePresence>
+
+                      {/* Email Form */}
+                      <motion.form
+                        onSubmit={handleSubmit}
+                        className="space-y-4"
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                      >
+                        {!isLogin && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                          >
+                            <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Nama Lengkap</label>
+                            <input
+                              type="text"
+                              value={name}
+                              onChange={(e) => setName(e.target.value)}
+                              className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
+                              placeholder="Nama lengkap Anda"
+                              required={!isLogin}
+                            />
+                          </motion.div>
+                        )}
+                        <div>
+                          <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Email</label>
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
+                            placeholder="nama@email.com"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="text-xs font-bold text-black uppercase tracking-wider block mb-2">Password</label>
+                          <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-black focus:outline-none transition-all duration-200 font-medium"
+                            placeholder="Minimal 8 karakter"
+                            required
+                          />
+                        </div>
+
+                        <motion.button
+                          type="submit"
+                          onClick={handleLoginButtonClick}
+                          className="w-full py-4 bg-black text-white font-bold text-base rounded-xl hover:bg-gray-900 transition-all duration-200 shadow-lg shadow-black/20"
+                          whileHover={{ scale: 1.02, y: -2 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          {isLogin ? 'Masuk Sekarang →' : 'Daftar & Gabung →'}
+                        </motion.button>
+                      </motion.form>
+
+                      {/* Toggle */}
+                      <motion.p
+                        className="text-center text-gray-500 text-sm mt-5"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        {isLogin ? 'Belum punya akun? ' : 'Sudah punya akun? '}
+                        <motion.button
+                          onClick={() => setIsLogin(!isLogin)}
+                          className="text-black font-bold hover:underline"
+                          whileHover={{ scale: 1.05 }}
+                        >
+                          {isLogin ? 'Daftar Gratis' : 'Masuk'}
+                        </motion.button>
+                      </motion.p>
+
+                      {/* Benefits (shown on signup) */}
+                      <AnimatePresence>
+                        {!isLogin && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            className="mt-5 pt-5 border-t-2 border-gray-100"
+                          >
+                            <p className="text-xs font-bold text-black uppercase tracking-wider mb-3">Keuntungan Member:</p>
+                            <div className="space-y-2">
+                              {[
+                                'Simpan riwayat pesanan',
+                                'Tracking project real-time',
+                                'Akses diskon eksklusif',
+                                'Prioritas customer support'
+                              ].map((benefit, i) => (
+                                <motion.div
+                                  key={benefit}
+                                  className="flex items-center gap-2 text-sm text-gray-600"
+                                  initial={{ x: -20, opacity: 0 }}
+                                  animate={{ x: 0, opacity: 1 }}
+                                  transition={{ delay: 0.1 * i }}
+                                >
+                                  <motion.div
+                                    className="w-5 h-5 bg-black rounded-md flex items-center justify-center"
+                                    whileHover={{ rotate: 360 }}
+                                  >
+                                    <Check className="w-3 h-3 text-white" />
+                                  </motion.div>
+                                  {benefit}
+                                </motion.div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  )}
                 </div>
               </motion.div>
             </motion.div>

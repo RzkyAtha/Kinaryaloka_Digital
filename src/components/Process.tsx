@@ -1,27 +1,27 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { MessageCircle } from 'lucide-react'
+import { MessageCircle, CheckCircle2 } from 'lucide-react'
 
 const steps = [
   {
     number: '01',
     title: 'Hubungi kami via WhatsApp',
-    color: '#831449',
+    color: '#FF2D78',
   },
   {
     number: '02',
     title: 'Cerita soal bisnis & kebutuhanmu',
-    color: '#3a3a3a',
+    color: '#0080FF',
   },
   {
     number: '03',
     title: 'Kami rekomendasikan paket yang tepat',
-    color: '#3a3a3a',
+    color: '#FF8C2E',
   },
   {
     number: '04',
     title: 'Project dimulai dengan rapi dan terstruktur',
-    color: '#831449',
+    color: '#00E639',
   },
 ]
 
@@ -44,10 +44,10 @@ export default function Process() {
       </div>
 
       {/* Left Accent */}
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-[#831449]/50 to-transparent" />
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-[#FF2D78]/50 to-transparent" />
 
       {/* Bottom Right Glow */}
-      <div className="absolute -right-40 -bottom-40 w-[600px] h-[600px] bg-[#831449]/5 rounded-full blur-3xl" />
+      <div className="absolute -right-40 -bottom-40 w-[600px] h-[600px] bg-[#FF2D78]/5 rounded-full blur-3xl" />
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -69,7 +69,7 @@ export default function Process() {
               Loh Ya.
             </h2>
 
-            <div className="w-16 h-1 bg-[#831449] rounded mb-6" />
+            <div className="w-16 h-1 rounded mb-6" style={{ background: 'linear-gradient(90deg, #FF2D78, #FF6B9D)' }} />
 
             <p className="text-gray-500 mb-8 max-w-md leading-relaxed">
               Kami gak akan langsung nawarin paket di awal kok. Kami dengarkan dulu, 
@@ -87,9 +87,14 @@ export default function Process() {
                 <MessageCircle className="w-5 h-5 text-green-400" />
                 Ngobrol Dulu Yuk?
               </motion.button>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                ✓ Gratis konsultasi 30 menit &nbsp;·&nbsp; ✓ Tanpa komitmen &nbsp;·&nbsp; ✓ Tanpa dipaksa beli
-              </p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-gray-400 text-sm">
+                {['Gratis konsultasi 30 menit', 'Tanpa komitmen', 'Tanpa dipaksa beli'].map((item) => (
+                  <span key={item} className="flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
           </motion.div>
 
@@ -103,7 +108,7 @@ export default function Process() {
             {steps.map((step, index) => (
               <motion.div
                 key={step.number}
-                className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex items-center gap-4 cursor-pointer group hover:border-[#831449]/30 transition-all"
+                className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex items-center gap-4 cursor-pointer group hover:border-current/30 transition-all"
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.4, delay: 0.1 * index }}

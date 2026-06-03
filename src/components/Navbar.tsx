@@ -10,7 +10,7 @@ interface NavbarProps {
 const navItems = [
   { id: 'tentang', label: 'Tentang' },
   { id: 'produk', label: 'Produk' },
-  { id: 'tim', label: 'Tim Kami' },
+  { id: 'komitmen', label: 'Komitmen' },
   { id: 'digital', label: 'Mengapa Digital' },
 ]
 
@@ -70,12 +70,12 @@ export default function Navbar({ activeSection }: NavbarProps) {
                 className="relative font-poppins font-bold text-[22px] transition-colors duration-200 group"
               >
                 <span className={`transition-colors duration-200 ${
-                  activeSection === item.id ? 'text-[#831449]' : 'text-[#484848] group-hover:text-[#831449]'
+                  activeSection === item.id ? 'text-[#FF2D78]' : 'text-[#484848] group-hover:text-[#FF2D78]'
                 }`}>
                   {item.label}
                 </span>
                 <motion.span
-                  className="absolute -bottom-1 left-0 h-[2px] bg-[#831449] rounded-full"
+                  className="absolute -bottom-1 left-0 h-[2px] rounded-full" style={{ background: 'linear-gradient(90deg, #FF2D78, #FF6B9D)' }}
                   initial={{ width: 0 }}
                   animate={{ width: activeSection === item.id ? '100%' : 0 }}
                   transition={{ duration: 0.3, ease: 'easeOut' }}
@@ -137,7 +137,7 @@ export default function Navbar({ activeSection }: NavbarProps) {
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   className={`w-full text-left py-4 px-4 rounded-xl font-bold text-xl border-b border-gray-100 transition-colors ${
-                    activeSection === item.id ? 'text-[#831449] bg-[#831449]/5' : 'text-gray-800 hover:text-[#831449]'
+                    activeSection === item.id ? 'text-[#FF2D78] bg-[#FF2D78]/5' : 'text-gray-800 hover:text-[#FF2D78]'
                   }`}
                   initial={{ opacity: 0, x: 30 }}
                   animate={{ opacity: 1, x: 0 }}

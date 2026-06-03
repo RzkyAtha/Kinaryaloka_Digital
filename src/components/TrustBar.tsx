@@ -44,7 +44,7 @@ export default function TrustBar() {
               transition={{ duration: 0.5, delay: i * 0.15 }}
             >
               {/* Icon circle */}
-              <div className="w-12 h-12 rounded-full bg-[#831449]/15 flex items-center justify-center flex-shrink-0 text-xl border border-[#831449]/20">
+              <div className="w-12 h-12 rounded-full bg-[#FF2D78]/10 flex items-center justify-center flex-shrink-0 text-xl border border-[#FF2D78]/20" style={{ boxShadow: '0 0 12px #FF2D7820' }}>
                 {stat.icon}
               </div>
               <div>

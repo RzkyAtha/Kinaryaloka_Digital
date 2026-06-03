@@ -52,7 +52,7 @@ body{background:#f5f5f5;font-family:'Poppins',sans-serif;overflow-x:hidden;margi
 </div>
 <a href="#tentang" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:777px;top:48px;white-space:nowrap;">Tentang</a>
 <a href="#produk" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:939px;top:48px;white-space:nowrap;">Produk</a>
-<a href="#tim" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:1073px;top:48px;white-space:nowrap;">Tim Kami</a>
+<a href="#komitmen" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:1073px;top:48px;white-space:nowrap;">Komitmen</a>
 <a href="#digital" class="nav-link" style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:24px;color:#484848;left:1233px;top:48px;white-space:nowrap;">Mengapa Digital</a>
 <div style="position:absolute;left:1482px;top:28px;width:86px;height:71px;background:#000;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
   <img src="https://www.figma.com/api/mcp/asset/93b516b2-6320-4a87-965f-782796be6dfe" alt="" style="width:49px;height:43px;">
@@ -93,7 +93,7 @@ body{background:#f5f5f5;font-family:'Poppins',sans-serif;overflow-x:hidden;margi
 
   <!-- Value cards -->
   <div style="position:absolute;left:73px;top:206px;width:595px;height:567px;">
-    <div class="card-lift" style="position:absolute;background:#3b3b3b;height:274px;left:0;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0;width:288px;">
+    <div class="card-lift" style="position:absolute;background:#831449;height:274px;left:0;overflow:hidden;border-radius:10px;box-shadow:0 4px 4px rgba(0,0,0,.25);top:0;width:288px;">
       <div style="position:absolute;background:#212121;height:90px;left:0;border-radius:0 10px 10px 0;top:41px;width:276px;"></div>
       <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:30px;color:#fff;left:35px;top:55px;line-height:30px;"><p>Tepat</p><p>Sasaran.</p></div>
       <div style="position:absolute;background:#000;height:88px;left:15px;border-radius:5px;top:155px;width:90px;"></div>
@@ -329,14 +329,14 @@ body{background:#f5f5f5;font-family:'Poppins',sans-serif;overflow-x:hidden;margi
   </div>
 </div><!-- /black section -->
 
-<!-- ══ TIM KAMI ══ -->
-<div id="tim" style="position:absolute;left:606px;top:3700px;width:388px;height:94px;">
+<!-- ══ KOMITMEN KAMI ══ -->
+<div id="komitmen" style="position:absolute;left:606px;top:3700px;width:388px;height:94px;">
   <img src="https://www.figma.com/api/mcp/asset/3b0d2c5b-8876-4e49-b046-927060d370c7" alt="Tim Kami" style="width:100%;height:100%;object-fit:cover;">
 </div>
 <div style="position:absolute;background:#000;height:582px;left:280px;overflow:hidden;border-radius:20px;top:3850px;width:1040px;">
   <div style="position:absolute;height:491px;left:109px;top:91px;width:875px;">
     <div style="position:absolute;height:491px;left:36px;top:0;width:737px;">
-      <img src="https://www.figma.com/api/mcp/asset/2f9ed319-3be3-426b-a32f-31ae1d817d47" alt="Tim KINARYALOKA" style="width:100%;height:100%;object-fit:cover;">
+      <img src="Assets/komitmen_kami.png" alt="Tim KINARYALOKA" style="width:100%;height:100%;object-fit:cover;">
     </div>
     <p style="position:absolute;font-family:'Poppins',sans-serif;font-weight:700;font-size:40px;color:#fff;left:650px;top:79px;line-height:50px;">Mas Adhit</p>
     <div style="position:absolute;font-family:'Poppins',sans-serif;font-weight:600;font-size:14px;color:#fff;left:652px;top:130px;line-height:20px;"><p>Marketing Manager</p><p>Backend Developer</p></div>
@@ -734,14 +734,14 @@ document.querySelectorAll('.btn').forEach(function(btn) {
 var navAnchors = {
   tentang: {el: document.querySelector('a[href="#tentang"]'), top: 977},
   produk:  {el: document.querySelector('a[href="#produk"]'),  top: 2003},
-  tim:     {el: document.querySelector('a[href="#tim"]'),     top: 3782},
+  komitmen:     {el: document.querySelector('a[href="#komitmen"]'),     top: 3782},
   digital: {el: document.querySelector('a[href="#digital"]'), top: 4680}
 };
 function updateNav() {
   var scale = (window.innerWidth < 1600) ? window.innerWidth / 1600 : 1;
   var pageY = window.scrollY / scale + 200;
   var active = null;
-  var order = ['digital','tim','produk','tentang'];
+  var order = ['digital','komitmen','produk','tentang'];
   for (var i = 0; i < order.length; i++) {
     if (pageY >= navAnchors[order[i]].top) { active = order[i]; break; }
   }

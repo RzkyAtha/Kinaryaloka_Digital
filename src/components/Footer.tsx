@@ -54,11 +54,16 @@ export default function Footer() {
 
             {/* Social Icons */}
             <div className="flex gap-3">
-              {[Instagram, MessageCircle, Music2].map((Icon, index) => (
+              {[
+                { Icon: Instagram, label: 'Instagram' },
+                { Icon: MessageCircle, label: 'WhatsApp' },
+                { Icon: Music2, label: 'TikTok' },
+              ].map(({ Icon, label }) => (
                 <motion.a
-                  key={index}
+                  key={label}
                   href="#"
-                  className="w-10 h-10 rounded-lg bg-[#3a3a3a] flex items-center justify-center hover:bg-[#831449] transition-colors"
+                  aria-label={label}
+                  className="w-10 h-10 rounded-lg bg-[#3a3a3a] flex items-center justify-center hover:bg-[#FF2D78] transition-colors duration-200 cursor-pointer"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -128,11 +133,12 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Masukan emailmu disini"
-                className="bg-[#3a3a3a] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#831449]"
+                className="bg-[#3a3a3a] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#FF2D78]"
               />
             </div>
             <motion.button
-              className="bg-gray-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-600 transition-colors"
+              className="text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 cursor-pointer"
+              style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)', boxShadow: '0 2px 12px #FF2D7830' }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

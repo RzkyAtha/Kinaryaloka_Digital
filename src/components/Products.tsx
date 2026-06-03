@@ -1,7 +1,8 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ShoppingCart, ArrowRight } from 'lucide-react'
+import { ShoppingCart, ArrowRight, X, Check } from 'lucide-react'
 import AuthModal from './AuthModal'
+import { useProducts, Product as CtxProduct } from '../context/ProductsContext'
 
 // ─── Magic Card: 3D tilt + spotlight + glow border ──────────────────
 function MagicCard({
@@ -57,7 +58,7 @@ function MagicCard({
           ? `0 ${shadowY.get()}px ${shadowBlur.get()}px -12px ${accentColor}80, 0 20px 40px -8px rgba(0,0,0,0.3)`
           : '0 4px 16px rgba(0,0,0,0.15)',
       }}
-      className={`relative rounded-2xl overflow-hidden bg-[#fefefe] cursor-none${fullHeight ? ' flex flex-col h-full' : ''}`}
+      className={`relative rounded-2xl overflow-hidden bg-[#fefefe] cursor-pointer${fullHeight ? ' flex flex-col h-full' : ''}`}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleLeave}
@@ -89,12 +90,12 @@ function MagicCard({
 }
 
 const tabs = [
-  { id: 'ecommerce', label: 'E-Commerce', color: '#831449', glow: '#83144950', icon: '🛒' },
-  { id: 'webdesign', label: 'Web Design', color: '#004896', glow: '#00489650', icon: '💻' },
-  { id: 'branding', label: 'Branding',   color: '#207224', glow: '#20722450', icon: '✦'  },
+  { id: 'ecommerce', label: 'E-Commerce', color: '#F5C542', glow: '#F5C54250' },
+  { id: 'webdesign', label: 'Web Design', color: '#E5A830', glow: '#E5A83050' },
+  { id: 'branding', label: 'Branding',   color: '#D4912A', glow: '#D4912A50' },
 ]
 
-interface Product {
+interface UIProduct {
   title: string
   price: string
   image: string
@@ -102,133 +103,141 @@ interface Product {
   color: string
   textColor: string
   badge?: string
+  details?: string[]
 }
 
 interface TabData {
-  featured: Product
-  cards: Product[]
+  featured?: UIProduct
+  cards: UIProduct[]
 }
 
-const products: Record<string, TabData> = {
-  ecommerce: {
-    featured: {
-      title: 'E-Commerce Full Brand',
-      price: '15000',
-      image: '/Assets/wd_ungu.png',
-      description: 'E-commerce profesional + identitas brand lengkap. Dari toko online canggih hingga visual brand yang siap bersaing.',
-      color: '#831449',
-      textColor: '#831449',
-      badge: 'Flagship',
-    },
-    cards: [
-      {
-        title: 'Katalog Digital',
-        price: '2500',
-        image: '/Assets/wd_oren.png',
-        description: 'Website katalog produk online. Pelanggan lihat produk & pesan langsung via WhatsApp. Tanpa ribet dengan payment gateway.',
-        color: '#b76431',
-        textColor: '#bb6732',
-      },
-      {
-        title: 'Toko Online',
-        price: '5000',
-        image: '/Assets/wd_biru.png',
-        description: 'Toko online lengkap dengan keranjang belanja & payment gateway. Pelanggan bisa checkout langsung di website kamu.',
-        color: '#004896',
-        textColor: '#004896',
-      },
-      {
-        title: 'Olshop Full',
-        price: '8000',
-        image: '/Assets/wd_hijau.png',
-        description: 'Platform jual beli penuh fitur seperti inventori, multi-varian produk, voucher diskon, hingga laporan penjualan real-time.',
-        color: '#207224',
-        textColor: '#004896',
-      },
-    ],
-  },
-  webdesign: {
-    featured: {
-      title: 'Full Digital Package',
-      price: '12000',
-      image: '/Assets/wd_ungu.png',
-      description: 'Transformasi digital menyeluruh dari mulai sistem, website, hingga identitas visual dan strategi konten.',
-      color: '#831449',
-      textColor: '#831449',
-      badge: 'Flagship',
-    },
-    cards: [
-      {
-        title: 'Paket Reservasi',
-        price: '2500',
-        image: '/Assets/wd_oren.png',
-        description: 'Sistem booking online siap pakai tanpa perlu website. Ideal untuk bisnis layanan yang masih pakai manual.',
-        color: '#b76431',
-        textColor: '#bb6732',
-      },
-      {
-        title: 'Website & Reservasi',
-        price: '5000',
-        image: '/Assets/wd_biru.png',
-        description: 'Website profesional lengkap dengan sistem booking simpel. Bisnis kamu terlihat serius di mata pelanggan.',
-        color: '#004896',
-        textColor: '#004896',
-      },
-      {
-        title: 'Website Pro',
-        price: '8000',
-        image: '/Assets/wd_hijau.png',
-        description: 'Web design multi-halaman dengan sistem reservasi bertenaga database. Data pelanggan tersimpan rapi, bisa diakses kapan saja.',
-        color: '#207224',
-        textColor: '#004896',
-      },
-    ],
-  },
-  branding: {
-    featured: {
-      title: 'Paket Branding Lengkap',
-      price: '4000',
-      image: '/Assets/br_hijau.png',
-      description: 'Solusi branding end-to-end: visual identity, semua copywriting, dan marketing kit siap pakai.',
-      color: '#207224',
-      textColor: '#207224',
-      badge: 'Flagship',
-    },
-    cards: [
-      {
-        title: 'Paket Branding',
-        price: '1500',
-        image: '/Assets/br_oren.png',
-        description: 'Identitas brand lengkap untuk membuat bisnismu profesional dan mudah diingat, dari logo hingga nama yang filosofis.',
-        color: '#b76431',
-        textColor: '#bb6732',
-      },
-      {
-        title: 'Branding + Copywriting',
-        price: '2500',
-        image: '/Assets/br_biru.png',
-        description: 'Branding lengkap dengan copywriting profesional untuk website, social media, dan marketing material.',
-        color: '#004896',
-        textColor: '#004896',
-      },
-      {
-        title: 'Complete Branding',
-        price: '4000',
-        image: '/Assets/br_hijau.png',
-        description: 'Solusi branding end-to-end: visual identity, semua copywriting, dan marketing kit siap pakai.',
-        color: '#207224',
-        textColor: '#004896',
-      },
-    ],
-  },
+function toUIProduct(p: CtxProduct): UIProduct {
+  return {
+    title: p.name,
+    price: p.price,
+    image: p.image,
+    description: p.description,
+    color: p.color,
+    textColor: p.textColor,
+    badge: p.badge,
+    details: p.details,
+  }
+}
+
+function groupProducts(ctxProducts: CtxProduct[]): Record<string, TabData> {
+  const result: Record<string, TabData> = {
+    ecommerce: { cards: [] },
+    webdesign: { cards: [] },
+    branding: { cards: [] },
+  }
+  for (const p of ctxProducts) {
+    const ui = toUIProduct(p)
+    if (p.isFeatured) {
+      result[p.category].featured = ui
+    } else {
+      result[p.category].cards.push(ui)
+    }
+  }
+  return result
+}
+
+function DetailModal({ product, onClose, onSelect }: { product: UIProduct | null; onClose: () => void; onSelect: (title: string, price: string) => void }) {
+  if (!product) return null
+  return (
+    <AnimatePresence>
+      {product && (
+        <motion.div
+          className="fixed inset-0 z-[999] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+          {/* Modal */}
+          <motion.div
+            className="relative w-full max-w-lg max-h-[90vh] rounded-2xl overflow-hidden flex flex-col"
+            style={{ backgroundColor: '#fff' }}
+            initial={{ opacity: 0, scale: 0.88, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 20 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 28 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header image strip */}
+            <div className="relative h-32 overflow-hidden flex-shrink-0">
+              <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
+              <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${product.color}99, ${product.color}ee)` }} />
+              {/* Title overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-4">
+                {product.badge && (
+                  <span className="bg-[#e70000] text-white text-xs font-bold px-2 py-0.5 rounded mr-2">{product.badge}</span>
+                )}
+                <h3 className="text-white font-bold text-2xl leading-tight">{product.title}</h3>
+                <p className="text-white/80 text-sm font-semibold mt-0.5">IDR {product.price}K</p>
+              </div>
+              {/* Close button */}
+              <button
+                onClick={onClose}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Feature list */}
+            <div className="overflow-y-auto flex-1 p-5">
+              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: product.color }}>Yang Kamu Dapatkan</p>
+              <ul className="space-y-2.5">
+                {product.details?.map((item, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex items-start gap-3"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.04, duration: 0.25 }}
+                  >
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: product.color + '20' }}>
+                      <Check className="w-3 h-3" style={{ color: product.color }} />
+                    </div>
+                    <span className="text-[#404040] text-sm leading-relaxed">{item}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+
+            {/* CTA */}
+            <div className="p-5 pt-0 flex-shrink-0">
+              <motion.button
+                onClick={() => { onSelect(product.title, product.price); onClose() }}
+                className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 text-base"
+                style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}dd)`, boxShadow: `0 4px 20px ${product.color}50` }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <ShoppingCart className="w-5 h-5" />
+                Pilih Paket Ini
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
 }
 
 export default function Products() {
   const [activeTab, setActiveTab] = useState('ecommerce')
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState<{ title: string; price: string } | null>(null)
+  const [detailProduct, setDetailProduct] = useState<UIProduct | null>(null)
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
+
+  const { products: ctxProducts } = useProducts()
+  const products = useMemo(() => groupProducts(ctxProducts), [ctxProducts])
 
   const handleSelectPackage = (title: string, price: string) => {
     setSelectedPackage({ title, price })
@@ -236,6 +245,15 @@ export default function Products() {
   }
 
   const currentProducts = products[activeTab as keyof typeof products]
+
+  // Merge all products for mobile layout
+  const allMobileProducts: UIProduct[] = useMemo(() => {
+    const all: UIProduct[] = []
+    if (currentProducts.featured) all.push(currentProducts.featured)
+    all.push(...currentProducts.cards)
+    return all
+  }, [currentProducts])
+  const isOddCount = allMobileProducts.length % 2 !== 0
 
   return (
     <section id="produk" className="bg-black py-12 md:py-20" ref={ref}>
@@ -264,7 +282,7 @@ export default function Products() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className="relative px-5 md:px-7 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base whitespace-nowrap transition-colors duration-200 outline-none"
+                  className="relative px-5 md:px-7 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base whitespace-nowrap transition-colors duration-200 outline-none cursor-pointer"
                   style={{ color: isActive ? '#fff' : '#666' }}
                 >
                   {/* Sliding pill background */}
@@ -286,8 +304,7 @@ export default function Products() {
                     />
                   )}
                   {/* Label */}
-                  <span className="relative z-10 flex items-center gap-2">
-                    <span className="text-base leading-none">{tab.icon}</span>
+                  <span className="relative z-10">
                     {tab.label}
                   </span>
                 </button>
@@ -306,7 +323,96 @@ export default function Products() {
           transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
         >
 
+        {/* ═══ MOBILE LAYOUT ═══ */}
+        <div className="md:hidden">
+          {/* If odd: first product is standalone large card */}
+          {isOddCount && allMobileProducts.length > 0 && (
+            <motion.div
+              className="mb-3 rounded-xl overflow-hidden"
+              initial={{ opacity: 0, y: 30 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <MagicCard accentColor={allMobileProducts[0].color}>
+                <div className="relative h-[160px] overflow-hidden">
+                  <img src={allMobileProducts[0].image} alt={allMobileProducts[0].title} className="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <div className="p-3 relative">
+                  {allMobileProducts[0].badge && (
+                    <div className="bg-[#e70000] text-white px-2.5 py-1 rounded-md font-semibold text-[10px] inline-block mb-2">{allMobileProducts[0].badge}</div>
+                  )}
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="font-bold text-[16px] text-[#404040] leading-tight">{allMobileProducts[0].title}</h3>
+                    <button onClick={() => setDetailProduct(allMobileProducts[0])} className="text-[11px] font-semibold flex items-center gap-0.5 whitespace-nowrap" style={{ color: allMobileProducts[0].textColor }}>
+                      Detail <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                  <div className="flex items-baseline gap-1.5 mb-2.5">
+                    <span className="text-[18px] font-semibold" style={{ color: allMobileProducts[0].textColor }}>IDR</span>
+                    <span className="text-[18px] font-semibold text-[#454545]">{allMobileProducts[0].price}K</span>
+                  </div>
+                  <motion.button
+                    onClick={() => handleSelectPackage(allMobileProducts[0].title, allMobileProducts[0].price)}
+                    className="w-full py-2.5 rounded-lg text-white font-semibold flex items-center justify-center gap-1.5 text-[12px]"
+                    style={{ background: `linear-gradient(135deg, ${allMobileProducts[0].color}, ${allMobileProducts[0].color}cc)`, boxShadow: `0 4px 16px ${allMobileProducts[0].color}50` }}
+                    whileTap={{ scale: 0.97 }}
+                  >
+                    <ShoppingCart className="w-4 h-4" />
+                    Pilih Paket Ini
+                  </motion.button>
+                </div>
+              </MagicCard>
+            </motion.div>
+          )}
+
+          {/* 2x2 grid for remaining (or all if even) */}
+          <div className="grid grid-cols-2 gap-2.5">
+            {(isOddCount ? allMobileProducts.slice(1) : allMobileProducts).map((product, index) => (
+              <motion.div
+                key={product.title}
+                className="h-full"
+                initial={{ opacity: 0, y: 40 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.35 + index * 0.1, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <MagicCard accentColor={product.color} fullHeight>
+                  <div className="relative h-[110px] overflow-hidden">
+                    <img src={product.image} alt={product.title} className="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                  <div className="p-2.5 flex flex-col flex-1">
+                    <div className="flex justify-between items-start mb-1.5">
+                      <h3 className="font-bold text-[13px] text-[#404040] leading-tight">
+                        {product.title}
+                      </h3>
+                      <button onClick={() => setDetailProduct(product)} className="text-[10px] font-semibold flex items-center gap-0.5 whitespace-nowrap shrink-0 ml-1" style={{ color: product.textColor }}>
+                        Detail <ArrowRight className="w-2.5 h-2.5" />
+                      </button>
+                    </div>
+                    <div className="flex items-baseline gap-1 mb-2 mt-auto">
+                      <span className="text-[14px] font-semibold" style={{ color: product.textColor }}>IDR</span>
+                      <span className="text-[14px] font-semibold text-[#454545]">{product.price}K</span>
+                    </div>
+                    <motion.button
+                      onClick={() => handleSelectPackage(product.title, product.price)}
+                      className="w-full py-2 rounded-lg text-white font-semibold flex items-center justify-center gap-1.5 text-[11px]"
+                      style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}cc)`, boxShadow: `0 4px 16px ${product.color}50` }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <ShoppingCart className="w-3.5 h-3.5" />
+                      Pilih Paket Ini
+                    </motion.button>
+                  </div>
+                </MagicCard>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* ═══ DESKTOP LAYOUT ═══ */}
+        <div className="hidden md:block">
+
         {/* Featured Product Card (Large) — with spotlight */}
+        {currentProducts.featured && (
         <motion.div
           className="mb-6 rounded-2xl overflow-hidden"
           initial={{ opacity: 0, y: 30 }}
@@ -314,17 +420,17 @@ export default function Products() {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <MagicCard accentColor={currentProducts.featured.color}>
-          <div className="flex flex-col md:grid md:grid-cols-[380px_1fr] lg:grid-cols-[515px_1fr]">
-            {/* Top/Left - Image */}
-            <div className="relative h-[200px] sm:h-[260px] md:h-[441px] overflow-hidden group">
+          <div className="grid md:grid-cols-[380px_1fr] lg:grid-cols-[515px_1fr]">
+            {/* Left - Image */}
+            <div className="relative h-[441px] overflow-hidden group">
               <motion.img
                 src={currentProducts.featured.image}
                 alt={currentProducts.featured.title}
                 className="w-full h-full object-cover"
+                loading="lazy"
                 whileHover={{ scale: 1.08 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               />
-              {/* Color tint overlay on hover */}
               <motion.div
                 className="absolute inset-0 pointer-events-none"
                 style={{ backgroundColor: currentProducts.featured.color + '20' }}
@@ -334,58 +440,49 @@ export default function Products() {
               />
             </div>
 
-            {/* Bottom/Right - Content */}
-            <div className="p-4 sm:p-6 md:p-8 relative">
-              {/* Badge */}
+            {/* Right - Content */}
+            <div className="p-8 relative">
               {currentProducts.featured.badge && (
                 <div className="bg-[#e70000] text-white px-4 py-2 rounded-md font-semibold text-sm inline-block mb-4">
                   {currentProducts.featured.badge}
                 </div>
               )}
-
-              {/* Title */}
-              <h3 className="font-bold text-[22px] sm:text-[28px] md:text-[36px] lg:text-[44px] text-[#404040] leading-tight mb-3 md:mb-4">
+              <h3 className="font-bold text-[36px] lg:text-[44px] text-[#404040] leading-tight mb-4">
                 {currentProducts.featured.title}
               </h3>
-
-              {/* Description */}
-              <p className="text-[#9f9f9f] text-sm md:text-base lg:text-lg leading-relaxed text-justify max-w-[671px] mb-4 md:mb-6">
+              <p className="text-[#9f9f9f] text-base lg:text-lg leading-relaxed text-justify max-w-[671px] mb-6">
                 {currentProducts.featured.description}
               </p>
-
-              {/* Price */}
-              <div className="flex items-baseline gap-2 mb-4 md:mb-6">
-                <span className="text-xl md:text-2xl lg:text-[40px] font-semibold" style={{ color: currentProducts.featured.textColor }}>IDR</span>
-                <span className="text-xl md:text-2xl lg:text-[40px] font-semibold text-[#454545]">{currentProducts.featured.price}K</span>
+              <div className="flex items-baseline gap-2 mb-6">
+                <span className="text-2xl lg:text-[40px] font-semibold" style={{ color: currentProducts.featured.textColor }}>IDR</span>
+                <span className="text-2xl lg:text-[40px] font-semibold text-[#454545]">{currentProducts.featured.price}K</span>
               </div>
-
-              {/* CTA Button */}
               <motion.button
-                onClick={() => handleSelectPackage(currentProducts.featured.title, currentProducts.featured.price)}
-                className="w-full py-3 md:py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-3 text-base md:text-lg"
-                style={{ backgroundColor: currentProducts.featured.color, boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
+                onClick={() => handleSelectPackage(currentProducts.featured!.title, currentProducts.featured!.price)}
+                className="w-full py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-3 text-lg"
+                style={{ background: `linear-gradient(135deg, ${currentProducts.featured.color}, ${currentProducts.featured.color}cc)`, boxShadow: `0 4px 16px ${currentProducts.featured.color}50` }}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
               >
                 <ShoppingCart className="w-6 h-6" />
                 Pilih Paket Ini
               </motion.button>
-
-              {/* Detail Link */}
-              <button 
-                className="absolute top-8 right-8 text-lg font-semibold flex items-center gap-1 hover:underline"
+              <button
+                onClick={() => setDetailProduct(currentProducts.featured!)}
+                className="absolute top-8 right-8 text-lg font-semibold flex items-center gap-1.5 hover:underline cursor-pointer transition-colors duration-200"
                 style={{ color: currentProducts.featured.textColor }}
               >
-                Detail &gt;
+                Detail <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
           </MagicCard>
         </motion.div>
+        )}
 
-        {/* 3 Smaller Product Cards — MagicCard */}
+        {/* 3 Smaller Product Cards */}
         <div className="grid md:grid-cols-3 gap-6 items-stretch">
-          {currentProducts.cards.map((product: Product, index: number) => (
+          {currentProducts.cards.map((product: UIProduct, index: number) => (
             <motion.div
               key={product.title}
               className="h-full"
@@ -394,16 +491,15 @@ export default function Products() {
               transition={{ duration: 0.6, delay: 0.4 + index * 0.12, ease: [0.16, 1, 0.3, 1] }}
             >
               <MagicCard accentColor={product.color} fullHeight>
-                {/* Image with scale + color tint */}
                 <div className="relative h-[200px] overflow-hidden">
                   <motion.img
                     src={product.image}
                     alt={product.title}
                     className="w-full h-full object-cover"
+                    loading="lazy"
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   />
-                  {/* Color tint */}
                   <motion.div
                     className="absolute inset-0 pointer-events-none"
                     style={{ backgroundColor: product.color + '25' }}
@@ -411,7 +507,6 @@ export default function Products() {
                     whileHover={{ opacity: 1 }}
                     transition={{ duration: 0.35 }}
                   />
-                  {/* Price floating tag that slides up on hover */}
                   <motion.div
                     className="absolute bottom-3 right-3 px-3 py-1 rounded-lg text-white font-bold text-sm"
                     style={{ backgroundColor: product.color }}
@@ -422,10 +517,7 @@ export default function Products() {
                     IDR {product.price}K
                   </motion.div>
                 </div>
-
-                {/* Content */}
                 <div className="p-6 flex flex-col flex-1">
-                  {/* Title and Detail */}
                   <div className="flex justify-between items-start mb-3">
                     <motion.h3
                       className="font-bold text-[28px] md:text-[32px] text-[#404040] leading-tight"
@@ -437,6 +529,7 @@ export default function Products() {
                       ))}
                     </motion.h3>
                     <motion.button
+                      onClick={() => setDetailProduct(product)}
                       className="text-lg font-semibold flex items-center gap-1 whitespace-nowrap mt-2"
                       style={{ color: product.textColor }}
                       whileHover={{ x: 4 }}
@@ -445,13 +538,9 @@ export default function Products() {
                       Detail <ArrowRight className="w-4 h-4" />
                     </motion.button>
                   </div>
-
-                  {/* Description — flex-1 pushes price+button to bottom */}
                   <p className="text-[#9f9f9f] text-sm leading-relaxed text-justify mb-4 flex-1">
                     {product.description}
                   </p>
-
-                  {/* Price */}
                   <motion.div
                     className="flex items-baseline gap-2 mb-4"
                     whileHover={{ scale: 1.04 }}
@@ -460,12 +549,10 @@ export default function Products() {
                     <span className="text-[28px] md:text-[32px] font-semibold" style={{ color: product.textColor }}>IDR</span>
                     <span className="text-[28px] md:text-[32px] font-semibold text-[#454545]">{product.price}K</span>
                   </motion.div>
-
-                  {/* CTA Button */}
                   <motion.button
                     onClick={() => handleSelectPackage(product.title, product.price)}
                     className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2"
-                    style={{ backgroundColor: product.color, boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
+                    style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}cc)`, boxShadow: `0 4px 16px ${product.color}50` }}
                     whileHover={{ scale: 1.03, boxShadow: `0 8px 24px ${product.color}60` }}
                     whileTap={{ scale: 0.97 }}
                   >
@@ -478,6 +565,8 @@ export default function Products() {
           ))}
         </div>
 
+        </div>{/* end desktop layout */}
+
         </motion.div>
         </AnimatePresence>
 
@@ -486,6 +575,13 @@ export default function Products() {
           isOpen={authModalOpen}
           onClose={() => setAuthModalOpen(false)}
           selectedPackage={selectedPackage}
+        />
+
+        {/* Detail Modal */}
+        <DetailModal
+          product={detailProduct}
+          onClose={() => setDetailProduct(null)}
+          onSelect={handleSelectPackage}
         />
       </div>
     </section>

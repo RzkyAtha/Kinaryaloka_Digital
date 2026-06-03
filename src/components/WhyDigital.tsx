@@ -1,6 +1,6 @@
-import { motion, useInView, useScroll, useTransform } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { useRef, useEffect, useState } from 'react'
-import { MessageCircle } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 const stats = [
   {
@@ -9,7 +9,7 @@ const stats = [
     label: 'Pengguna Internet',
     sublabel: 'Aktif Dunia',
     description: 'Hampir 2/3 populasi bumi sudah online dan mereka mencari bisnis seperti punya kamu.',
-    color: '#831449',
+    color: '#F5C542',
   },
   {
     value: 2,
@@ -18,7 +18,7 @@ const stats = [
     sublabel: 'yang Go Digital',
     subtext: 'lebih cepat',
     description: 'UMKM yang punya kehadiran digital tumbuh rata-rata 2x lebih cepat dibanding yang belum.',
-    color: '#004896',
+    color: '#E5A830',
   },
   {
     value: 80,
@@ -26,7 +26,7 @@ const stats = [
     label: 'Konsumen Cari',
     sublabel: 'Bisnis Online Dulu',
     description: 'Sebelum datang atau beli, 80% orang searching dulu. Kalau tidak terlihat, mereka ke kompetitor.',
-    color: '#b76431',
+    color: '#D4912A',
   },
   {
     value: 65,
@@ -34,7 +34,7 @@ const stats = [
     label: 'UMKM',
     sublabel: 'di Indonesia',
     description: 'Tulang punggung 60% GDP Indonesia, tetapi hanya 23% yang punya kehadiran digital yang layak.',
-    color: '#207224',
+    color: '#C8841E',
   },
 ]
 
@@ -76,23 +76,19 @@ function CountUp({ target, suffix, duration = 2000 }: { target: number; suffix: 
   )
 }
 
-function StatCard({ stat, index, scrollYProgress }: {
+function StatCard({ stat, index }: {
   stat: typeof stats[0]
   index: number
-  scrollYProgress: ReturnType<typeof useScroll>['scrollYProgress']
 }) {
-  const start = 0.08 + index * 0.17
-  const end = start + 0.15
-  const opacity = useTransform(scrollYProgress, [start, end], [0, 1])
-  const y = useTransform(scrollYProgress, [start, end], [60, 0])
-  const scale = useTransform(scrollYProgress, [start, end], [0.85, 1])
-
   return (
     <motion.div
-      style={{ opacity, y, scale }}
+      style={{ borderTopWidth: '3px', borderTopColor: stat.color }}
       className="bg-gradient-to-br from-[#1c1c1c] to-[#111] rounded-xl md:rounded-2xl p-3 md:p-6 border border-[#282828] relative overflow-hidden"
+      initial={{ opacity: 0, y: 40, scale: 0.9 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: '-50px' }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
       whileHover={{ scale: 1.04, transition: { duration: 0.2 } }}
-      {...{ style: { borderTopWidth: '3px', borderTopColor: stat.color, opacity, y, scale } } as any}
     >
       <div
         className="absolute -right-8 -bottom-8 w-40 h-40 rounded-full blur-3xl opacity-10"
@@ -113,80 +109,80 @@ function StatCard({ stat, index, scrollYProgress }: {
           className="h-px w-full mb-2 md:mb-4"
           style={{ background: `linear-gradient(90deg, ${stat.color}, transparent)` }}
         />
-        <p className="text-gray-500 text-[10px] md:text-sm leading-relaxed hidden sm:block">{stat.description}</p>
+        <p className="text-gray-400 text-[10px] md:text-sm leading-relaxed hidden sm:block">{stat.description}</p>
       </div>
     </motion.div>
   )
 }
 
 export default function WhyDigital() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ['start start', 'end end'],
-  })
-
-  const titleOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 1])
-  const titleY = useTransform(scrollYProgress, [0, 0.05], [0, 0])
-  const ctaOpacity = useTransform(scrollYProgress, [0.82, 0.95], [0, 1])
-  const ctaY = useTransform(scrollYProgress, [0.82, 0.95], [40, 0])
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const isInView = useInView(sectionRef, { once: true, margin: '-80px' })
 
   return (
-    <div id="digital" ref={containerRef} style={{ height: 'clamp(280vh, 350vh, 350vh)' }}>
-      {/* STICKY wrapper */}
-      <div className="sticky top-0 h-[100dvh] bg-black overflow-hidden flex flex-col justify-center">
-        {/* Grid BG */}
-        <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
-          <div className="w-full h-full" style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-            backgroundSize: '80px 80px',
-          }} />
-        </div>
-        {/* Top glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[560px] bg-gradient-to-b from-[#831449]/20 to-transparent rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10 w-full">
-          {/* Title */}
-          <motion.div className="text-center mb-3 md:mb-4" style={{ opacity: titleOpacity, y: titleY }}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">Kenapa Harus Digital</h2>
-            <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#831449]">Sekarang?</h3>
-          </motion.div>
-
-          <motion.p
-            className="text-center text-gray-500 text-sm md:text-base mb-6 md:mb-10"
-            style={{ opacity: titleOpacity }}
-          >
-            Bukan soal tren. Ini soal kelangsungan bisnis kamu.
-          </motion.p>
-
-          {/* Stats — each animated by scroll */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
-            {stats.map((stat, index) => (
-              <StatCard key={stat.label} stat={stat} index={index} scrollYProgress={scrollYProgress} />
-            ))}
-          </div>
-
-          {/* CTA Banner */}
-          <motion.div
-            className="bg-gradient-to-r from-[#831449]/20 to-[#831449]/5 rounded-2xl p-6 md:p-8 border border-[#831449]/30 flex flex-col md:flex-row items-center justify-between gap-6"
-            style={{ opacity: ctaOpacity, y: ctaY }}
-          >
-            <p className="text-white text-xl md:text-2xl font-bold text-center md:text-left">
-              Bisnis kamu bisa jadi salah satu yang 23% itu{' '}
-              <span className="text-[#c9547a]">mulai dari satu langkah kecil.</span>
-            </p>
-            <motion.button
-              className="bg-[#831449] text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-2 whitespace-nowrap shadow-lg shadow-[#831449]/30"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              <MessageCircle className="w-5 h-5" />
-              Ngobrol Dulu Yuk?
-            </motion.button>
-          </motion.div>
-        </div>
+    <section id="digital" ref={sectionRef} className="bg-black py-16 md:py-24 relative overflow-hidden">
+      {/* Grid BG */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+        <div className="w-full h-full" style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+          backgroundSize: '80px 80px',
+        }} />
       </div>
-    </div>
+      {/* Top glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[560px] bg-gradient-to-b from-[#F5C542]/12 to-transparent rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10 w-full">
+        {/* Title */}
+        <motion.div
+          className="text-center mb-3 md:mb-4"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white">Kenapa Harus Digital</h2>
+          <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold" style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Sekarang?</h3>
+        </motion.div>
+
+        <motion.p
+          className="text-center text-gray-500 text-sm md:text-base mb-6 md:mb-10"
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          Bukan soal tren. Ini soal kelangsungan bisnis kamu.
+        </motion.p>
+
+        {/* Stats grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 mb-6 md:mb-10">
+          {stats.map((stat, index) => (
+            <StatCard key={stat.label} stat={stat} index={index} />
+          ))}
+        </div>
+
+        {/* CTA Banner */}
+        <motion.div
+          className="bg-gradient-to-r from-[#F5C542]/12 to-[#D4912A]/5 rounded-2xl p-6 md:p-8 border border-[#F5C542]/25 flex flex-col md:flex-row items-center justify-between gap-6"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <p className="text-white text-xl md:text-2xl font-bold text-center md:text-left">
+            Bisnis kamu bisa jadi salah satu yang 23% itu{' '}
+            <span style={{ color: '#F5C542' }}>mulai dari satu langkah kecil.</span>
+          </p>
+          <motion.button
+            onClick={() => document.getElementById('produk')?.scrollIntoView({ behavior: 'smooth' })}
+            className="flex-shrink-0 flex items-center gap-2 text-white font-semibold px-6 py-3 rounded-xl transition-all duration-200 cursor-pointer whitespace-nowrap"
+            style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)', boxShadow: '0 4px 20px #F5C54240' }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+          >
+            Mulai Sekarang <ArrowRight className="w-4 h-4" />
+          </motion.button>
+        </motion.div>
+      </div>
+    </section>
   )
 }

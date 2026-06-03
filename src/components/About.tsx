@@ -1,28 +1,48 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Target, HeartHandshake, Zap, ShieldCheck } from 'lucide-react'
+import { Monitor, Palette, Zap, ShieldCheck, Crosshair, HeartHandshake, StickyNote } from 'lucide-react'
 
 const valueCards = [
   {
-    icon: Target,
-    title: ['Tepat', 'Sasaran.'],
+    icon: Crosshair,
+    title: 'Tepat Sasaran.',
+    subtitle: 'Solusi yang Relevan',
+    badge: 'Riset Dulu, Baru Bangun',
     description: 'Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
+    color: '#FF2D78',
+    image: '/Assets/tepatsasaran.png',
+    delay: 0.1,
   },
   {
     icon: HeartHandshake,
-    title: ['Partner,', 'Bukan Vendor.'],
+    title: 'Partner, Bukan Vendor.',
+    subtitle: 'Hubungan Jangka Panjang',
+    badge: 'Support Berkelanjutan',
     description: 'Kami tidak pergi setelah project selesai. Support dan komunikasi tetap berjalan.',
+    color: '#FFA500',
+    image: '/Assets/partner_vendor.png',
+    delay: 0.2,
   },
   {
-    icon: Zap,
-    title: ['Langsung', 'Kepakai.'],
+    icon: Monitor,
+    title: 'Langsung Kepakai.',
+    subtitle: 'Praktis & Fungsional',
+    badge: 'Tanpa Ribet Teknis',
     description: 'Semua yang kami bangun dirancang agar bisa dipakai sehari-hari, tanpa perlu teknikal tinggi.',
+    color: '#0080FF',
+    image: '/Assets/langsungkepakai.png',
+    delay: 0.3,
   },
   {
-    icon: ShieldCheck,
-    title: ['Transparan', '& Jelas.'],
+    icon: StickyNote,
+    title: 'Transparan & Jelas.',
+    subtitle: 'Tanpa Biaya Tersembunyi',
+    badge: 'Harga & Progress Jelas',
     description: 'Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi ataupun janji kosong.',
+    color: '#00C851',
+    image: '/Assets/harga_jelas.png',
+    delay: 0.2,
   },
 ]
 
@@ -35,39 +55,57 @@ export default function About() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10" ref={ref}>
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left - 4 Value Cards in 2x2 Grid */}
-          <div className="grid grid-cols-2 gap-4 md:gap-5 w-full">
-            {valueCards.map((card, index) => (
+          <div className="w-full">
+            <p className="text-xs font-bold tracking-[0.2em] uppercase mb-2 lg:hidden text-center text-[#FFCC00]">VALUE CARDS</p>
+            <h3 className="text-3xl font-bold mb-8 lg:hidden text-center">
+              <span className="text-white">Upaya </span>
+              <span style={{ background: 'linear-gradient(135deg, #FFCC00, #FF8800)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Kami</span>
+            </h3>
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 md:gap-5 w-full">
+            {valueCards.map((card) => (
               <motion.div
-                key={card.title.join(' ')}
-                className="bg-[#3b3b3b] rounded-xl relative overflow-hidden cursor-pointer group flex flex-col"
-                initial={{ opacity: 0, y: 30 }}
+                key={card.title}
+                initial={{ opacity: 0, y: 28 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -8, transition: { duration: 0.2 } }}
-                style={{ boxShadow: '0 4px 4px rgba(0,0,0,0.25)' }}
+                transition={{ duration: 0.6, delay: card.delay, ease: [0.16, 1, 0.3, 1] }}
+                className="rounded-xl sm:rounded-2xl overflow-hidden"
+                style={{ background: '#141416', border: '1px solid #2a2a2a' }}
               >
-                {/* Dark header bar with title */}
-                <div className="bg-[#212121] rounded-r-xl py-3 md:py-5 pl-3 md:pl-6 pr-2 md:pr-4 mt-4 md:mt-8 mr-2 md:mr-3">
-                  <h3 className="text-white font-bold text-[16px] sm:text-[20px] md:text-[26px] leading-tight">
-                    {card.title.map((line, i) => (
-                      <span key={i} className="block">{line}</span>
-                    ))}
-                  </h3>
+                {/* Image */}
+                <div className="relative h-[90px] sm:h-[110px] md:h-[130px] overflow-hidden">
+                  <img src={card.image} alt={card.title} className="w-full h-full object-cover" loading="lazy" />
                 </div>
-
-                {/* Icon and description row */}
-                <div className="p-3 md:p-4 flex gap-2 md:gap-3 items-start mt-1 md:mt-2 flex-1">
-                  {/* Icon in black square */}
-                  <div className="bg-black rounded-lg w-[48px] h-[48px] md:w-[72px] md:h-[72px] lg:w-[90px] lg:h-[88px] flex items-center justify-center flex-shrink-0">
-                    <card.icon className="w-5 h-5 md:w-8 md:h-8 lg:w-10 lg:h-10 text-white" />
+                {/* Content */}
+                <div className="p-3 sm:p-4 md:p-5">
+                {/* Top row: icon + title + subtitle */}
+                <div className="flex items-center gap-2 sm:gap-3 mb-2.5 sm:mb-3">
+                  <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0"
+                    style={{ background: `${card.color}18` }}>
+                    <card.icon size={14} className="sm:hidden" style={{ color: card.color }} />
+                    <card.icon size={16} className="hidden sm:block" style={{ color: card.color }} />
                   </div>
-                  {/* Description */}
-                  <p className="text-white text-[11px] sm:text-[12px] md:text-[14px] leading-[1.4] font-medium text-left pt-0.5">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-white text-[11px] sm:text-[13px] md:text-base leading-snug">{card.title}</h3>
+                    <p className="text-[9px] sm:text-[11px] md:text-xs mt-0.5" style={{ color: '#777' }}>{card.subtitle}</p>
+                  </div>
+                </div>
+                {/* Badge */}
+                <div className="mb-2 sm:mb-3">
+                  <span className="inline-block text-[9px] sm:text-[10px] md:text-xs font-semibold rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1"
+                    style={{ color: card.color, background: `${card.color}18`, border: `1px solid ${card.color}30` }}>
+                    {card.badge}
+                  </span>
+                </div>
+                {/* Quote-style description */}
+                <div className="border-l-2 pl-2 sm:pl-3" style={{ borderColor: `${card.color}50` }}>
+                  <p className="text-[10px] sm:text-[12px] md:text-sm leading-relaxed" style={{ color: '#999' }}>
                     {card.description}
                   </p>
                 </div>
+                </div>{/* end content */}
               </motion.div>
             ))}
+          </div>
           </div>
 
           {/* Right - Content */}
