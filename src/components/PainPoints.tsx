@@ -4,7 +4,7 @@ import { MessageCircleQuestion, ImageOff, BarChart3, Clock, X } from 'lucide-rea
 
 const pains = [
   {
-    title: 'MASIH JAWAB\nDM MANUAL?',
+    title: 'MASIH\u00A0JAWAB\nDM\u00A0MANUAL?',
     pain: 'Masih jawab pertanyaan harga lewat DM satu-satu setiap hari?',
     hint: 'Ada cara lebih efisien, katalog produk online yang bisa dibagikan sekali, diakses selamanya.',
     color: '#E8651A',
@@ -12,7 +12,7 @@ const pains = [
     icon: MessageCircleQuestion,
   },
   {
-    title: 'BELUM PUNYA\nTOKO?',
+    title: 'BELUM\u00A0PUNYA\nTOKO?',
     pain: 'Pembeli minta foto produk tapi kamu kebingungan kirim ke mana?',
     hint: 'Toko online yang rapi bikin calon pembeli percaya sebelum mereka tanya apa-apa.',
     color: '#D4912A',
@@ -20,7 +20,7 @@ const pains = [
     icon: ImageOff,
   },
   {
-    title: 'PROMOSI\nTANPA DATA?',
+    title: 'PROMOSI\nTANPA\u00A0DATA?',
     pain: 'Promosi sudah jalan, tapi tidak tahu berapa yang lihat dan berapa yang beli?',
     hint: 'Sistem digital yang tepat kasih kamu data nyata, bukan cuma perasaan.',
     color: '#C8752E',
@@ -28,7 +28,7 @@ const pains = [
     icon: BarChart3,
   },
   {
-    title: 'KERJA MANUAL\nTERUS?',
+    title: 'KERJA\u00A0MANUAL\nTERUS?',
     pain: 'Jam kerja habis untuk hal-hal yang bisa diotomasi?',
     hint: 'Kami bantu identifikasi proses mana yang bisa didigitalisasi agar waktu kamu lebih fokus ke hal yang penting.',
     color: '#B85A1E',
@@ -158,7 +158,7 @@ export default function PainPoints() {
                           style={{
                             fontFamily: "'Staatliches', cursive",
                             color: '#ffffff',
-                            fontSize: 'clamp(28px, 7vw, 64px)',
+                            fontSize: 'clamp(22px, 5.5vw, 56px)',
                             wordBreak: 'break-word',
                           }}
                         >
