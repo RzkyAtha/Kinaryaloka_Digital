@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react'
+import { isFirebaseConfigured, firestoreGetAll, firestorePut as fsPut, firestoreDelete as fsDelete, firestoreSeedAll } from '../services/firebase'
 
 export type PortfolioCategory = 'Website' | 'Design'
 export type WebsiteSubcategory = 'E-Commerce' | 'Reservasi' | 'Company Profile'
@@ -110,13 +111,33 @@ async function dbDelete(id: string): Promise<void> {
   })
 }
 
+const FS_COLLECTION = 'portfolio'
+
 async function dbInit(): Promise<PortfolioProject[]> {
+  // 1. Try Firestore first
+  if (isFirebaseConfigured()) {
+    try {
+      const remote = await firestoreGetAll<PortfolioProject>(FS_COLLECTION)
+      if (remote.length > 0) {
+        const migrated = remote.map(migrateProject)
+        // Cache in IndexedDB
+        for (const p of migrated) { try { await dbPut(p) } catch {} }
+        return migrated
+      }
+      // Firestore empty: seed defaults
+      await firestoreSeedAll(FS_COLLECTION, DEFAULT_PROJECTS)
+      for (const p of DEFAULT_PROJECTS) { try { await dbPut(p) } catch {} }
+      return DEFAULT_PROJECTS
+    } catch (err) {
+      console.error('[Portfolio] Firestore load failed, falling back:', err)
+    }
+  }
+
+  // 2. Fallback: IndexedDB
   try {
     const existing = await dbGetAll()
     if (existing.length > 0) {
-      // Migrate old format projects to new category/subcategory format
       const migrated = existing.map(migrateProject)
-      // Only re-write projects that actually changed during migration
       for (let i = 0; i < migrated.length; i++) {
         if (migrated[i] !== existing[i]) await dbPut(migrated[i])
       }
@@ -165,24 +186,32 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const addProject = useCallback((p: Omit<PortfolioProject, 'id'>) => {
     const newProject = { ...p, id: `proj-${Date.now()}` } as PortfolioProject
     setProjects(prev => [...prev, newProject])
-    dbPut(newProject).catch(err => {
-      console.error('[Portfolio] Failed to save project:', err)
-      setProjects(prev => prev.filter(x => x.id !== newProject.id))
-    })
+    dbPut(newProject).catch(err => console.error('[Portfolio] IDB save failed:', err))
+    if (isFirebaseConfigured()) {
+      fsPut(FS_COLLECTION, newProject).catch(err => console.error('[Portfolio] Firestore save failed:', err))
+    }
   }, [])
 
   const updateProject = useCallback((id: string, p: Partial<PortfolioProject>) => {
     setProjects(prev => {
       const updated = prev.map(proj => proj.id === id ? { ...proj, ...p } : proj)
       const target = updated.find(proj => proj.id === id)
-      if (target) dbPut(target).catch(err => console.error('[Portfolio] Failed to update project:', err))
+      if (target) {
+        dbPut(target).catch(err => console.error('[Portfolio] IDB update failed:', err))
+        if (isFirebaseConfigured()) {
+          fsPut(FS_COLLECTION, target).catch(err => console.error('[Portfolio] Firestore update failed:', err))
+        }
+      }
       return updated
     })
   }, [])
 
   const deleteProject = useCallback((id: string) => {
     setProjects(prev => prev.filter(proj => proj.id !== id))
-    dbDelete(id).catch(err => console.error('[Portfolio] Failed to delete project:', err))
+    dbDelete(id).catch(err => console.error('[Portfolio] IDB delete failed:', err))
+    if (isFirebaseConfigured()) {
+      fsDelete(FS_COLLECTION, id).catch(err => console.error('[Portfolio] Firestore delete failed:', err))
+    }
   }, [])
 
   return (

@@ -28,7 +28,7 @@ const pains = [
     icon: BarChart3,
   },
   {
-    title: 'KERJA\nMANUAL\nTERUS?',
+    title: 'KERJA MANUAL\nTERUS?',
     pain: 'Jam kerja habis untuk hal-hal yang bisa diotomasi?',
     hint: 'Kami bantu identifikasi proses mana yang bisa didigitalisasi agar waktu kamu lebih fokus ke hal yang penting.',
     color: '#B85A1E',
@@ -123,7 +123,17 @@ export default function PainPoints() {
                       transition={{ duration: 0.35, delay: isInView ? i * 0.05 : 0 }}
                       whileTap={{ scale: 0.97 }}
                     >
-                      <div className="relative p-5 sm:p-6 md:p-8 flex flex-col justify-center aspect-square">
+                      <div className="relative p-5 sm:p-6 md:p-8 flex flex-col justify-center" style={{ aspectRatio: '1', minHeight: 0 }}>
+                        {/* Question mark button — top left */}
+                        <button
+                          className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg flex items-center justify-center text-white font-bold text-sm sm:text-base md:text-lg shadow-md hover:brightness-110 hover:scale-110 transition-all duration-200"
+                          style={{ background: '#6B3A1F' }}
+                          onClick={() => setActiveCard(i)}
+                          aria-label="Baca selengkapnya"
+                        >
+                          ?
+                        </button>
+
                         {/* Decorative number */}
                         <span
                           className="absolute top-3 right-4 sm:top-4 sm:right-5 font-bold pointer-events-none"
@@ -144,24 +154,21 @@ export default function PainPoints() {
 
                         {/* Title */}
                         <p
-                          className="whitespace-pre-line leading-[0.95] tracking-wide"
+                          className="leading-[0.95] tracking-wide overflow-hidden"
                           style={{
                             fontFamily: "'Staatliches', cursive",
                             color: '#ffffff',
-                            fontSize: 'clamp(36px, 8vw, 72px)',
+                            fontSize: 'clamp(28px, 7vw, 64px)',
+                            wordBreak: 'break-word',
                           }}
                         >
                           {item.title}
                         </p>
 
-                        {/* Button */}
-                        <button
-                          className="mt-4 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-105 hover:shadow-lg self-start"
-                          style={{ background: `linear-gradient(135deg, ${item.btnColor}, ${item.btnColor}CC)`, color: '#ffffff', boxShadow: `0 4px 12px ${item.btnColor}40` }}
-                          onClick={() => setActiveCard(i)}
-                        >
-                          Harus apa dong?
-                        </button>
+                        {/* Hint text */}
+                        <p className="mt-3 text-[10px] sm:text-xs text-white/50 leading-snug">
+                          Tekan tombol <span className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-white/50 text-[9px] font-bold text-white/70 align-middle mx-0.5">?</span> untuk membaca lebih lanjut!
+                        </p>
                       </div>
                     </motion.div>
                   ))}

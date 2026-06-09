@@ -103,12 +103,12 @@ export default function Hero() {
                 <motion.button
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="text-white w-full px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl font-semibold text-[13px] sm:text-[16px] md:text-[18px] lg:text-[22px] flex items-center justify-center gap-2 sm:gap-3 shadow-lg"
+                  className="text-white w-full px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl font-semibold text-[13px] sm:text-[16px] md:text-[18px] lg:text-[22px] flex items-center justify-center gap-2 sm:gap-3 shadow-lg text-center"
                   style={{ background: 'linear-gradient(135deg, #F5C542, #E5A830, #D4912A)', boxShadow: '0 4px 16px rgba(229,168,48,0.35)' }}
                   onClick={() => window.open('https://wa.me/6281357662424?text=' + encodeURIComponent('Halo KINARYALOKA! Saya mau konsultasi gratis 30 menit untuk bisnis saya.'), '_blank')}
                 >
-                  <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
-                  Ngobrol Dulu Yuk?
+                  <MessageCircle className="w-5 h-5 md:w-6 md:h-6 shrink-0" />
+                  <span>Ngobrol Dulu Yuk?</span>
                 </motion.button>
                 <p className="text-[#999] text-xs text-center">Gratis 30 menit · Tanpa komitmen</p>
               </div>
@@ -116,12 +116,12 @@ export default function Hero() {
                 <motion.button
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="text-white w-full px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl font-semibold text-[13px] sm:text-[16px] md:text-[18px] lg:text-[22px] flex items-center justify-center gap-2 sm:gap-3 shadow-lg"
+                  className="text-white w-full px-3 sm:px-6 md:px-10 py-3 sm:py-4 md:py-5 rounded-xl font-semibold text-[13px] sm:text-[16px] md:text-[18px] lg:text-[22px] flex items-center justify-center gap-2 sm:gap-3 shadow-lg text-center"
                   style={{ background: 'linear-gradient(135deg, #4a4a4a, #3a3a3a, #2a2a2a)', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' }}
                   onClick={() => document.getElementById('produk')?.scrollIntoView({ behavior: 'smooth' })}
                 >
-                  <ShoppingBag className="w-5 h-5 md:w-6 md:h-6" />
-                  Lihat Paket
+                  <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 shrink-0" />
+                  <span>Lihat Paket</span>
                 </motion.button>
                 <p className="text-transparent text-xs text-center select-none" aria-hidden="true">&nbsp;</p>
               </div>

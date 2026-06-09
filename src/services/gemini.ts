@@ -228,7 +228,7 @@ export async function sendMessage(userMessage: string): Promise<GeminiResponse> 
 
     if (errMsg.includes('quota') || errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED')) {
       return {
-        text: 'Maaf, Nara lagi penuh requestnya. Coba lagi beberapa menit ke depan ya, atau langsung chat via WhatsApp aja.',
+        text: 'Maaf, Nara mulai lelah soalnya udah jawab banyak pertanyaan hari ini. Kalau masih ada pertanyaan bisa tanya langsung ke Atha via WhatsApp ya!',
         chips: ['Hubungi via WA'],
       }
     }

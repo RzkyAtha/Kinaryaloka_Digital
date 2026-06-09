@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, useRef, useCallback, ReactNode } from 'react'
+import { isFirebaseConfigured, firestoreGetAll, firestorePut, firestoreDelete as fsDelete, firestoreSeedAll } from '../services/firebase'
 
 export interface Product {
   id: string
@@ -253,27 +254,74 @@ const ProductsContext = createContext<ProductsContextType | null>(null)
 
 const STORAGE_KEY = 'kinaryaloka_products'
 
-export function ProductsProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) return JSON.parse(stored) as Product[]
-    } catch {}
-    return DEFAULT_PRODUCTS
-  })
+const COLLECTION = 'products'
 
+export function ProductsProvider({ children }: { children: ReactNode }) {
+  const [products, setProducts] = useState<Product[]>(DEFAULT_PRODUCTS)
+  const initRef = useRef(false)
+
+  // Load from Firestore on mount, fall back to localStorage then defaults
+  useEffect(() => {
+    if (initRef.current) return
+    initRef.current = true
+
+    const init = async () => {
+      if (isFirebaseConfigured()) {
+        try {
+          const remote = await firestoreGetAll<Product>(COLLECTION)
+          if (remote.length > 0) {
+            setProducts(remote)
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(remote)) } catch {}
+            return
+          }
+          // Firestore empty: seed defaults
+          await firestoreSeedAll(COLLECTION, DEFAULT_PRODUCTS)
+          setProducts(DEFAULT_PRODUCTS)
+          return
+        } catch (err) {
+          console.error('[Products] Firestore load failed, using cache:', err)
+        }
+      }
+      // Fallback: localStorage
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY)
+        if (stored) { setProducts(JSON.parse(stored)); return }
+      } catch {}
+      setProducts(DEFAULT_PRODUCTS)
+    }
+    init()
+  }, [])
+
+  // Sync to localStorage whenever products change
   useEffect(() => {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(products)) } catch {}
   }, [products])
 
-  const addProduct = (p: Omit<Product, 'id'>) =>
-    setProducts(prev => [...prev, { ...p, id: `prod-${Date.now()}` }])
+  const addProduct = useCallback((p: Omit<Product, 'id'>) => {
+    const newProduct = { ...p, id: `prod-${Date.now()}` } as Product
+    setProducts(prev => [...prev, newProduct])
+    if (isFirebaseConfigured()) {
+      firestorePut(COLLECTION, newProduct).catch(err => console.error('[Products] Firestore add failed:', err))
+    }
+  }, [])
 
-  const updateProduct = (id: string, p: Partial<Product>) =>
-    setProducts(prev => prev.map(prod => prod.id === id ? { ...prod, ...p } : prod))
+  const updateProduct = useCallback((id: string, p: Partial<Product>) => {
+    setProducts(prev => {
+      const updated = prev.map(prod => prod.id === id ? { ...prod, ...p } : prod)
+      const target = updated.find(prod => prod.id === id)
+      if (target && isFirebaseConfigured()) {
+        firestorePut(COLLECTION, target).catch(err => console.error('[Products] Firestore update failed:', err))
+      }
+      return updated
+    })
+  }, [])
 
-  const deleteProduct = (id: string) =>
+  const deleteProduct = useCallback((id: string) => {
     setProducts(prev => prev.filter(prod => prod.id !== id))
+    if (isFirebaseConfigured()) {
+      fsDelete(COLLECTION, id).catch(err => console.error('[Products] Firestore delete failed:', err))
+    }
+  }, [])
 
   return (
     <ProductsContext.Provider value={{ products, addProduct, updateProduct, deleteProduct }}>

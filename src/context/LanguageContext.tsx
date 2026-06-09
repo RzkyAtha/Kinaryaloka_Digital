@@ -17,10 +17,16 @@ function getCombo(): HTMLSelectElement | null {
 }
 
 function clearGoogTransCookie() {
-  const domains = ['', window.location.hostname, '.' + window.location.hostname]
+  const host = window.location.hostname                       // e.g. www.kinaryaloka.com
+  const bare = host.replace(/^www\./, '')                     // e.g. kinaryaloka.com
+  const domains = ['', host, '.' + host, bare, '.' + bare]
+  const paths = ['/', '']
   for (const domain of domains) {
-    const d = domain ? `; domain=${domain}` : ''
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/${d}`
+    for (const path of paths) {
+      const d = domain ? `; domain=${domain}` : ''
+      const p = path ? `; path=${path}` : ''
+      document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC${p}${d}`
+    }
   }
 }
 
@@ -109,10 +115,22 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('kinaryaloka_lang', lang)
 
     if (lang === 'id') {
-      // For restoring to Indonesian, clear cookie and reload immediately
+      // For restoring to Indonesian:
+      // 1. Clear all possible googtrans cookies
       clearGoogTransCookie()
       localStorage.setItem('kinaryaloka_lang', 'id')
-      window.location.reload()
+
+      // 2. Try Google Translate's own restore mechanism first
+      const combo = getCombo()
+      if (combo) {
+        combo.value = ''
+        combo.dispatchEvent(new Event('change'))
+      }
+
+      // 3. Force a clean navigation (not reload) to bypass cached GT state
+      const url = new URL(window.location.href)
+      url.searchParams.set('_lang', Date.now().toString())
+      window.location.href = url.toString()
       return
     }
 
