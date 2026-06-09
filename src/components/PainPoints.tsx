@@ -4,7 +4,7 @@ import { MessageCircleQuestion, ImageOff, BarChart3, Clock, X } from 'lucide-rea
 
 const pains = [
   {
-    title: 'MASIH\nJAWAB DM\nMANUAL?',
+    title: 'MASIH JAWAB\nDM MANUAL?',
     pain: 'Masih jawab pertanyaan harga lewat DM satu-satu setiap hari?',
     hint: 'Ada cara lebih efisien, katalog produk online yang bisa dibagikan sekali, diakses selamanya.',
     color: '#E8651A',
@@ -12,7 +12,7 @@ const pains = [
     icon: MessageCircleQuestion,
   },
   {
-    title: 'BELUM\nPUNYA\nTOKO?',
+    title: 'BELUM PUNYA\nTOKO?',
     pain: 'Pembeli minta foto produk tapi kamu kebingungan kirim ke mana?',
     hint: 'Toko online yang rapi bikin calon pembeli percaya sebelum mereka tanya apa-apa.',
     color: '#D4912A',
@@ -20,7 +20,7 @@ const pains = [
     icon: ImageOff,
   },
   {
-    title: 'PROMOSI\nTANPA\nDATA?',
+    title: 'PROMOSI\nTANPA DATA?',
     pain: 'Promosi sudah jalan, tapi tidak tahu berapa yang lihat dan berapa yang beli?',
     hint: 'Sistem digital yang tepat kasih kamu data nyata, bukan cuma perasaan.',
     color: '#C8752E',
@@ -154,7 +154,7 @@ export default function PainPoints() {
 
                         {/* Title */}
                         <p
-                          className="leading-[0.95] tracking-wide overflow-hidden"
+                          className="whitespace-pre-line leading-[0.95] tracking-wide overflow-hidden"
                           style={{
                             fontFamily: "'Staatliches', cursive",
                             color: '#ffffff',
