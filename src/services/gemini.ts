@@ -216,25 +216,25 @@ export async function sendMessage(userMessage: string): Promise<GeminiResponse> 
 
     return { text, chips }
   } catch (err: any) {
-    console.error('[Nara/Gemini] Error:', err)
+    const errMsg = err?.message || String(err)
+    console.error('[Nara/Gemini] Error:', errMsg)
 
-    // Handle specific error types
-    if (err?.message?.includes('API_KEY')) {
+    if (errMsg.includes('API_KEY') || errMsg.includes('API key')) {
       return {
-        text: 'API key belum valid. Pastikan VITE_GEMINI_API_KEY sudah diset dengan benar.',
+        text: 'Maaf, ada kendala teknis pada sistem Nara. Silakan hubungi kami langsung via WhatsApp ya.',
         chips: ['Hubungi via WA'],
       }
     }
 
-    if (err?.message?.includes('quota') || err?.message?.includes('429')) {
+    if (errMsg.includes('quota') || errMsg.includes('429') || errMsg.includes('RESOURCE_EXHAUSTED')) {
       return {
-        text: 'Maaf, Nara sedang sibuk (limit tercapai). Silakan coba lagi nanti atau langsung chat via WhatsApp ya! 🙏',
+        text: 'Maaf, Nara lagi penuh requestnya. Coba lagi beberapa menit ke depan ya, atau langsung chat via WhatsApp aja.',
         chips: ['Hubungi via WA'],
       }
     }
 
     return {
-      text: 'Maaf, terjadi gangguan teknis. Silakan coba lagi atau hubungi kami langsung via WhatsApp.',
+      text: 'Maaf, terjadi gangguan teknis. Coba lagi ya, atau hubungi kami langsung via WhatsApp.',
       chips: ['Hubungi via WA', 'Coba lagi'],
     }
   }
