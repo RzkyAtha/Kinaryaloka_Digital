@@ -67,7 +67,7 @@ export default function CustomCursor() {
         ref={ringRef}
         className="fixed top-0 left-0 pointer-events-none z-[9999] w-10 h-10 rounded-full border-2 transition-all duration-150"
         style={{
-          borderColor: isPointer ? '#FF2D78' : 'rgba(255,45,120,0.5)',
+          borderColor: isPointer ? '#F5C542' : 'rgba(255,45,120,0.5)',
           transform: `translate(${position.x - 20}px, ${position.y - 20}px)`,
           scale: isPointer ? 1.5 : isClicking ? 0.8 : 1,
         }}
@@ -75,7 +75,7 @@ export default function CustomCursor() {
       {/* Dot */}
       <motion.div
         ref={dotRef}
-        className="fixed top-0 left-0 pointer-events-none z-[9999] w-2 h-2 rounded-full bg-[#FF2D78]"
+        className="fixed top-0 left-0 pointer-events-none z-[9999] w-2 h-2 rounded-full bg-[#F5C542]"
         animate={{
           x: position.x - 4,
           y: position.y - 4,

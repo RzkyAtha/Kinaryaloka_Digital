@@ -1,10 +1,12 @@
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
-import { User, Menu, X } from 'lucide-react'
+import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
+import { User } from 'lucide-react'
 import { useState } from 'react'
 import AuthModal from './AuthModal'
 
 interface NavbarProps {
   activeSection: string
+  activePage: string
+  onPageChange: (page: string) => void
 }
 
 const navItems = [
@@ -14,9 +16,13 @@ const navItems = [
   { id: 'digital', label: 'Mengapa Digital' },
 ]
 
-export default function Navbar({ activeSection }: NavbarProps) {
+const pageItems = [
+  { id: 'home', label: 'Home' },
+  { id: 'portfolio', label: 'Portfolio' },
+]
+
+export default function Navbar({ activeSection, activePage, onPageChange }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const { scrollY } = useScroll()
 
@@ -25,10 +31,12 @@ export default function Navbar({ activeSection }: NavbarProps) {
   })
 
   const scrollToSection = (id: string) => {
-    setMobileOpen(false)
-    setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    }, 300)
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handlePageChange = (page: string) => {
+    onPageChange(page)
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
   return (
@@ -62,30 +70,70 @@ export default function Navbar({ activeSection }: NavbarProps) {
           </motion.div>
 
           {/* Desktop Nav Links */}
-          <div className="hidden lg:flex items-center gap-10">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="relative font-poppins font-bold text-[22px] transition-colors duration-200 group"
-              >
-                <span className={`transition-colors duration-200 ${
-                  activeSection === item.id ? 'text-[#FF2D78]' : 'text-[#484848] group-hover:text-[#FF2D78]'
-                }`}>
+          <div className="hidden lg:flex items-center gap-8">
+            {/* Page-level pill tabs */}
+            <div className="flex items-center gap-1 bg-gray-100 rounded-full p-1.5">
+              {pageItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handlePageChange(item.id)}
+                  className={`relative px-5 py-2 rounded-full font-poppins font-semibold text-[15px] transition-all duration-200 ${
+                    activePage === item.id
+                      ? 'bg-black text-white shadow-sm'
+                      : 'text-gray-500 hover:text-gray-800'
+                  }`}
+                >
                   {item.label}
-                </span>
-                <motion.span
-                  className="absolute -bottom-1 left-0 h-[2px] rounded-full" style={{ background: 'linear-gradient(90deg, #FF2D78, #FF6B9D)' }}
-                  initial={{ width: 0 }}
-                  animate={{ width: activeSection === item.id ? '100%' : 0 }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                />
-              </button>
-            ))}
+                </button>
+              ))}
+            </div>
+
+            {/* Section links - only show on home */}
+            {activePage === 'home' && (
+              <>
+                <div className="w-px h-6 bg-gray-300" />
+                {navItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className="relative font-poppins font-medium text-[17px] transition-colors duration-200 group"
+                  >
+                    <span className={`transition-colors duration-200 ${
+                      activeSection === item.id ? 'text-[#F5C542]' : 'text-[#8a8a8a] group-hover:text-[#F5C542]'
+                    }`}>
+                      {item.label}
+                    </span>
+                    <motion.span
+                      className="absolute -bottom-1 left-0 h-[2px] rounded-full" style={{ background: 'linear-gradient(90deg, #F5C542, #D4912A)' }}
+                      initial={{ width: 0 }}
+                      animate={{ width: activeSection === item.id ? '100%' : 0 }}
+                      transition={{ duration: 0.3, ease: 'easeOut' }}
+                    />
+                  </button>
+                ))}
+              </>
+            )}
           </div>
 
           {/* Right side */}
           <div className="flex items-center gap-2">
+            {/* Mobile page tabs (Home / Portfolio) */}
+            <div className="flex lg:hidden items-center gap-1 bg-gray-100 rounded-xl p-1">
+              {pageItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => handlePageChange(item.id)}
+                  className={`relative px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                    activePage === item.id
+                      ? 'bg-black text-white shadow-sm'
+                      : 'text-gray-500 hover:text-gray-800'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
             {/* Desktop user icon */}
             <motion.button
               whileHover={{ scale: 1.06 }}
@@ -95,74 +143,10 @@ export default function Navbar({ activeSection }: NavbarProps) {
             >
               <User className="w-7 h-7 text-white" />
             </motion.button>
-
-            {/* Mobile hamburger */}
-            <motion.button
-              className="lg:hidden w-10 h-10 rounded-lg bg-black flex items-center justify-center"
-              whileTap={{ scale: 0.92 }}
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {mobileOpen
-                  ? <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}><X className="w-5 h-5 text-white" /></motion.span>
-                  : <motion.span key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}><Menu className="w-5 h-5 text-white" /></motion.span>
-                }
-              </AnimatePresence>
-            </motion.button>
           </div>
         </div>
       </motion.nav>
 
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.div
-            className="fixed inset-0 z-40 lg:hidden"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {/* Backdrop */}
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-            {/* Menu panel */}
-            <motion.div
-              className="absolute top-0 right-0 w-72 h-full bg-white shadow-2xl flex flex-col pt-24 px-6 gap-2"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            >
-              {navItems.map((item, i) => (
-                <motion.button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`w-full text-left py-4 px-4 rounded-xl font-bold text-xl border-b border-gray-100 transition-colors ${
-                    activeSection === item.id ? 'text-[#FF2D78] bg-[#FF2D78]/5' : 'text-gray-800 hover:text-[#FF2D78]'
-                  }`}
-                  initial={{ opacity: 0, x: 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.07 }}
-                >
-                  {item.label}
-                </motion.button>
-              ))}
-              <motion.button
-                className="mt-4 w-full py-4 bg-black rounded-xl text-white font-bold flex items-center justify-center gap-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                onClick={() => {
-                  setMobileOpen(false)
-                  setAuthModalOpen(true)
-                }}
-              >
-                <User className="w-5 h-5" />
-                Akun Saya
-              </motion.button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Auth Modal */}
       <AuthModal

@@ -63,7 +63,7 @@ export default function Footer() {
                   key={label}
                   href="#"
                   aria-label={label}
-                  className="w-10 h-10 rounded-lg bg-[#3a3a3a] flex items-center justify-center hover:bg-[#FF2D78] transition-colors duration-200 cursor-pointer"
+                  className="w-10 h-10 rounded-lg bg-[#3a3a3a] flex items-center justify-center hover:bg-[#F5C542] transition-colors duration-200 cursor-pointer"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -133,12 +133,12 @@ export default function Footer() {
               <input
                 type="email"
                 placeholder="Masukan emailmu disini"
-                className="bg-[#3a3a3a] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#FF2D78]"
+                className="bg-[#3a3a3a] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#F5C542]"
               />
             </div>
             <motion.button
               className="text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 cursor-pointer"
-              style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)', boxShadow: '0 2px 12px #FF2D7830' }}
+              style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)', boxShadow: '0 2px 12px #F5C54230' }}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >

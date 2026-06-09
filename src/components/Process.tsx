@@ -6,22 +6,22 @@ const steps = [
   {
     number: '01',
     title: 'Hubungi kami via WhatsApp',
-    color: '#FF2D78',
+    color: '#F5C542',
   },
   {
     number: '02',
     title: 'Cerita soal bisnis & kebutuhanmu',
-    color: '#0080FF',
+    color: '#F5C542',
   },
   {
     number: '03',
     title: 'Kami rekomendasikan paket yang tepat',
-    color: '#FF8C2E',
+    color: '#F5C542',
   },
   {
     number: '04',
     title: 'Project dimulai dengan rapi dan terstruktur',
-    color: '#00E639',
+    color: '#F5C542',
   },
 ]
 
@@ -44,10 +44,10 @@ export default function Process() {
       </div>
 
       {/* Left Accent */}
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-[#FF2D78]/50 to-transparent" />
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-transparent via-[#F5C542]/50 to-transparent" />
 
       {/* Bottom Right Glow */}
-      <div className="absolute -right-40 -bottom-40 w-[600px] h-[600px] bg-[#FF2D78]/5 rounded-full blur-3xl" />
+      <div className="absolute -right-40 -bottom-40 w-[600px] h-[600px] bg-[#F5C542]/5 rounded-full blur-3xl" />
 
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 relative z-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -69,7 +69,7 @@ export default function Process() {
               Loh Ya.
             </h2>
 
-            <div className="w-16 h-1 rounded mb-6" style={{ background: 'linear-gradient(90deg, #FF2D78, #FF6B9D)' }} />
+            <div className="w-16 h-1 rounded mb-6" style={{ background: 'linear-gradient(90deg, #F5C542, #D4912A)' }} />
 
             <p className="text-gray-500 mb-8 max-w-md leading-relaxed">
               Kami gak akan langsung nawarin paket di awal kok. Kami dengarkan dulu, 
@@ -115,7 +115,7 @@ export default function Process() {
                 whileHover={{ x: 10 }}
               >
                 <div 
-                  className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-white text-lg transition-colors"
+                  className="w-12 h-12 min-w-12 min-h-12 flex-shrink-0 rounded-xl flex items-center justify-center font-bold text-white text-lg transition-colors"
                   style={{ backgroundColor: step.color }}
                 >
                   {step.number}

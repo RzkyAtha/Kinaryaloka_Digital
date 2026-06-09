@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ShoppingCart, ArrowRight, X, Check } from 'lucide-react'
+import { ShoppingCart, X, Check } from 'lucide-react'
 import AuthModal from './AuthModal'
 import { useProducts, Product as CtxProduct } from '../context/ProductsContext'
 
@@ -173,7 +173,7 @@ function DetailModal({ product, onClose, onSelect }: { product: UIProduct | null
               {/* Title overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-4">
                 {product.badge && (
-                  <span className="bg-[#e70000] text-white text-xs font-bold px-2 py-0.5 rounded mr-2">{product.badge}</span>
+                  <span className="bg-[#e70000] text-white text-xs font-bold px-3 py-1 rounded-lg mr-2">{product.badge}</span>
                 )}
                 <h3 className="text-white font-bold text-2xl leading-tight">{product.title}</h3>
                 <p className="text-white/80 text-sm font-semibold mt-0.5">IDR {product.price}K</p>
@@ -266,6 +266,7 @@ export default function Products() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">Produk Kami</h2>
+          <p className="text-white/50 text-sm md:text-base mt-3">Harga fleksibel dan bisa nego sesuai kebutuhan.</p>
         </motion.div>
 
         {/* Tabs */}
@@ -339,14 +340,15 @@ export default function Products() {
                 </div>
                 <div className="p-3 relative">
                   {allMobileProducts[0].badge && (
-                    <div className="bg-[#e70000] text-white px-2.5 py-1 rounded-md font-semibold text-[10px] inline-block mb-2">{allMobileProducts[0].badge}</div>
+                    <div className="bg-[#e70000] text-white px-2.5 py-1 rounded-lg font-bold text-[10px] inline-block mb-2">{allMobileProducts[0].badge}</div>
                   )}
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-bold text-[16px] text-[#404040] leading-tight">{allMobileProducts[0].title}</h3>
                     <button onClick={() => setDetailProduct(allMobileProducts[0])} className="text-[11px] font-semibold flex items-center gap-0.5 whitespace-nowrap" style={{ color: allMobileProducts[0].textColor }}>
-                      Detail <ArrowRight className="w-3 h-3" />
+                      Detail
                     </button>
                   </div>
+                  <p className="text-[#9f9f9f] text-[11px] leading-relaxed mb-2">{allMobileProducts[0].description}</p>
                   <div className="flex items-baseline gap-1.5 mb-2.5">
                     <span className="text-[18px] font-semibold" style={{ color: allMobileProducts[0].textColor }}>IDR</span>
                     <span className="text-[18px] font-semibold text-[#454545]">{allMobileProducts[0].price}K</span>
@@ -385,9 +387,10 @@ export default function Products() {
                         {product.title}
                       </h3>
                       <button onClick={() => setDetailProduct(product)} className="text-[10px] font-semibold flex items-center gap-0.5 whitespace-nowrap shrink-0 ml-1" style={{ color: product.textColor }}>
-                        Detail <ArrowRight className="w-2.5 h-2.5" />
+                        Detail
                       </button>
                     </div>
+                    <p className="text-[#9f9f9f] text-[10px] leading-relaxed mb-1.5">{product.description}</p>
                     <div className="flex items-baseline gap-1 mb-2 mt-auto">
                       <span className="text-[14px] font-semibold" style={{ color: product.textColor }}>IDR</span>
                       <span className="text-[14px] font-semibold text-[#454545]">{product.price}K</span>
@@ -443,7 +446,7 @@ export default function Products() {
             {/* Right - Content */}
             <div className="p-8 relative">
               {currentProducts.featured.badge && (
-                <div className="bg-[#e70000] text-white px-4 py-2 rounded-md font-semibold text-sm inline-block mb-4">
+                <div className="bg-[#e70000] text-white px-4 py-2 rounded-lg font-bold text-sm inline-block mb-4">
                   {currentProducts.featured.badge}
                 </div>
               )}
@@ -472,7 +475,7 @@ export default function Products() {
                 className="absolute top-8 right-8 text-lg font-semibold flex items-center gap-1.5 hover:underline cursor-pointer transition-colors duration-200"
                 style={{ color: currentProducts.featured.textColor }}
               >
-                Detail <ArrowRight className="w-4 h-4" />
+                Detail
               </button>
             </div>
           </div>
@@ -535,7 +538,7 @@ export default function Products() {
                       whileHover={{ x: 4 }}
                       transition={{ duration: 0.2 }}
                     >
-                      Detail <ArrowRight className="w-4 h-4" />
+                      Detail
                     </motion.button>
                   </div>
                   <p className="text-[#9f9f9f] text-sm leading-relaxed text-justify mb-4 flex-1">

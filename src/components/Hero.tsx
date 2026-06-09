@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { MessageCircle, ShoppingBag } from 'lucide-react'
 import { useRef } from 'react'
+import { LanguageBadge } from './FloatingWA'
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -36,6 +37,11 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="space-y-5 md:space-y-8 order-last lg:order-first w-full min-w-0"
           >
+            {/* Language Badge */}
+            <div className="mb-2">
+              <LanguageBadge />
+            </div>
+
             {/* Title Images */}
             <div className="space-y-2 md:space-y-3 w-full">
               <motion.img

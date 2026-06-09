@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, ChevronRight, ExternalLink, RotateCcw } from 'lucide-react'
 import naraImg from '../../Assets/nara_mask.png'
+import { sendMessage as geminiSend, resetChat as geminiReset, isGeminiAvailable } from '../services/gemini'
 
 // ─── Knowledge Base ─────────────────────────────────────────────────────────
 const KB = {
@@ -1193,7 +1194,7 @@ Sejak hari pertama, fokus kami satu: membangun sistem digital yang benar-benar b
 
 // ─── ProductCard mini ─────────────────────────────────────────────────────
 function ProductCard({ p }: { p: (typeof allProducts)[0] }) {
-  const tagColor = p.tag === 'ecommerce' ? '#FF2D78' : p.tag === 'webdesign' ? '#0080FF' : '#00E639'
+  const tagColor = p.tag === 'ecommerce' ? '#F5C542' : p.tag === 'webdesign' ? '#0080FF' : '#00E639'
   const tagLabel = p.tag === 'ecommerce' ? 'E-Commerce' : p.tag === 'webdesign' ? 'Web Design' : 'Branding'
   return (
     <motion.div
@@ -1262,7 +1263,7 @@ export default function Chatbot() {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
     makeBot(
-      `Halo! Saya Nara, asisten virtual **KINARYALOKA Digital Studio**.\n\nSaya siap bantu jawab pertanyaan tentang kami, rekomendasiin produk yang cocok, atau mulai konsultasi singkat buat kamu.\n\nYuk, mau mulai dari mana?`,
+      `Halo! Aku Nara, asisten virtual **KINARYALOKA Digital Studio**.\n\nAku bisa bantu jawab pertanyaan soal kita, rekomendasiin produk yang cocok, atau mulai konsultasi singkat buat kamu.\n\nMau mulai dari mana nih?`,
       { chips: MAIN_CHIPS },
     ),
   ])
@@ -1314,22 +1315,38 @@ export default function Chatbot() {
     send(chip, mapped)
   }
 
-  const send = (displayText: string, queryText?: string) => {
+  const send = async (displayText: string, queryText?: string) => {
     const query = queryText || displayText
     const userMsg = makeUser(displayText)
     setMessages((prev) => [...prev, userMsg])
     setInput('')
     setTyping(true)
 
-    setTimeout(
-      () => {
+    if (isGeminiAvailable()) {
+      // Use Gemini AI
+      try {
+        const response = await geminiSend(query)
         setTyping(false)
-        const responses = getResponse(query, consult, setConsult, convCtx, setConvCtx)
-        setMessages((prev) => [...prev, ...responses])
-        if (!open) setHasNew(true)
-      },
-      500 + Math.random() * 400,
-    )
+        setMessages((prev) => [...prev, makeBot(response.text, { chips: response.chips })])
+      } catch {
+        setTyping(false)
+        setMessages((prev) => [...prev, makeBot(
+          'Maaf, terjadi gangguan. Silakan coba lagi atau hubungi kami via WhatsApp.',
+          { chips: ['Hubungi via WA'] },
+        )])
+      }
+    } else {
+      // Fallback to rule-based
+      setTimeout(
+        () => {
+          setTyping(false)
+          const responses = getResponse(query, consult, setConsult, convCtx, setConvCtx)
+          setMessages((prev) => [...prev, ...responses])
+        },
+        500 + Math.random() * 400,
+      )
+    }
+    if (!open) setHasNew(true)
   }
 
   const handleSend = () => {
@@ -1341,9 +1358,10 @@ export default function Chatbot() {
     setConsult({ step: 'idle', bisnisType: '', need: '', budget: 0 })
     setConvCtx({ userName: '', lastIntent: 'unknown', topicsDiscussed: [], pendingClarification: null, clarifyLoopCount: 0, awaitingCustomContext: null })
     clearDynamicKeywords()
+    geminiReset()
     setMessages([
       makeBot(
-        `Halo lagi! 👋 Saya siap bantu dari awal. Mau mulai dari mana?`,
+        `Halo lagi! Aku siap bantu dari awal. Mau mulai dari mana nih?`,
         { chips: MAIN_CHIPS },
       ),
     ])
@@ -1363,25 +1381,18 @@ export default function Chatbot() {
               exit={{ opacity: 0, scale: 0.8, x: -10 }}
               className="absolute -top-12 left-0 bg-[#1a1a1a] border border-[#2e2e2e] text-white rounded-xl px-3 py-2 shadow-xl whitespace-nowrap text-xs font-semibold"
             >
-              Ada yang bisa kami bantu? 💬
+              Ada yang bisa dibantu?
             </motion.div>
           )}
         </AnimatePresence>
         <motion.button
           onClick={() => setOpen((v) => !v)}
-          className="relative w-14 h-14 md:w-16 md:h-16 rounded-full shadow-2xl flex items-center justify-center text-white"
+          className="relative w-14 h-14 md:w-16 md:h-16 rounded-2xl shadow-2xl flex items-center justify-center text-white"
           style={{ backgroundColor: '#1E1E1E' }}
           whileHover={{ scale: 1.08 }}
           whileTap={{ scale: 0.92 }}
           aria-label="Open Chatbot"
         >
-          {/* Pulse */}
-          <motion.span
-            className="absolute inset-0 rounded-full"
-            style={{ backgroundColor: '#1E1E1E' }}
-            animate={{ scale: [1, 1.5, 1.5], opacity: [0.4, 0, 0] }}
-            transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
-          />
           <AnimatePresence mode="wait">
             {open ? (
               <motion.span key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
@@ -1389,7 +1400,7 @@ export default function Chatbot() {
               </motion.span>
             ) : (
               <motion.span key="chat" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <img src={naraImg} alt="Nara" className="w-10 h-10 rounded-full object-cover ring-2 ring-white/20" style={{ objectPosition: 'center top' }} />
+                <img src={naraImg} alt="Nara" className="w-10 h-10 rounded-xl object-cover" style={{ objectPosition: 'center top' }} />
               </motion.span>
             )}
           </AnimatePresence>
@@ -1414,7 +1425,7 @@ export default function Chatbot() {
             {/* Header */}
             <div
               className="flex items-center justify-between px-4 py-3 flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}
+              style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}
             >
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center flex-shrink-0">
@@ -1461,7 +1472,7 @@ export default function Chatbot() {
                     <div className="max-w-[92%] space-y-2">
                       {/* Bot avatar + bubble */}
                       <div className="flex items-start gap-2">
-                        <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}>
+                        <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}>
                           <MessageCircle className="w-3.5 h-3.5 text-white" />
                         </div>
                         <div className="rounded-2xl rounded-tl-sm px-3 py-2.5 bg-[#1e1e1e] border border-white/5 flex-1">
@@ -1486,7 +1497,7 @@ export default function Chatbot() {
                               key={n.sectionId}
                               onClick={() => scrollTo(n.sectionId)}
                               className="text-[10px] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-full border transition-colors"
-                              style={{ borderColor: '#FF2D78', color: '#FF6B9D' }}
+                              style={{ borderColor: '#F5C542', color: '#D4912A' }}
                             >
                               <ExternalLink className="w-2.5 h-2.5" /> {n.label}
                             </button>
@@ -1527,7 +1538,7 @@ export default function Chatbot() {
                   ) : (
                     <div
                       className="max-w-[80%] rounded-2xl rounded-tr-sm px-3 py-2.5 text-white text-sm"
-                      style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}
+                      style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}
                     >
                       {msg.text}
                     </div>
@@ -1543,7 +1554,7 @@ export default function Chatbot() {
                   exit={{ opacity: 0 }}
                   className="flex items-start gap-2"
                 >
-                  <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}>
+                  <div className="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5" style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}>
                     <MessageCircle className="w-3.5 h-3.5 text-white" />
                   </div>
                   <div className="rounded-2xl rounded-tl-sm px-3 py-2.5 bg-[#1e1e1e] border border-white/5 flex items-center gap-1">
@@ -1571,13 +1582,13 @@ export default function Chatbot() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                   placeholder="Ketik pertanyaanmu..."
-                  className="flex-1 bg-[#1e1e1e] border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#FF2D78]/60 transition-colors"
+                  className="flex-1 bg-[#1e1e1e] border border-white/10 rounded-xl px-3.5 py-2.5 text-white text-sm placeholder-white/30 focus:outline-none focus:border-[#F5C542]/60 transition-colors"
                 />
                 <motion.button
                   onClick={handleSend}
                   disabled={!input.trim()}
                   className="w-10 h-10 rounded-xl flex items-center justify-center text-white flex-shrink-0 disabled:opacity-40 transition-opacity"
-                  style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}
+                  style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.92 }}
                 >

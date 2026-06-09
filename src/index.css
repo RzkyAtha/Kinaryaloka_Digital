@@ -46,7 +46,7 @@
 
   .input-admin {
     @apply w-full border rounded-xl px-3.5 py-2.5 text-white text-sm
-           placeholder-white/20 focus:outline-none focus:border-[#FF2D78]/50 transition-all duration-200;
+           placeholder-white/20 focus:outline-none focus:border-[#F5C542]/50 transition-all duration-200;
     background: rgba(255, 255, 255, 0.03);
     border-color: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(8px);
@@ -96,10 +96,36 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FF2D78;
+  background: #F5C542;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #D91A60;
+}
+
+/* Hide Google Translate top bar & branding */
+.goog-te-banner-frame,
+#goog-gt-tt,
+.goog-te-balloon-frame {
+  display: none !important;
+}
+
+.skiptranslate:not(#google_translate_element) {
+  display: none !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+body {
+  top: 0 !important;
+  position: static !important;
+}
+
+/* Keep the hidden select accessible for programmatic use */
+#google_translate_element .goog-te-combo {
+  visibility: hidden;
+  position: absolute;
+  height: 0;
+  overflow: hidden;
 }

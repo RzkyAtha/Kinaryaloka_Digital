@@ -11,8 +11,8 @@ const cards = [
     subtitle: 'Presisi Tinggi',
     label: '90%',
     description: 'Akurasi produk akhir sesuai dengan design figma.',
-    color: '#FF2D78',
-    gradient: 'from-[#FF2D78] to-[#FF6B9D]',
+    color: '#F5C542',
+    gradient: 'from-[#F5C542] to-[#D4912A]',
   },
   {
     image: '/Assets/kmt247.png',

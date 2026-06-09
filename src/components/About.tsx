@@ -10,7 +10,7 @@ const valueCards = [
     subtitle: 'Solusi yang Relevan',
     badge: 'Riset Dulu, Baru Bangun',
     description: 'Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
-    color: '#FF2D78',
+    color: '#FF2D55',
     image: '/Assets/tepatsasaran.png',
     delay: 0.1,
   },
@@ -91,8 +91,8 @@ export default function About() {
                 </div>
                 {/* Badge */}
                 <div className="mb-2 sm:mb-3">
-                  <span className="inline-block text-[9px] sm:text-[10px] md:text-xs font-semibold rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1"
-                    style={{ color: card.color, background: `${card.color}18`, border: `1px solid ${card.color}30` }}>
+                  <span className="inline-block text-[9px] sm:text-[10px] md:text-xs font-bold rounded-lg px-2.5 sm:px-3 py-1 sm:py-1.5 text-white"
+                    style={{ background: `linear-gradient(135deg, ${card.color}, ${card.color}CC)` }}>
                     {card.badge}
                   </span>
                 </div>

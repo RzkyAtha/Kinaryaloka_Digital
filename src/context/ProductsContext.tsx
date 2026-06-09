@@ -22,7 +22,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     price: '15000',
     image: '/Assets/ecom_ungu.png',
     description: 'E-commerce profesional + identitas brand lengkap. Dari toko online canggih hingga visual brand yang siap bersaing.',
-    color: '#FF2D78', textColor: '#FF2D78', badge: 'Flagship',
+    color: '#F5C542', textColor: '#F5C542', badge: 'Flagship',
     isFeatured: true, category: 'ecommerce',
     details: [
       'Semua fitur E-Commerce Pro',
@@ -105,7 +105,7 @@ export const DEFAULT_PRODUCTS: Product[] = [
     price: '12000',
     image: '/Assets/rserv_ungu.png',
     description: 'Transformasi digital menyeluruh dari mulai sistem, website, hingga identitas visual dan strategi konten.',
-    color: '#FF2D78', textColor: '#FF2D78', badge: 'Flagship',
+    color: '#F5C542', textColor: '#F5C542', badge: 'Flagship',
     isFeatured: true, category: 'webdesign',
     details: [
       'Semua fitur Web + Reservasi Pro',

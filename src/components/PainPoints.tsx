@@ -1,34 +1,38 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState } from 'react'
-import { ArrowRight, MessageCircleQuestion, ImageOff, BarChart3, Clock, X } from 'lucide-react'
+import { MessageCircleQuestion, ImageOff, BarChart3, Clock, X } from 'lucide-react'
 
 const pains = [
   {
+    title: 'MASIH\nJAWAB DM\nMANUAL?',
     pain: 'Masih jawab pertanyaan harga lewat DM satu-satu setiap hari?',
     hint: 'Ada cara lebih efisien, katalog produk online yang bisa dibagikan sekali, diakses selamanya.',
-    color: '#F5C542',
-    gradient: 'from-[#F5C542] to-[#FF8C00]',
+    color: '#E8651A',
+    btnColor: '#B85A1E',
     icon: MessageCircleQuestion,
   },
   {
+    title: 'BELUM\nPUNYA\nTOKO?',
     pain: 'Pembeli minta foto produk tapi kamu kebingungan kirim ke mana?',
     hint: 'Toko online yang rapi bikin calon pembeli percaya sebelum mereka tanya apa-apa.',
-    color: '#E5A830',
-    gradient: 'from-[#E5A830] to-[#FF6B35]',
+    color: '#D4912A',
+    btnColor: '#A06B1A',
     icon: ImageOff,
   },
   {
+    title: 'PROMOSI\nTANPA\nDATA?',
     pain: 'Promosi sudah jalan, tapi tidak tahu berapa yang lihat dan berapa yang beli?',
     hint: 'Sistem digital yang tepat kasih kamu data nyata, bukan cuma perasaan.',
-    color: '#D4912A',
-    gradient: 'from-[#D4912A] to-[#E85D26]',
+    color: '#C8752E',
+    btnColor: '#B85A1E',
     icon: BarChart3,
   },
   {
+    title: 'KERJA\nMANUAL\nTERUS?',
     pain: 'Jam kerja habis untuk hal-hal yang bisa diotomasi?',
     hint: 'Kami bantu identifikasi proses mana yang bisa didigitalisasi agar waktu kamu lebih fokus ke hal yang penting.',
-    color: '#C8841E',
-    gradient: 'from-[#C8841E] to-[#D45A1E]',
+    color: '#B85A1E',
+    btnColor: '#8B3E12',
     icon: Clock,
   },
 ]
@@ -37,6 +41,7 @@ export default function PainPoints() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
   const [showNara, setShowNara] = useState(false)
+  const [activeCard, setActiveCard] = useState<number | null>(null)
 
   return (
     <section className="bg-[#0a0a0a] py-14 md:py-20 relative overflow-hidden" ref={ref}>
@@ -93,80 +98,173 @@ export default function PainPoints() {
           </div>
 
           {/* ── Right: Pain Cards ── */}
-          <div className="flex-1 grid grid-cols-2 gap-3 md:gap-5 auto-rows-fr">
-          {pains.map((item, i) => (
-            <motion.div
-              key={i}
-              className="group relative rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer"
-              style={{
-                background: 'linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)',
-                border: '1px solid rgba(255,255,255,0.06)',
-              }}
-              initial={{ opacity: 0, y: 16 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.4, delay: i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-              whileHover={{
-                y: -6,
-                border: `1px solid ${item.color}35`,
-                transition: { duration: 0.25 },
-              }}
-            >
-              {/* Corner glow on hover (desktop only) */}
-              <div
-                className="hidden md:block absolute -top-20 -right-20 w-52 h-52 rounded-full blur-[80px] opacity-0 group-hover:opacity-[0.08] transition-opacity duration-700"
-                style={{ backgroundColor: item.color }}
-              />
-
-              {/* Inner content */}
-              <div className="relative p-4 sm:p-6 md:p-7">
-                {/* Top row: icon + number */}
-                <div className="flex items-center justify-between mb-4 sm:mb-5">
-                  <div
-                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center"
-                    style={{ background: `${item.color}12`, border: `1px solid ${item.color}20` }}
-                  >
-                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: item.color }} />
-                  </div>
-                  <span
-                    className="text-[11px] sm:text-xs font-mono font-bold tracking-wider"
-                    style={{ color: `${item.color}60` }}
-                  >
-                    0{i + 1}
-                  </span>
-                </div>
-
-                {/* Pain question */}
-                <p className="text-white font-bold text-[13px] sm:text-lg md:text-xl leading-snug mb-3 sm:mb-4">
-                  {item.pain}
-                </p>
-
-                {/* Gradient divider */}
-                <div
-                  className="h-px mb-3 sm:mb-4"
-                  style={{ background: `linear-gradient(90deg, ${item.color}40, transparent)` }}
-                />
-
-                {/* Hint */}
-                <p className="text-[#777] text-[11px] sm:text-sm md:text-[15px] leading-relaxed">
-                  {item.hint}
-                </p>
-
-                {/* Arrow hint */}
-                <div
-                  className="mt-4 sm:mt-5 flex items-center gap-2 text-xs sm:text-sm font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-0 group-hover:translate-x-1"
-                  style={{ color: item.color }}
+          <div className="flex-1 grid grid-cols-2 gap-3 md:gap-5" style={{ minHeight: activeCard !== null ? undefined : undefined }}>
+            <AnimatePresence mode="wait">
+              {activeCard === null ? (
+                // ── IDLE: Show all 4 cards in 2x2 grid ──
+                <motion.div
+                  key="grid"
+                  className="col-span-2 grid grid-cols-2 gap-3 md:gap-5"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  Kami bisa bantu <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                </div>
-              </div>
-            </motion.div>
-          ))}
+                  {pains.map((item, i) => (
+                    <motion.div
+                      key={i}
+                      className="relative rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer select-none"
+                      style={{
+                        background: item.color,
+                        boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
+                      }}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={isInView ? { opacity: 1, y: 0 } : {}}
+                      transition={{ duration: 0.35, delay: isInView ? i * 0.05 : 0 }}
+                      whileTap={{ scale: 0.97 }}
+                    >
+                      <div className="relative p-5 sm:p-6 md:p-8 flex flex-col justify-center aspect-square">
+                        {/* Decorative number */}
+                        <span
+                          className="absolute top-3 right-4 sm:top-4 sm:right-5 font-bold pointer-events-none"
+                          style={{
+                            fontFamily: "'Staatliches', cursive",
+                            fontSize: 'clamp(48px, 10vw, 100px)',
+                            color: 'rgba(255,255,255,0.2)',
+                            lineHeight: 1,
+                          }}
+                        >
+                          0{i + 1}
+                        </span>
+
+                        {/* Decorative icon */}
+                        <div className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 pointer-events-none" style={{ opacity: 0.3 }}>
+                          <item.icon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" style={{ color: '#ffffff' }} />
+                        </div>
+
+                        {/* Title */}
+                        <p
+                          className="whitespace-pre-line leading-[0.95] tracking-wide"
+                          style={{
+                            fontFamily: "'Staatliches', cursive",
+                            color: '#ffffff',
+                            fontSize: 'clamp(36px, 8vw, 72px)',
+                          }}
+                        >
+                          {item.title}
+                        </p>
+
+                        {/* Button */}
+                        <button
+                          className="mt-4 px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-200 hover:scale-105 hover:shadow-lg self-start"
+                          style={{ background: `linear-gradient(135deg, ${item.btnColor}, ${item.btnColor}CC)`, color: '#ffffff', boxShadow: `0 4px 12px ${item.btnColor}40` }}
+                          onClick={() => setActiveCard(i)}
+                        >
+                          Harus apa dong?
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : (
+                // ── CLICKED: Show single expanded card filling entire grid ──
+                <motion.div
+                  key={`expanded-${activeCard}`}
+                  className="col-span-2 relative rounded-2xl sm:rounded-3xl overflow-hidden"
+                  style={{
+                    background: '#ffffff',
+                    border: `2px solid ${pains[activeCard].color}`,
+                    boxShadow: `0 16px 48px ${pains[activeCard].color}40`,
+                  }}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                >
+                  <div className="relative p-6 sm:p-8 md:p-10 flex flex-col justify-center min-h-[320px] sm:min-h-[380px] md:min-h-[440px]">
+                    {/* Decorative number — top right */}
+                    <span
+                      className="absolute top-4 right-5 sm:top-6 sm:right-7 font-bold pointer-events-none"
+                      style={{
+                        fontFamily: "'Staatliches', cursive",
+                        fontSize: 'clamp(60px, 12vw, 120px)',
+                        color: `${pains[activeCard].color}30`,
+                        lineHeight: 1,
+                      }}
+                    >
+                      0{activeCard + 1}
+                    </span>
+
+                    {/* Decorative icon — bottom right */}
+                    <div className="absolute bottom-5 right-5 sm:bottom-7 sm:right-7 pointer-events-none">
+                      {(() => { const Icon = pains[activeCard].icon; return <Icon className="w-10 h-10 sm:w-14 sm:h-14 md:w-16 md:h-16" style={{ color: `${pains[activeCard].color}35` }} /> })()}
+                    </div>
+
+                    {/* Title */}
+                    <p
+                      className="whitespace-pre-line leading-[0.95] tracking-wide"
+                      style={{
+                        fontFamily: "'Staatliches', cursive",
+                        color: '#1a1a1a',
+                        fontSize: 'clamp(42px, 10vw, 80px)',
+                      }}
+                    >
+                      {pains[activeCard].title}
+                    </p>
+
+                    {/* Divider */}
+                    <div
+                      className="h-px mt-5 mb-4 w-full max-w-[200px]"
+                      style={{ background: `linear-gradient(90deg, ${pains[activeCard].color}, transparent)` }}
+                    />
+
+                    {/* Pain text */}
+                    <motion.p
+                      className="text-sm sm:text-base md:text-lg leading-relaxed font-semibold max-w-lg"
+                      style={{ color: '#1a1a1a' }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.15, duration: 0.3 }}
+                    >
+                      {pains[activeCard].pain}
+                    </motion.p>
+
+                    {/* Hint text */}
+                    <motion.p
+                      className="text-xs sm:text-sm md:text-base leading-relaxed mt-3 max-w-lg"
+                      style={{ color: '#5a5a5a' }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.25, duration: 0.3 }}
+                    >
+                      {pains[activeCard].hint}
+                    </motion.p>
+
+                    {/* Dimengerti button */}
+                    <motion.div
+                      className="mt-6"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.35, duration: 0.3 }}
+                    >
+                      <button
+                        className="px-6 py-2.5 rounded-xl text-sm sm:text-base font-bold transition-all duration-200 hover:scale-105"
+                        style={{ background: pains[activeCard].color, color: '#ffffff' }}
+                        onClick={() => setActiveCard(null)}
+                      >
+                        Dimengerti!
+                      </button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
 
       {/* Subtle bottom accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#FF2D78]/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F5C542]/20 to-transparent" />
 
       {/* Nara Popup Modal */}
       <AnimatePresence>

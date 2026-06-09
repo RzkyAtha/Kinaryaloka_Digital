@@ -1,6 +1,5 @@
 import { motion, useInView } from 'framer-motion'
-import { useRef, useEffect, useState } from 'react'
-import { ArrowRight } from 'lucide-react'
+import { useRef } from 'react'
 
 const stats = [
   {
@@ -38,42 +37,12 @@ const stats = [
   },
 ]
 
-function CountUp({ target, suffix, duration = 2000 }: { target: number; suffix: string; duration?: number }) {
-  const [count, setCount] = useState(0)
-  const countRef = useRef(null)
-  const isInView = useInView(countRef, { once: true })
+function StaticNumber({ target, suffix }: { target: number; suffix: string }) {
+  const formatted = target % 1 === 0
+    ? target.toLocaleString('id-ID')
+    : target.toFixed(2).replace('.', ',')
 
-  useEffect(() => {
-    if (!isInView) return
-
-    let startTime: number
-    let animationFrame: number
-
-    const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp
-      const progress = Math.min((timestamp - startTime) / duration, 1)
-      
-      setCount(progress * target)
-
-      if (progress < 1) {
-        animationFrame = requestAnimationFrame(animate)
-      }
-    }
-
-    animationFrame = requestAnimationFrame(animate)
-
-    return () => cancelAnimationFrame(animationFrame)
-  }, [isInView, target, duration])
-
-  const formatted = target % 1 === 0 
-    ? Math.floor(count).toLocaleString('id-ID')
-    : count.toFixed(2).replace('.', ',')
-
-  return (
-    <span ref={countRef}>
-      {formatted}{suffix}
-    </span>
-  )
+  return <span>{formatted}{suffix}</span>
 }
 
 function StatCard({ stat, index }: {
@@ -96,7 +65,7 @@ function StatCard({ stat, index }: {
       <div className="relative">
         <div className="flex items-baseline gap-1 mb-1">
           <span className="text-3xl md:text-5xl font-extrabold text-white">
-            <CountUp target={stat.value} suffix={stat.suffix} />
+            <StaticNumber target={stat.value} suffix={stat.suffix} />
           </span>
         </div>
         {stat.subtext && (
@@ -108,7 +77,7 @@ function StatCard({ stat, index }: {
           className="h-px w-full mb-2 md:mb-4"
           style={{ background: `linear-gradient(90deg, ${stat.color}, transparent)` }}
         />
-        <p className="text-gray-400 text-[10px] md:text-sm leading-relaxed hidden sm:block">{stat.description}</p>
+        <p className="text-gray-400 text-[10px] md:text-sm leading-relaxed">{stat.description}</p>
       </div>
     </motion.div>
   )
@@ -178,7 +147,7 @@ export default function WhyDigital() {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
-            Mulai Sekarang <ArrowRight className="w-4 h-4" />
+            Mulai Sekarang
           </motion.button>
         </motion.div>
       </div>

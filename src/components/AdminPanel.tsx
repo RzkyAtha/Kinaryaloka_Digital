@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   LogOut, Plus, Edit2, Trash2, Eye, EyeOff,
   ShieldCheck, Upload, X, Check, Star, AlertTriangle,
-  Package, LayoutGrid, ShoppingCart, Palette,
+  Package, LayoutGrid, ShoppingCart, Palette, Globe,
 } from 'lucide-react'
 import { useProducts, Product } from '../context/ProductsContext'
+import { usePortfolio, PortfolioProject } from '../context/PortfolioContext'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 const ADMIN_USERNAME = 'admin'
@@ -18,7 +19,7 @@ const CAT_LABEL: Record<string, string> = {
   branding: 'Branding',
 }
 const CAT_COLOR: Record<string, string> = {
-  ecommerce: '#FF2D78',
+  ecommerce: '#F5C542',
   webdesign: '#0080FF',
   branding: '#00E639',
 }
@@ -39,8 +40,8 @@ const EMPTY_FORM: FormData = {
   details: [''],
   category: 'ecommerce',
   isFeatured: false,
-  color: '#FF2D78',
-  textColor: '#FF2D78',
+  color: '#F5C542',
+  textColor: '#F5C542',
   badge: '',
 }
 
@@ -115,7 +116,7 @@ function ProductFormModal({
           {/* Header */}
           <div
             className="flex items-center justify-between px-6 py-4 flex-shrink-0 relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}
+            style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent pointer-events-none" />
             <h2 className="text-white font-bold text-lg">
@@ -191,7 +192,7 @@ function ProductFormModal({
                   <div className="flex gap-1 bg-white/5 rounded-lg p-0.5">
                     {(['url', 'upload'] as const).map(mode => (
                       <button key={mode} type="button" onClick={() => setImageMode(mode)}
-                        className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${imageMode === mode ? 'bg-[#FF2D78] text-white' : 'text-white/50 hover:text-white/80'}`}
+                        className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${imageMode === mode ? 'bg-[#F5C542] text-white' : 'text-white/50 hover:text-white/80'}`}
                       >
                         {mode === 'url' ? 'URL' : 'Upload File'}
                       </button>
@@ -209,7 +210,7 @@ function ProductFormModal({
                 ) : (
                   <div
                     onClick={() => fileRef.current?.click()}
-                    className="w-full border-2 border-dashed border-white/10 rounded-lg p-5 flex flex-col items-center justify-center cursor-pointer hover:border-[#FF2D78]/50 transition-colors"
+                    className="w-full border-2 border-dashed border-white/10 rounded-lg p-5 flex flex-col items-center justify-center cursor-pointer hover:border-[#F5C542]/50 transition-colors"
                   >
                     <Upload className="w-6 h-6 text-white/30 mb-1.5" />
                     <span className="text-white/40 text-xs text-center">Klik untuk upload (PNG, JPG, WebP)</span>
@@ -241,7 +242,7 @@ function ProductFormModal({
                   <label className="label-admin mb-0">Detail & Fitur Produk</label>
                   <button
                     type="button" onClick={addDetail}
-                    className="flex items-center gap-1 text-xs font-semibold text-[#FF6B9D] hover:text-white transition-colors"
+                    className="flex items-center gap-1 text-xs font-semibold text-[#D4912A] hover:text-white transition-colors"
                   >
                     <Plus className="w-3.5 h-3.5" /> Tambah Baris
                   </button>
@@ -313,7 +314,7 @@ function ProductFormModal({
               <button
                 type="submit"
                 className="flex-1 py-2.5 rounded-xl text-white text-sm font-bold flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
-                style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}
+                style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}
               >
                 <Check className="w-4 h-4" />
                 {initial ? 'Simpan Perubahan' : 'Tambah Produk'}
@@ -478,7 +479,7 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
   return (
     <div className="min-h-screen bg-[#080810] flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background orbs */}
-      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-[#FF2D78]/15 blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-[#F5C542]/15 blur-[150px] pointer-events-none" />
       <div className="absolute bottom-1/4 -right-32 w-[400px] h-[400px] rounded-full bg-[#0080FF]/12 blur-[130px] pointer-events-none" />
       <div className="absolute top-0 left-0 right-0 bottom-0 bg-[#080810]/50 pointer-events-none" />
 
@@ -490,8 +491,8 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
         {/* Logo area */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center relative"
-            style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}>
-            <div className="absolute inset-0 rounded-2xl bg-[#FF2D78]/40 blur-xl" />
+            style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}>
+            <div className="absolute inset-0 rounded-2xl bg-[#F5C542]/40 blur-xl" />
             <ShieldCheck className="w-8 h-8 text-white relative z-10" />
           </div>
           <h1 className="text-white font-black text-2xl tracking-tight">Admin Panel</h1>
@@ -501,7 +502,7 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
         {/* Card - Glassmorphic */}
         <div className="backdrop-blur-2xl border border-white/[0.08] rounded-2xl p-6 relative overflow-hidden"
           style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%)' }}>
-          <div className="absolute inset-0 bg-gradient-to-br from-[#FF2D78]/5 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#F5C542]/5 to-transparent pointer-events-none" />
           <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
             <div>
               <label className="label-admin">Username</label>
@@ -543,7 +544,7 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
             <motion.button
               type="submit"
               className="w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 mt-2 relative overflow-hidden"
-              style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}
+              style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}
               whileHover={{ opacity: 0.92 }} whileTap={{ scale: 0.98 }}
             >
               <ShieldCheck className="w-4 h-4" /> Masuk sebagai Admin
@@ -569,16 +570,320 @@ function LoginScreen({ onLogin }: { onLogin: (u: string, p: string) => boolean }
   )
 }
 
+// ─── Portfolio Form Modal ────────────────────────────────────────────────────
+import type { PortfolioCategory, PortfolioSubcategory } from '../context/PortfolioContext'
+
+const MAIN_CATEGORIES: { value: PortfolioCategory; label: string }[] = [
+  { value: 'Website', label: 'Website' },
+  { value: 'Design', label: 'Design' },
+]
+
+const SUB_CATEGORIES: Record<PortfolioCategory, { value: PortfolioSubcategory; label: string }[]> = {
+  Website: [
+    { value: 'E-Commerce', label: 'E-Commerce' },
+    { value: 'Reservasi', label: 'Reservasi' },
+    { value: 'Company Profile', label: 'Company Profile' },
+  ],
+  Design: [
+    { value: 'UI/UX', label: 'UI/UX' },
+    { value: 'Branding', label: 'Branding' },
+  ],
+}
+
+interface PortfolioFormData {
+  name: string
+  url: string
+  thumbnail: string
+  description: string
+  badge: string
+  category: PortfolioCategory
+  subcategory: PortfolioSubcategory
+  images: string[]
+}
+
+const EMPTY_PORTFOLIO_FORM: PortfolioFormData = {
+  name: '',
+  url: '',
+  thumbnail: '',
+  description: '',
+  badge: '',
+  category: 'Website',
+  subcategory: 'E-Commerce',
+  images: [],
+}
+
+function compressImage(file: File, maxWidth = 1200, quality = 0.75): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onerror = reject
+    reader.onload = () => {
+      const img = new Image()
+      img.onerror = reject
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        let w = img.width
+        let h = img.height
+        if (w > maxWidth) {
+          h = Math.round((h * maxWidth) / w)
+          w = maxWidth
+        }
+        canvas.width = w
+        canvas.height = h
+        const ctx = canvas.getContext('2d')!
+        ctx.drawImage(img, 0, 0, w, h)
+        resolve(canvas.toDataURL('image/jpeg', quality))
+      }
+      img.src = reader.result as string
+    }
+    reader.readAsDataURL(file)
+  })
+}
+
+function PortfolioFormModal({
+  open,
+  onClose,
+  onSave,
+  initial,
+}: {
+  open: boolean
+  onClose: () => void
+  onSave: (data: PortfolioFormData) => void
+  initial: PortfolioProject | null
+}) {
+  const [form, setForm] = useState<PortfolioFormData>(
+    initial
+      ? { name: initial.name, url: initial.url, thumbnail: initial.thumbnail, description: initial.description, badge: initial.badge || '', category: initial.category, subcategory: initial.subcategory, images: initial.images || [] }
+      : EMPTY_PORTFOLIO_FORM
+  )
+  const thumbnailInputRef = useRef<HTMLInputElement>(null)
+  const imagesInputRef = useRef<HTMLInputElement>(null)
+
+  const set = (key: keyof PortfolioFormData, value: string) => setForm(f => ({ ...f, [key]: value }))
+  const isDesign = form.category === 'Design'
+  const isUIUX = form.category === 'Design' && form.subcategory === 'UI/UX'
+  const isBranding = form.category === 'Design' && form.subcategory === 'Branding'
+  const isWebsite = form.category === 'Website'
+
+  const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const base64 = await compressImage(file, 800, 0.8)
+    set('thumbnail', base64)
+  }
+
+  const removeImage = (index: number) => {
+    setForm(f => ({ ...f, images: f.images.filter((_, i) => i !== index) }))
+  }
+
+  if (!open) return null
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+        <motion.div
+          className="relative w-full max-w-lg rounded-2xl overflow-hidden flex flex-col"
+          style={{ maxHeight: '92vh', background: 'linear-gradient(135deg, rgba(18,18,30,0.95) 0%, rgba(12,12,20,0.98) 100%)' }}
+          initial={{ scale: 0.9, y: 30, opacity: 0 }}
+          animate={{ scale: 1, y: 0, opacity: 1 }}
+          exit={{ scale: 0.92, y: 20, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+          onClick={e => e.stopPropagation()}
+        >
+          <div
+            className="flex items-center justify-between px-6 py-4 flex-shrink-0 relative overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}
+          >
+            <h2 className="text-white font-bold text-lg">
+              {initial ? 'Edit Portfolio' : 'Tambah Portfolio Baru'}
+            </h2>
+            <button type="button" onClick={onClose}
+              className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <form onSubmit={e => { e.preventDefault(); onSave(form) }} className="overflow-y-auto flex-1 p-6 space-y-4">
+            <div>
+              <label className="label-admin">Kategori</label>
+              <div className="flex gap-2 mb-3">
+                {MAIN_CATEGORIES.map(cat => (
+                  <button
+                    key={cat.value}
+                    type="button"
+                    onClick={() => {
+                      const firstSub = SUB_CATEGORIES[cat.value][0].value
+                      setForm(f => ({ ...f, category: cat.value, subcategory: firstSub, url: cat.value === 'Design' ? '' : f.url, images: [] }))
+                    }}
+                    className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-all ${form.category === cat.value ? 'text-white' : 'text-white/40 border border-white/10 hover:bg-white/5'}`}
+                    style={form.category === cat.value ? { background: 'linear-gradient(135deg, #F5C542, #D4912A)' } : {}}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+              <label className="label-admin">Sub-kategori</label>
+              <select
+                value={form.subcategory}
+                onChange={e => {
+                  const sub = e.target.value as PortfolioSubcategory
+                  setForm(f => ({ ...f, subcategory: sub, url: '', images: [] }))
+                }}
+                required
+                className="input-admin"
+              >
+                {SUB_CATEGORIES[form.category].map(sub => (
+                  <option key={sub.value} value={sub.value}>{sub.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="label-admin">{isDesign ? 'Nama Project' : 'Nama Website'}</label>
+              <input value={form.name} onChange={e => set('name', e.target.value)} required placeholder={isDesign ? 'contoh: Logo Kedai Kopi Nusantara' : 'contoh: Redbox Barbershop'} className="input-admin" />
+            </div>
+
+            {(isWebsite || isUIUX) && (
+              <div>
+                <label className="label-admin">{isUIUX ? 'URL Portfolio (Behance/Dribbble/dll)' : 'URL Website'}</label>
+                <input value={form.url} onChange={e => set('url', e.target.value)} required placeholder={isUIUX ? 'https://behance.net/...' : 'https://example.com'} className="input-admin" />
+              </div>
+            )}
+
+            {/* Thumbnail */}
+            <div>
+              <label className="label-admin">Thumbnail</label>
+              {isDesign ? (
+                <>
+                  <input
+                    ref={thumbnailInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleThumbnailUpload}
+                    className="hidden"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => thumbnailInputRef.current?.click()}
+                    className="w-full py-3 rounded-xl border-2 border-dashed border-white/20 text-white/50 text-sm font-medium hover:border-[#F5C542]/50 hover:text-[#F5C542] transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    {form.thumbnail ? 'Ganti Thumbnail' : 'Upload Thumbnail'}
+                  </button>
+                  {form.thumbnail && (
+                    <div className="mt-2 relative w-20 h-20 rounded-lg overflow-hidden border border-white/10">
+                      <img src={form.thumbnail} alt="Thumbnail" className="w-full h-full object-cover" />
+                      <button type="button" onClick={() => set('thumbnail', '')}
+                        className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-red-500 flex items-center justify-center">
+                        <X className="w-3 h-3 text-white" />
+                      </button>
+                    </div>
+                  )}
+                  {isUIUX && <p className="text-white/30 text-[10px] mt-1">Upload 1 gambar sebagai thumbnail preview</p>}
+                </>
+              ) : (
+                <>
+                  <input value={form.thumbnail} onChange={e => set('thumbnail', e.target.value)} placeholder="Kosongkan untuk auto-generate dari URL" className="input-admin" />
+                  <p className="text-white/30 text-[10px] mt-1">Jika kosong, akan otomatis menggunakan screenshot dari URL website</p>
+                </>
+              )}
+            </div>
+
+            {/* Images upload - only for Branding */}
+            {isBranding && (
+              <div>
+                <label className="label-admin">Gambar Portfolio (maks. 3)</label>
+                <input
+                  ref={imagesInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={async (e) => {
+                    const files = e.target.files
+                    if (!files) return
+                    const remaining = 3 - form.images.length
+                    if (remaining <= 0) return
+                    const newImages: string[] = []
+                    for (let i = 0; i < Math.min(files.length, remaining); i++) {
+                      const base64 = await compressImage(files[i])
+                      newImages.push(base64)
+                    }
+                    setForm(f => ({ ...f, images: [...f.images, ...newImages].slice(0, 3) }))
+                  }}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  onClick={() => form.images.length < 3 && imagesInputRef.current?.click()}
+                  className={`w-full py-3 rounded-xl border-2 border-dashed text-sm font-medium transition-colors flex items-center justify-center gap-2 ${form.images.length >= 3 ? 'border-white/10 text-white/20 cursor-not-allowed' : 'border-white/20 text-white/50 hover:border-[#F5C542]/50 hover:text-[#F5C542]'}`}
+                >
+                  <Upload className="w-4 h-4" />
+                  {form.images.length >= 3 ? 'Maksimal 3 gambar' : `Upload Gambar (${form.images.length}/3)`}
+                </button>
+                {form.images.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {form.images.map((img, i) => (
+                      <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-white/10">
+                        <img src={img} alt={`img-${i}`} className="w-full h-full object-cover" />
+                        <button type="button" onClick={() => removeImage(i)}
+                          className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-red-500 flex items-center justify-center">
+                          <X className="w-2.5 h-2.5 text-white" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <p className="text-white/30 text-[10px] mt-1">Upload gambar hasil desain (thumbnail + 3 gambar galeri)</p>
+              </div>
+            )}
+
+            <div>
+              <label className="label-admin">Badge (opsional)</label>
+              <input value={form.badge} onChange={e => set('badge', e.target.value)} placeholder="contoh: Client Pertama Kami" className="input-admin" />
+            </div>
+            <div>
+              <label className="label-admin">Deskripsi</label>
+              <textarea value={form.description} onChange={e => set('description', e.target.value)} required rows={3} placeholder={isDesign ? 'Deskripsi singkat mengenai project desain...' : 'Deskripsi singkat mengenai website...'} className="input-admin resize-none" />
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button type="button" onClick={onClose}
+                className="flex-1 py-2.5 rounded-xl border border-white/10 text-white/60 text-sm font-semibold hover:bg-white/5 transition-colors">Batal</button>
+              <button type="submit"
+                className="flex-1 py-2.5 rounded-xl text-white text-sm font-bold flex items-center justify-center gap-2 transition-opacity hover:opacity-90"
+                style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}>
+                <Check className="w-4 h-4" />
+                {initial ? 'Simpan' : 'Tambah'}
+              </button>
+            </div>
+          </form>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
 // ─── Main Admin Panel ─────────────────────────────────────────────────────────
 export default function AdminPanel() {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem(SESSION_KEY) === '1')
+  const [adminPage, setAdminPage] = useState<'produk' | 'portfolio'>('produk')
   const [activeTab, setActiveTab] = useState<'all' | Product['category']>('all')
   const [formOpen, setFormOpen] = useState(false)
   const [editTarget, setEditTarget] = useState<Product | null>(null)
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null)
   const [toast, setToast] = useState<string | null>(null)
 
+  // Portfolio state
+  const [portfolioFormOpen, setPortfolioFormOpen] = useState(false)
+  const [portfolioEditTarget, setPortfolioEditTarget] = useState<PortfolioProject | null>(null)
+  const [portfolioDeleteTarget, setPortfolioDeleteTarget] = useState<PortfolioProject | null>(null)
+
   const { products, addProduct, updateProduct, deleteProduct } = useProducts()
+  const { projects, addProject, updateProject, deleteProject } = usePortfolio()
 
   const showToast = (msg: string) => {
     setToast(msg)
@@ -645,7 +950,7 @@ export default function AdminPanel() {
 
       {/* Background mesh gradients */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-[#FF2D78]/8 blur-[200px]" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] rounded-full bg-[#F5C542]/8 blur-[200px]" />
         <div className="absolute bottom-1/4 right-1/6 w-[500px] h-[500px] rounded-full bg-[#0080FF]/6 blur-[180px]" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-[#00E639]/4 blur-[200px]" />
         <div className="absolute inset-0 bg-[#080810]/60" />
@@ -657,13 +962,13 @@ export default function AdminPanel() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center relative"
-              style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}>
-              <div className="absolute inset-0 rounded-lg bg-[#FF2D78]/30 blur-md" />
+              style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}>
+              <div className="absolute inset-0 rounded-lg bg-[#F5C542]/30 blur-md" />
               <ShieldCheck className="w-4 h-4 text-white relative z-10" />
             </div>
             <div>
               <span className="font-black text-sm tracking-tight">KINARYALOKA</span>
-              <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#FF2D78]/15 text-[#FF6B9D] border border-[#FF2D78]/25 backdrop-blur-sm">
+              <span className="ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[#F5C542]/15 text-[#D4912A] border border-[#F5C542]/25 backdrop-blur-sm">
                 ADMIN
               </span>
             </div>
@@ -688,6 +993,24 @@ export default function AdminPanel() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 relative z-10">
 
+        {/* Admin Page Tabs */}
+        <div className="flex gap-2 mb-8">
+          {([
+            { id: 'produk' as const, label: 'Produk', icon: <Package className="w-4 h-4" /> },
+            { id: 'portfolio' as const, label: 'Portfolio', icon: <Globe className="w-4 h-4" /> },
+          ]).map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setAdminPage(tab.id)}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${adminPage === tab.id ? 'text-white' : 'text-white/40 hover:text-white/70 border border-white/[0.08]'}`}
+              style={adminPage === tab.id ? { background: 'linear-gradient(135deg, #F5C542, #D4912A)' } : {}}
+            >
+              {tab.icon} {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {adminPage === 'produk' && (<>
         {/* Page title + Add button */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -697,7 +1020,7 @@ export default function AdminPanel() {
           <motion.button
             onClick={handleOpenAdd}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-bold relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}
+            style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}
             whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
@@ -708,7 +1031,7 @@ export default function AdminPanel() {
         {/* Stats row - Glassmorphic */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
           {[
-            { label: 'Total Produk', value: stats.all, color: '#FF2D78' },
+            { label: 'Total Produk', value: stats.all, color: '#F5C542' },
             { label: 'E-Commerce', value: stats.ecommerce, color: CAT_COLOR.ecommerce },
             { label: 'Web Design', value: stats.webdesign, color: CAT_COLOR.webdesign },
             { label: 'Branding', value: stats.branding, color: CAT_COLOR.branding },
@@ -729,7 +1052,7 @@ export default function AdminPanel() {
           style={{ background: 'rgba(255,255,255,0.02)' }}>
           {TABS.map(tab => {
             const isActive = activeTab === tab.id
-            const color = tab.id === 'all' ? '#FF2D78' : CAT_COLOR[tab.id as string]
+            const color = tab.id === 'all' ? '#F5C542' : CAT_COLOR[tab.id as string]
             return (
               <button
                 key={tab.id}
@@ -756,7 +1079,7 @@ export default function AdminPanel() {
               <Package className="w-12 h-12 mx-auto mb-3 opacity-30" />
               <p className="font-semibold">Belum ada produk di kategori ini</p>
               <button onClick={handleOpenAdd}
-                className="mt-3 text-[#FF6B9D] text-sm font-semibold hover:underline">
+                className="mt-3 text-[#D4912A] text-sm font-semibold hover:underline">
                 + Tambah produk pertama
               </button>
             </motion.div>
@@ -776,6 +1099,79 @@ export default function AdminPanel() {
             </motion.div>
           )}
         </AnimatePresence>
+        </>)}
+
+        {adminPage === 'portfolio' && (<>
+          {/* Portfolio title + Add button */}
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-2xl font-black tracking-tight">Manajemen Portfolio</h1>
+              <p className="text-white/40 text-sm mt-0.5">Kelola projek yang ditampilkan di halaman Portfolio</p>
+            </div>
+            <motion.button
+              onClick={() => { setPortfolioEditTarget(null); setPortfolioFormOpen(true) }}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-white text-sm font-bold relative overflow-hidden"
+              style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}
+              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+            >
+              <Plus className="w-4 h-4 relative z-10" /> <span className="relative z-10">Tambah Portfolio</span>
+            </motion.button>
+          </div>
+
+          {/* Portfolio grid */}
+          <AnimatePresence mode="popLayout">
+            {projects.length === 0 ? (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-20 text-white/30">
+                <Globe className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                <p className="font-semibold">Belum ada portfolio</p>
+                <button onClick={() => { setPortfolioEditTarget(null); setPortfolioFormOpen(true) }}
+                  className="mt-3 text-[#D4912A] text-sm font-semibold hover:underline">
+                  + Tambah portfolio pertama
+                </button>
+              </motion.div>
+            ) : (
+              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {projects.map(proj => (
+                  <motion.div
+                    key={proj.id}
+                    layout
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="rounded-xl border border-white/[0.08] overflow-hidden group"
+                    style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.005) 100%)' }}
+                  >
+                    <div className="h-36 overflow-hidden bg-white/5">
+                      <img src={proj.thumbnail || (proj.url ? `https://s.wordpress.com/mshots/v1/${encodeURIComponent(proj.url)}?w=800&h=500` : '')} alt={proj.name} className="w-full h-full object-cover object-top" />
+                    </div>
+                    <div className="p-4">
+                      {proj.badge && (
+                        <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold text-white mb-2" style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}>{proj.badge}</span>
+                      )}
+                      <h3 className="text-white font-bold text-sm mb-0.5">{proj.name}</h3>
+                      <p className="text-[#D4912A] text-[10px] font-semibold mb-2">{proj.category} · {proj.subcategory}</p>
+                      <p className="text-white/40 text-xs leading-relaxed line-clamp-2 mb-3">{proj.description}</p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => { setPortfolioEditTarget(proj); setPortfolioFormOpen(true) }}
+                          className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg border border-white/10 text-white/60 text-xs font-semibold hover:bg-white/5 transition-colors"
+                        >
+                          <Edit2 className="w-3 h-3" /> Edit
+                        </button>
+                        <button
+                          onClick={() => setPortfolioDeleteTarget(proj)}
+                          className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg border border-red-500/20 text-red-400/70 text-xs font-semibold hover:bg-red-500/10 transition-colors"
+                        >
+                          <Trash2 className="w-3 h-3" /> Hapus
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>)}
 
       </main>
 
@@ -803,12 +1199,69 @@ export default function AdminPanel() {
         )}
       </AnimatePresence>
 
+      {/* Portfolio Form Modal */}
+      <AnimatePresence>
+        {portfolioFormOpen && (
+          <PortfolioFormModal
+            key={portfolioEditTarget?.id ?? 'new-portfolio'}
+            open={portfolioFormOpen}
+            onClose={() => { setPortfolioFormOpen(false); setPortfolioEditTarget(null) }}
+            onSave={(data) => {
+              const isDesignCat = data.category === 'Design'
+              const thumbnailUrl = isDesignCat
+                ? data.thumbnail
+                : (data.thumbnail || `https://s.wordpress.com/mshots/v1/${encodeURIComponent(data.url)}?w=800&h=500`)
+              const saveData = { ...data, thumbnail: thumbnailUrl, images: isDesignCat ? data.images : [] }
+              if (portfolioEditTarget) {
+                updateProject(portfolioEditTarget.id, saveData)
+                showToast('Portfolio berhasil diperbarui!')
+              } else {
+                addProject(saveData)
+                showToast('Portfolio baru berhasil ditambahkan!')
+              }
+              setPortfolioFormOpen(false)
+              setPortfolioEditTarget(null)
+            }}
+            initial={portfolioEditTarget}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Portfolio Delete Confirm */}
+      <AnimatePresence>
+        {portfolioDeleteTarget && (
+          <motion.div
+            className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setPortfolioDeleteTarget(null)}
+          >
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            <motion.div
+              className="relative w-full max-w-sm rounded-2xl p-6 text-center"
+              style={{ background: 'linear-gradient(135deg, rgba(18,18,30,0.98) 0%, rgba(12,12,20,0.99) 100%)' }}
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <Trash2 className="w-10 h-10 mx-auto mb-3 text-red-400" />
+              <h3 className="text-white font-bold text-lg mb-1">Hapus Portfolio?</h3>
+              <p className="text-white/50 text-sm mb-5">"{portfolioDeleteTarget.name}" akan dihapus permanen.</p>
+              <div className="flex gap-3">
+                <button onClick={() => setPortfolioDeleteTarget(null)}
+                  className="flex-1 py-2.5 rounded-xl border border-white/10 text-white/60 text-sm font-semibold hover:bg-white/5 transition-colors">Batal</button>
+                <button onClick={() => { deleteProject(portfolioDeleteTarget.id); showToast(`"${portfolioDeleteTarget.name}" dihapus.`); setPortfolioDeleteTarget(null) }}
+                  className="flex-1 py-2.5 rounded-xl bg-red-500 text-white text-sm font-bold hover:bg-red-600 transition-colors">Hapus</button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
             className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[99999] px-5 py-3 rounded-xl text-white text-sm font-semibold shadow-xl flex items-center gap-2"
-            style={{ background: 'linear-gradient(135deg, #FF2D78, #D91A60)' }}
+            style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)' }}
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
