@@ -18,16 +18,55 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <img
-                src="/Assets/KNY_DESKTOP.png"
-                alt="Digital Workspace"
-                className="w-full max-w-[340px] xs:max-w-[380px] sm:max-w-[460px] md:max-w-[560px] lg:max-w-[700px] mx-auto object-contain"
+            <div className="relative w-full max-w-[340px] xs:max-w-[380px] sm:max-w-[460px] md:max-w-[560px] lg:max-w-[700px] mx-auto">
+              {/* nara03 - behind hero image, top center */}
+              <motion.img
+                src="/Assets/nara03.png"
+                alt="Nara Character 3"
+                className="absolute left-1/2 -translate-x-1/2 w-[25%] z-0 pointer-events-none"
+                style={{ top: '-35%' }}
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                decoding="async"
               />
-            </motion.div>
+
+              {/* Hero image - main */}
+              <motion.div
+                className="relative z-10"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <img
+                  src="/Assets/KNY_DESKTOP.png"
+                  alt="Digital Workspace"
+                  className="w-full object-contain"
+                  decoding="async"
+                  fetchPriority="high"
+                />
+              </motion.div>
+
+              {/* nara01 - front of hero, bottom left */}
+              <motion.img
+                src="/Assets/nara01.png"
+                alt="Nara Character 1"
+                className="absolute w-[27%] z-20 pointer-events-none"
+                style={{ bottom: '-10%', left: '-6%' }}
+                animate={{ y: [0, -12, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+                decoding="async"
+              />
+
+              {/* nara02 - front of hero, bottom right */}
+              <motion.img
+                src="/Assets/nara02.png"
+                alt="Nara Character 2"
+                className="absolute w-[24%] z-20 pointer-events-none"
+                style={{ bottom: '-10%', right: '-4%' }}
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                decoding="async"
+              />
+            </div>
           </motion.div>
 
           {/* Left Content */}

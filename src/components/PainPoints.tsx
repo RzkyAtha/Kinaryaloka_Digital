@@ -309,7 +309,7 @@ export default function PainPoints() {
               {/* Content */}
               <div className="text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl overflow-hidden" style={{ border: '2px solid rgba(245,197,66,0.3)' }}>
-                  <img src="/Assets/nara_mask.png" alt="Nara" className="w-full h-full object-cover" />
+                  <img src="/Assets/nara_mask.png" alt="Nara" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                 </div>
                 <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
                   Kenalan dulu, yuk!

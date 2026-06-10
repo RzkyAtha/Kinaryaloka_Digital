@@ -58,7 +58,7 @@ function MagicCard({
           ? `0 ${shadowY.get()}px ${shadowBlur.get()}px -12px ${accentColor}80, 0 20px 40px -8px rgba(0,0,0,0.3)`
           : '0 4px 16px rgba(0,0,0,0.15)',
       }}
-      className={`relative rounded-2xl overflow-hidden bg-[#fefefe] cursor-pointer${fullHeight ? ' flex flex-col h-full' : ''}`}
+      className={`magic-card-3d relative rounded-2xl overflow-hidden bg-[#fefefe] cursor-pointer${fullHeight ? ' flex flex-col h-full' : ''}`}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleLeave}

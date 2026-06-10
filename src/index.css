@@ -87,6 +87,26 @@
   to { transform: translateX(0); }
 }
 
+/* GPU-accelerated animations for mobile smoothness */
+.gpu-accelerate {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Optimize images for faster rendering */
+img {
+  content-visibility: auto;
+}
+
+/* Reduce animation complexity on mobile for performance */
+@media (max-width: 768px) {
+  .magic-card-3d {
+    transform: none !important;
+    perspective: none !important;
+  }
+}
+
 /* Respect user motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

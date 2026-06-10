@@ -43,11 +43,11 @@ const valueCards = [
 
 const policeLineConfigs = [
   // Upper-left: shallow strip, slopes slightly down from left to right
-  { rotate: 12, top: '12%', direction: 'left' as const, speed: 18, height: '44px', textSize: 'text-sm sm:text-xl' },
+  { rotate: 12, top: '12%', direction: 'left' as const, speed: 35, height: '44px', textSize: 'text-sm sm:text-xl', initialRotateOffset: -8, initialYOffset: -30 },
   // Upper-left: steep strip, slopes steeply up from left to right, crosses strip 1
-  { rotate: -50, top: '-20%', direction: 'right' as const, speed: 15, height: '44px', textSize: 'text-sm sm:text-xl' },
+  { rotate: -50, top: '-20%', direction: 'right' as const, speed: 30, height: '44px', textSize: 'text-sm sm:text-xl', initialRotateOffset: 10, initialYOffset: 25 },
   // Lower-right: large strip, slopes slightly up from left to right, shifted right
-  { rotate: -12, top: '75%', direction: 'left' as const, speed: 20, height: '58px', textSize: 'text-lg sm:text-2xl', left: '-10%' },
+  { rotate: -12, top: '75%', direction: 'left' as const, speed: 40, height: '58px', textSize: 'text-lg sm:text-2xl', left: '-10%', initialRotateOffset: 6, initialYOffset: 35 },
 ]
 
 function PoliceLine({
@@ -60,6 +60,9 @@ function PoliceLine({
   height,
   textSize,
   left,
+  index,
+  initialRotateOffset,
+  initialYOffset,
 }: {
   text: string
   color: string
@@ -70,14 +73,38 @@ function PoliceLine({
   height: string
   textSize: string
   left?: string
+  index: number
+  initialRotateOffset: number
+  initialYOffset: number
 }) {
   const repeatedText = Array(10).fill(` ${text} \u2022`).join('')
 
   return (
-    <div
+    <motion.div
       className="absolute overflow-hidden"
+      initial={{
+        rotate: rotate + initialRotateOffset,
+        y: initialYOffset,
+        opacity: 0,
+      }}
+      animate={{
+        rotate,
+        y: 0,
+        opacity: 1,
+        backgroundColor: color,
+      }}
+      exit={{
+        rotate: rotate - initialRotateOffset,
+        y: -initialYOffset,
+        opacity: 0,
+      }}
+      transition={{
+        duration: 0.6,
+        ease: [0.16, 1, 0.3, 1],
+        delay: index * 0.12,
+        backgroundColor: { duration: 0.4 },
+      }}
       style={{
-        transform: `rotate(${rotate}deg)`,
         top,
         left: left || '-40%',
         width: '180%',
@@ -100,7 +127,7 @@ function PoliceLine({
           {repeatedText}
         </span>
       </motion.div>
-    </div>
+    </motion.div>
   )
 }
 
@@ -155,6 +182,7 @@ export default function About() {
                       key={`${activeIndex}-${i}`}
                       text={activeCard.policeText}
                       color={activeCard.color}
+                      index={i}
                       {...config}
                     />
                   ))}
@@ -313,7 +341,7 @@ export default function About() {
                 className="relative h-40 overflow-hidden flex items-center justify-center"
                 style={{ background: `${activeCard.color}10` }}
               >
-                <img src={activeCard.image} alt={activeCard.title} className="w-28 h-28 object-contain" />
+                <img src={activeCard.image} alt={activeCard.title} className="w-28 h-28 object-contain" loading="lazy" decoding="async" />
               </div>
 
               {/* Content */}
