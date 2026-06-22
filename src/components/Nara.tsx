@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, ChevronRight, ExternalLink, RotateCcw } from 'lucide-react'
-import naraImg from '../../Assets/nara_mask.png'
+const naraImg = '/Assets/nara_mask.png'
 import { sendMessage as geminiSend, resetChat as geminiReset, isGeminiAvailable } from '../services/gemini'
 
 // ─── Knowledge Base ─────────────────────────────────────────────────────────

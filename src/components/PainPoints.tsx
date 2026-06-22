@@ -75,7 +75,7 @@ export default function PainPoints() {
             <div className="rounded-3xl overflow-hidden w-full h-fit"
               style={{ boxShadow: "0 32px 150px rgba(245,197,66,0.20)" }}>
               <img
-                src="/Assets/nara_rabbids.png"
+                src="/Assets/nara_ber3.png"
                 alt="Ginabo Studio"
                 className="w-full h-auto block"
               />
@@ -95,6 +95,11 @@ export default function PainPoints() {
             >
               Tunggu, siapa mereka?
             </button>
+
+            {/* Hint text */}
+            <p className="mt-3 text-[10px] sm:text-xs text-[#666] text-center leading-snug">
+              Tekan tombol <span className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-[#666] text-[9px] font-bold text-[#888] align-middle mx-0.5">?</span> untuk membaca lebih lanjut!
+            </p>
           </div>
 
           {/* ── Right: Pain Cards ── */}
@@ -165,10 +170,6 @@ export default function PainPoints() {
                           {item.title}
                         </p>
 
-                        {/* Hint text */}
-                        <p className="mt-3 text-[10px] sm:text-xs text-white/50 leading-snug">
-                          Tekan tombol <span className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-white/50 text-[9px] font-bold text-white/70 align-middle mx-0.5">?</span> untuk membaca lebih lanjut!
-                        </p>
                       </div>
                     </motion.div>
                   ))}

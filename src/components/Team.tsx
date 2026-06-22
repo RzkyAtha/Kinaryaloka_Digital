@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight, Crosshair, Headphones, ShieldCheck } from 'l
 
 const cards = [
   {
-    image: '/Assets/kmt90.png',
+    image: '/Assets/komitmen1.png',
     icon: Crosshair,
     title: 'Akurasi Desain.',
     subtitle: 'Presisi Tinggi',

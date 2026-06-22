@@ -148,7 +148,7 @@ export default function About() {
   }, [])
 
   return (
-    <section id="tentang" className="bg-white py-12 md:py-20 relative overflow-hidden">
+    <section id="tentang" className="bg-white py-8 md:py-12 relative overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10" ref={ref}>
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left - Police Line Value Cards Scene */}
@@ -164,8 +164,8 @@ export default function About() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={isInView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full aspect-square max-w-[550px] mx-auto rounded-2xl overflow-hidden border border-gray-100"
-              style={{ background: '#ffffff' }}
+              className="relative w-full aspect-square max-w-[550px] mx-auto rounded-2xl overflow-hidden transition-all duration-500"
+              style={{ background: '#ffffff', border: `2px solid ${activeCard.color}40` }}
             >
               {/* Police Line Strips */}
               <AnimatePresence mode="wait">
@@ -216,14 +216,6 @@ export default function About() {
                     </AnimatePresence>
                   </motion.div>
 
-                  {/* Click hint */}
-                  <motion.p
-                    className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-[10px] sm:text-xs text-[#999] whitespace-nowrap"
-                    animate={{ opacity: [0.3, 0.7, 0.3] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    klik untuk detail
-                  </motion.p>
                 </motion.div>
               </div>
 
@@ -264,44 +256,66 @@ export default function About() {
                 ))}
               </div>
             </motion.div>
+
+            {/* Instruction text below value cards */}
+            <p className="text-[11px] sm:text-xs text-[#999] text-center mt-4 leading-relaxed max-w-[550px] mx-auto">
+              Interaktif: Tekan tombol <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-black/5 text-[10px] align-middle mx-0.5">‹</span> <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-black/5 text-[10px] align-middle mx-0.5">›</span> untuk pindah, tekan ilustrasi untuk membaca lebih detail dari setiap upaya kami.
+            </p>
           </div>
 
           {/* Right - Content */}
           <motion.div
-            className="text-[#2a2a2a] space-y-5 md:space-y-6"
+            className="space-y-6 md:space-y-8"
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ delay: 0.4 }}
+            >
+              <span className="inline-flex items-center text-[11px] sm:text-xs font-bold tracking-[0.15em] uppercase px-4 py-2 rounded-lg text-white"
+                style={{ background: 'linear-gradient(135deg, #FFA500, #FF2D55)' }}>
+                Tentang Kami
+              </span>
+            </motion.div>
+
             {/* Main Title */}
-            <h2 className="text-[32px] sm:text-[40px] md:text-[48px] lg:text-[56px] font-bold leading-[1.1]">
-              <span className="block">Bukan Agency Biasa.</span>
-              <span className="block">Partner yang Ngerti</span>
-              <span className="block">Bisnis Kamu.</span>
+            <h2 className="text-[28px] sm:text-[36px] md:text-[44px] lg:text-[50px] font-bold leading-[1.1]">
+              <span className="block text-[#2a2a2a]">Bukan Agency Biasa.</span>
+              <span className="block" style={{ background: 'linear-gradient(135deg, #FFA500, #FF2D55)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Partner yang Ngerti</span>
+              <span className="block text-[#2a2a2a]">Bisnis Kamu.</span>
             </h2>
             
-            {/* Description paragraphs */}
-            <div className="space-y-3 md:space-y-4 text-[#444] text-[14px] sm:text-[16px] md:text-[18px] leading-[1.5] text-justify">
-              <p>
+            {/* Description Card */}
+            <div className="rounded-2xl p-5 md:p-7 space-y-3 md:space-y-4"
+              style={{ background: 'linear-gradient(145deg, #f8f8f8, #ffffff)', border: '1px solid #eee' }}>
+              <p className="text-[#555] text-[13px] sm:text-[15px] md:text-[16px] leading-[1.7]">
                 KINARYALOKA Digital Studio lahir dari pemahaman satu hal: kebanyakan UMKM bukan tidak mau digital, tetapi mereka tidak tahu mulai dari mana, atau sudah coba tapi hasilnya tidak kepakai.
               </p>
-              <p>
-                Kami tidak duduk di balik layar dan desain sesuatu yang kelihatan bagus di portofolio. Kami duduk bareng kamu untuk mempelajari cara bisnis kamu berjalan di lapangan, lalu bantu terjemahkannya ke sistem digital yang rapi, jelas, dan bisa dikontrol.
+              <p className="text-[#555] text-[13px] sm:text-[15px] md:text-[16px] leading-[1.7]">
+                Kami duduk bareng kamu untuk mempelajari cara bisnis kamu berjalan di lapangan, lalu bantu terjemahkannya ke sistem digital yang rapi, jelas, dan bisa dikontrol.
               </p>
             </div>
 
             {/* Quote Section */}
-            <div className="flex gap-3 md:gap-4 mt-4 md:mt-8">
-              <div className="w-[5px] md:w-[7px] bg-[#333] rounded-full flex-shrink-0" />
-              <div className="space-y-2">
-                <p className="text-[#2a2a2a] text-[18px] sm:text-[22px] md:text-[28px] leading-[1.2] font-bold text-right">
-                  "Website itu bukan tujuan akhir, tapi alat biar operasional jadi lebih rapi dan jelas."
-                </p>
-                <p className="text-[#2a2a2a] text-[14px] sm:text-[16px] md:text-[18px] font-bold text-right">
-                  — KINARYALOKA Digital Studio
-                </p>
-              </div>
-            </div>
+            <motion.div
+              className="rounded-2xl p-5 md:p-7 relative overflow-hidden"
+              style={{ background: '#1a1a1a' }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.5, duration: 0.5 }}
+            >
+              <div className="absolute top-0 left-0 w-full h-1 rounded-t-2xl" style={{ background: 'linear-gradient(90deg, #FFA500, #FF2D55, #0080FF, #00C851)' }} />
+              <p className="text-white text-[16px] sm:text-[20px] md:text-[24px] leading-[1.3] font-bold italic">
+                "Website itu bukan tujuan akhir, tapi alat biar operasional jadi lebih rapi dan jelas."
+              </p>
+              <p className="text-[#888] text-[12px] sm:text-[14px] mt-3 font-semibold">
+                — KINARYALOKA Digital Studio
+              </p>
+            </motion.div>
           </motion.div>
         </div>
       </div>
