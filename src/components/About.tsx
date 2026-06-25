@@ -292,10 +292,10 @@ export default function About() {
             {/* Description Card */}
             <div className="rounded-2xl p-5 md:p-7 space-y-3 md:space-y-4"
               style={{ background: 'linear-gradient(145deg, #f8f8f8, #ffffff)', border: '1px solid #eee' }}>
-              <p className="text-[#555] text-[13px] sm:text-[15px] md:text-[16px] leading-[1.7]">
+              <p className="text-[#555] text-[13px] sm:text-[15px] md:text-[16px] leading-[1.7] text-justify">
                 KINARYALOKA Digital Studio lahir dari pemahaman satu hal: kebanyakan UMKM bukan tidak mau digital, tetapi mereka tidak tahu mulai dari mana, atau sudah coba tapi hasilnya tidak kepakai.
               </p>
-              <p className="text-[#555] text-[13px] sm:text-[15px] md:text-[16px] leading-[1.7]">
+              <p className="text-[#555] text-[13px] sm:text-[15px] md:text-[16px] leading-[1.7] text-justify">
                 Kami duduk bareng kamu untuk mempelajari cara bisnis kamu berjalan di lapangan, lalu bantu terjemahkannya ke sistem digital yang rapi, jelas, dan bisa dikontrol.
               </p>
             </div>

@@ -21,8 +21,8 @@ const cards = [
     subtitle: 'Tanpa Batas Waktu',
     label: '24/7',
     description: 'Komunikasi aktif dan support tanpa batas waktu.',
-    color: '#0080FF',
-    gradient: 'from-[#0080FF] to-[#38BFFF]',
+    color: '#F5C542',
+    gradient: 'from-[#F5C542] to-[#D4912A]',
   },
   {
     image: '/Assets/kmt100.png',
@@ -31,8 +31,8 @@ const cards = [
     subtitle: 'Sistem Andal',
     label: '100%',
     description: 'Integrasi sistem yang dapat diandalkan sepenuhnya.',
-    color: '#00E639',
-    gradient: 'from-[#00E639] to-[#66FF8C]',
+    color: '#F5C542',
+    gradient: 'from-[#F5C542] to-[#D4912A]',
   },
 ]
 
@@ -46,7 +46,7 @@ function getPos(cardIdx: number, active: number): Pos {
 }
 
 const CARD_W = 300
-const spring = { type: 'spring' as const, stiffness: 260, damping: 28 }
+const spring = { type: 'spring' as const, stiffness: 200, damping: 26, mass: 0.8 }
 
 const positionStyles: Record<Pos, TargetAndTransition> = {
   center: {
@@ -55,25 +55,22 @@ const positionStyles: Record<Pos, TargetAndTransition> = {
     scale: 1,
     zIndex: 10,
     opacity: 1,
-    filter: 'brightness(1) blur(0px)',
     transition: spring,
   },
   left: {
     x: -CARD_W * 0.68,
-    rotate: -8,
-    scale: 0.85,
+    rotate: -6,
+    scale: 0.88,
     zIndex: 5,
-    opacity: 0.7,
-    filter: 'brightness(0.6) blur(1px)',
+    opacity: 0.55,
     transition: spring,
   },
   right: {
     x: CARD_W * 0.68,
-    rotate: 8,
-    scale: 0.85,
+    rotate: 6,
+    scale: 0.88,
     zIndex: 5,
-    opacity: 0.7,
-    filter: 'brightness(0.6) blur(1px)',
+    opacity: 0.55,
     transition: spring,
   },
 }
@@ -115,7 +112,7 @@ export default function Team() {
       <div className="max-w-5xl mx-auto px-4 sm:px-8 relative z-10">
         {/* Title */}
         <motion.div
-          className="text-center mb-16 md:mb-24"
+          className="text-center mb-8 md:mb-12"
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}

@@ -32,7 +32,6 @@ function clearGoogTransCookie() {
 
 function doTranslate(lang: Language): boolean {
   if (lang === 'id') {
-    // Restore original: clear cookie and reload
     clearGoogTransCookie()
     // Try using Google Translate's restore mechanism
     const frame = document.querySelector('.goog-te-banner-frame') as HTMLIFrameElement | null
@@ -45,18 +44,9 @@ function doTranslate(lang: Language): boolean {
     if (combo) {
       combo.value = ''
       combo.dispatchEvent(new Event('change'))
-      // If still translated after a moment, force reload
-      setTimeout(() => {
-        const html = document.documentElement
-        if (html.classList.contains('translated-ltr') || html.classList.contains('translated-rtl')) {
-          window.location.reload()
-        }
-      }, 500)
       return true
     }
-    // Last resort: reload
-    window.location.reload()
-    return true
+    return false
   }
 
   const combo = getCombo()
@@ -115,22 +105,10 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('kinaryaloka_lang', lang)
 
     if (lang === 'id') {
-      // For restoring to Indonesian:
-      // 1. Clear all possible googtrans cookies
+      // Switching back to Indonesian: clear everything and reload to pristine state
       clearGoogTransCookie()
       localStorage.setItem('kinaryaloka_lang', 'id')
-
-      // 2. Try Google Translate's own restore mechanism first
-      const combo = getCombo()
-      if (combo) {
-        combo.value = ''
-        combo.dispatchEvent(new Event('change'))
-      }
-
-      // 3. Force a clean navigation (not reload) to bypass cached GT state
-      const url = new URL(window.location.href)
-      url.searchParams.set('_lang', Date.now().toString())
-      window.location.href = url.toString()
+      window.location.reload()
       return
     }
 
@@ -138,7 +116,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
     // Retry mechanism — poll until translation takes effect
     let attempts = 0
-    const maxAttempts = 15
+    const maxAttempts = 20
     const tryTranslate = () => {
       attempts++
       const success = doTranslate(lang)

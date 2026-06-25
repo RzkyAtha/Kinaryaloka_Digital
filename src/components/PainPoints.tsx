@@ -63,7 +63,7 @@ export default function PainPoints() {
             Cerita ini terdengar
             <span style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}> familiar?</span>
           </h2>
-          <p className="text-[#666] mt-3 text-base md:text-lg max-w-xl leading-relaxed mx-auto">
+          <p className="text-[#666] mt-3 text-xs md:text-sm max-w-xl leading-relaxed mx-auto">
             Masalah-masalah ini bukan karena bisnis kamu kurang bagus, tapi karena belum ada sistem yang mendukungnya.
           </p>
         </motion.div>
@@ -72,12 +72,14 @@ export default function PainPoints() {
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
           {/* ── Left: Hero Image ── */}
           <div className="lg:w-[38%] flex-shrink-0">
-            <div className="rounded-3xl overflow-hidden w-full h-fit"
+            <div className="relative rounded-3xl overflow-hidden w-full h-fit"
               style={{ boxShadow: "0 32px 150px rgba(245,197,66,0.20)" }}>
               <img
                 src="/Assets/nara_ber3.png"
-                alt="Ginabo Studio"
+                alt="KINARYALOKA Team"
                 className="w-full h-auto block"
+                loading="eager"
+                decoding="async"
               />
               {/* Gradient overlay bottom */}
               <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"

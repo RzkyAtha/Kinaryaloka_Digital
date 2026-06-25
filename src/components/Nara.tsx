@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, ChevronRight, ExternalLink, RotateCcw } from 'lucide-react'
-const naraImg = '/Assets/nara_mask.png'
 import { sendMessage as geminiSend, resetChat as geminiReset, isGeminiAvailable } from '../services/gemini'
+
+const naraImg = '/Assets/nara_mask.png'
 
 // ─── Knowledge Base ─────────────────────────────────────────────────────────
 const KB = {
@@ -1259,7 +1260,7 @@ function BotText({ text }: { text: string }) {
 }
 
 // ─── Main Chatbot Component ───────────────────────────────────────────────────
-export default function Chatbot() {
+export default function Chatbot({ activePage }: { activePage: string }) {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
     makeBot(
@@ -1272,8 +1273,24 @@ export default function Chatbot() {
   const [consult, setConsult] = useState<ConsultState>({ step: 'idle', bisnisType: '', need: '', budget: 0 })
   const [convCtx, setConvCtx] = useState<ConvContext>({ userName: '', lastIntent: 'unknown', topicsDiscussed: [], pendingClarification: null, clarifyLoopCount: 0, awaitingCustomContext: null })
   const [hasNew, setHasNew] = useState(true)
+  const [pastHero, setPastHero] = useState(false)
+  const [naraImgOk, setNaraImgOk] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const isDesktop = window.innerWidth >= 1024
+    if (isDesktop || activePage !== 'home') { setPastHero(true); return }
+    const handleScroll = () => {
+      const heroEl = document.querySelector('section')
+      if (heroEl) {
+        setPastHero(window.scrollY > heroEl.offsetHeight * 0.6)
+      }
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [activePage])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -1369,12 +1386,16 @@ export default function Chatbot() {
 
   const lastMsg = messages[messages.length - 1]
 
+  const isVisible = pastHero || open
+
   return (
-    <>
+    <div className="notranslate" translate="no" style={{ visibility: isVisible ? 'visible' : 'hidden', pointerEvents: isVisible ? 'auto' : 'none' }}>
+      {/* Hidden preload image — always in DOM to keep browser cache warm */}
+      <img src={naraImg} alt="" aria-hidden="true" className="absolute w-0 h-0 opacity-0 pointer-events-none" onLoad={() => setNaraImgOk(true)} onError={() => setNaraImgOk(false)} />
       {/* FAB */}
       <div className="fixed bottom-6 left-5 z-[9990]">
         <AnimatePresence>
-          {!open && hasNew && (
+          {!open && hasNew && pastHero && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8, x: -10 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
@@ -1400,7 +1421,11 @@ export default function Chatbot() {
               </motion.span>
             ) : (
               <motion.span key="chat" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
-                <img src={naraImg} alt="Nara" className="w-10 h-10 rounded-xl object-cover" style={{ objectPosition: 'center top' }} />
+                {naraImgOk ? (
+                  <img src={naraImg} alt="Nara" className="w-10 h-10 rounded-xl object-cover" style={{ objectPosition: 'center top' }} loading="eager" decoding="async" />
+                ) : (
+                  <MessageCircle className="w-7 h-7" />
+                )}
               </motion.span>
             )}
           </AnimatePresence>
@@ -1600,6 +1625,6 @@ export default function Chatbot() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </div>
   )
 }

@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion'
+import { useState, useEffect, Component, ErrorInfo, ReactNode } from 'react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -12,10 +12,7 @@ import PainPoints from './components/PainPoints'
 import MarketplaceExodus from './components/MarketplaceExodus'
 import FloatingWA from './components/FloatingWA'
 import Chatbot from './components/Nara'
-import AdminPanel from './components/AdminPanel'
 import Portfolio from './components/Portfolio'
-import { ProductsProvider } from './context/ProductsContext'
-import { PortfolioProvider } from './context/PortfolioContext'
 import { LanguageProvider } from './context/LanguageContext'
 
 function ScrollProgressBar() {
@@ -37,7 +34,10 @@ function MainSite() {
   const [activePage, setActivePage] = useState('home')
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' })
+    // Use requestAnimationFrame to avoid interfering with AnimatePresence transitions
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    })
   }, [activePage])
 
   useEffect(() => {
@@ -65,12 +65,17 @@ function MainSite() {
   return (
     <div className="min-h-screen bg-[#f5f5f5] overflow-x-hidden">
       <ScrollProgressBar />
-      <FloatingWA />
-      <Chatbot />
+      <FloatingWA activePage={activePage} />
+      <Chatbot activePage={activePage} />
       <Navbar activeSection={activeSection} activePage={activePage} onPageChange={setActivePage} />
-      <AnimatePresence mode="wait">
+      <motion.main
+        key={activePage}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+      >
         {activePage === 'home' ? (
-          <motion.main key="home" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
+          <>
             <Hero />
             <About />
             <PainPoints />
@@ -79,35 +84,58 @@ function MainSite() {
             <Team />
             <WhyDigital />
             <Process />
-          </motion.main>
+          </>
         ) : (
-          <motion.main key="portfolio" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}>
-            <Portfolio />
-          </motion.main>
+          <Portfolio />
         )}
-      </AnimatePresence>
+      </motion.main>
       <Footer />
     </div>
   )
 }
 
+class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(_: Error) {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('App ErrorBoundary caught:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-[#f5f5f5]">
+          <div className="text-center p-8">
+            <h2 className="text-2xl font-bold text-[#2a2a2a] mb-4">Terjadi Kesalahan</h2>
+            <p className="text-gray-500 mb-6">Halaman mengalami error. Silakan muat ulang.</p>
+            <button
+              onClick={() => { this.setState({ hasError: false }); window.location.reload() }}
+              className="px-6 py-3 bg-black text-white rounded-xl font-semibold"
+            >
+              Muat Ulang
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 function App() {
-  const [isAdmin, setIsAdmin] = useState(() => window.location.hash === '#admin')
-
-  useEffect(() => {
-    const onHash = () => setIsAdmin(window.location.hash === '#admin')
-    window.addEventListener('hashchange', onHash)
-    return () => window.removeEventListener('hashchange', onHash)
-  }, [])
-
   return (
-    <LanguageProvider>
-      <ProductsProvider>
-        <PortfolioProvider>
-          {isAdmin ? <AdminPanel /> : <MainSite />}
-        </PortfolioProvider>
-      </ProductsProvider>
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <MainSite />
+      </LanguageProvider>
+    </ErrorBoundary>
   )
 }
 

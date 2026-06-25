@@ -1,6 +1,3 @@
-import { createContext, useContext, useState, useEffect, useRef, useCallback, ReactNode } from 'react'
-import { isFirebaseConfigured, firestoreGetAll, firestorePut, firestoreDelete as fsDelete, firestoreSeedAll } from '../services/firebase'
-
 export interface Product {
   id: string
   name: string
@@ -19,16 +16,15 @@ export const DEFAULT_PRODUCTS: Product[] = [
   // ── E-Commerce ──────────────────────────────────────────────────────────
   {
     id: 'ecom-full-brand',
-    name: 'E-Commerce Full Brand',
+    name: 'Full E-Commerce Kit',
     price: '15000',
     image: '/Assets/ecom_ungu.png',
-    description: 'E-commerce profesional + identitas brand lengkap. Dari toko online canggih hingga visual brand yang siap bersaing.',
-    color: '#F5C542', textColor: '#F5C542', badge: 'Flagship',
+    description: 'E-commerce profesional + identitas brand lengkap. Dari toko online hingga visual brand yang siap bersaing.',
+    color: '#6e2c94', textColor: '#6e2c94', badge: 'Flagship',
     isFeatured: true, category: 'ecommerce',
     details: [
       'Semua fitur E-Commerce Pro',
       'Desain identitas visual (logo + color system)',
-      'Social media kit (10 template siap pakai)',
       'Halaman landing promo / campaign',
       'Setup Google My Business & Google Shopping',
       'SEO on-page lengkap + submit sitemap',
@@ -40,18 +36,14 @@ export const DEFAULT_PRODUCTS: Product[] = [
   },
   {
     id: 'ecom-katalog',
-    name: 'Katalog Digital',
+    name: 'Company Profile',
     price: '2500',
     image: '/Assets/ecom_oren.png',
-    description: 'Website katalog produk online. Pelanggan lihat produk & pesan langsung via WhatsApp. Tanpa ribet dengan payment gateway.',
+    description: 'Company profile website yang profesional, interaktif dan menarik. Menampilkan visi, misi, dan layanan perusahaan.',
     color: '#FF8C2E', textColor: '#FF8C2E',
     isFeatured: false, category: 'ecommerce',
     details: [
-      'Web katalog produk (hingga 50 produk)',
-      'Halaman detail produk + foto & deskripsi',
-      'Kategori & filter produk',
-      'Tombol pesan/tanya via WhatsApp per produk',
-      'Profil toko & info kontak',
+      'Profil perusahaan lengkap sesuai request & info kontak',
       'Mobile responsive + fast loading',
       'Revisi desain hingga puas',
       'Konsultasi domain & hosting',
@@ -59,38 +51,35 @@ export const DEFAULT_PRODUCTS: Product[] = [
   },
   {
     id: 'ecom-toko',
-    name: 'Toko Online',
+    name: 'Company Catalog',
     price: '5000',
     image: '/Assets/ecom_biru.png',
-    description: 'Toko online lengkap dengan keranjang belanja & payment gateway. Pelanggan bisa checkout langsung di website kamu.',
+    description: 'Company profile yang interaktif dan profesional dilengkapi dengan katalog produk lengkap.',
     color: '#0080FF', textColor: '#0080FF',
     isFeatured: false, category: 'ecommerce',
     details: [
-      'Custom web toko online multi-halaman',
-      'Keranjang belanja (shopping cart)',
-      'Checkout & payment gateway (Midtrans/Xendit)',
+      'Custom website multi-halaman',
       'Manajemen produk & kategori (CMS)',
       'Halaman produk detail + galeri foto',
       'Filter & pencarian produk',
-      'Notifikasi order via WhatsApp & Email',
-      'Dashboard admin kelola pesanan',
+      'Order via WhatsApp',
       'Domain & hosting (1 tahun)',
       'Support teknis 2 bulan',
     ],
   },
   {
     id: 'ecom-olshop',
-    name: 'Olshop Full',
+    name: 'Online Shop',
     price: '8000',
     image: '/Assets/ecom_hijau.png',
-    description: 'Platform jual beli penuh fitur seperti inventori, multi-varian produk, voucher diskon, hingga laporan penjualan real-time.',
-    color: '#00E639', textColor: '#0080FF',
+    description: 'Platform jual beli penuh fitur seperti inventori, multi-varian produk, hingga laporan penjualan real-time.',
+    color: '#1e913a', textColor: '#1e913a',
     isFeatured: false, category: 'ecommerce',
     details: [
       'Semua fitur Toko Online',
       'Manajemen inventori & stok otomatis',
       'Multi-varian produk (warna, ukuran, tipe)',
-      'Sistem voucher & kode diskon',
+      'Payment gateway (Midtrans/Xendit)',
       'Hitung ongkos kirim otomatis (RajaOngkir)',
       'Laporan penjualan & analitik dashboard',
       'Halaman ulasan & rating produk',
@@ -102,16 +91,15 @@ export const DEFAULT_PRODUCTS: Product[] = [
   // ── Web Design ───────────────────────────────────────────────────────────
   {
     id: 'web-full-digital',
-    name: 'Full Digital Package',
+    name: 'Full Reservation Kit',
     price: '12000',
     image: '/Assets/rserv_ungu.png',
-    description: 'Transformasi digital menyeluruh dari mulai sistem, website, hingga identitas visual dan strategi konten.',
-    color: '#F5C542', textColor: '#F5C542', badge: 'Flagship',
+    description: 'Transformasi digital menyeluruh dari mulai sistem, website, hingga identitas visual dan manajemen reservasi.',
+    color: '#6e2c94', textColor: '#6e2c94', badge: 'Flagship',
     isFeatured: true, category: 'webdesign',
     details: [
       'Semua fitur Web + Reservasi Pro',
       'Desain identitas visual (logo + color system)',
-      'Social media kit (8 template siap pakai)',
       'Setup Google My Business & Google Maps',
       'SEO dasar on-page (siap dicari di Google)',
       'Google Analytics + laporan bulanan',
@@ -123,25 +111,22 @@ export const DEFAULT_PRODUCTS: Product[] = [
   },
   {
     id: 'web-reservasi',
-    name: 'Paket Reservasi',
+    name: 'Company Profile',
     price: '2500',
     image: '/Assets/rserv_oren.png',
-    description: 'Sistem booking online siap pakai tanpa perlu website. Ideal untuk bisnis layanan yang masih pakai manual.',
+    description: 'Company profile website yang profesional, interaktif dan menarik. Menampilkan visi, misi, dan layanan perusahaan.',
     color: '#FF8C2E', textColor: '#FF8C2E',
     isFeatured: false, category: 'webdesign',
     details: [
-      'Setup sistem booking online (widget)',
-      'Konfigurasi jam operasional & kapasitas slot',
-      'Link reservasi siap disebarkan ke pelanggan',
-      'Notifikasi WhatsApp (pelanggan & admin)',
-      'Interface mobile-friendly',
-      'Panduan penggunaan lengkap',
-      'Support teknis 30 hari',
+      'Profil perusahaan lengkap sesuai request & info kontak',
+      'Mobile responsive + fast loading',
+      'Revisi desain hingga puas',
+      'Konsultasi domain & hosting',
     ],
   },
   {
     id: 'web-website-reservasi',
-    name: 'Website & Reservasi',
+    name: 'Company Reservation',
     price: '5000',
     image: '/Assets/rserv_biru.png',
     description: 'Website profesional lengkap dengan sistem booking simpel. Bisnis kamu terlihat serius di mata pelanggan.',
@@ -162,11 +147,11 @@ export const DEFAULT_PRODUCTS: Product[] = [
   },
   {
     id: 'web-pro',
-    name: 'Website Pro',
+    name: 'Advance Reservation',
     price: '8000',
     image: '/Assets/rserv_hijau.png',
     description: 'Web design multi-halaman dengan sistem reservasi bertenaga database. Data pelanggan tersimpan rapi, bisa diakses kapan saja.',
-    color: '#00E639', textColor: '#0080FF',
+    color: '#1e913a', textColor: '#1e913a',
     isFeatured: false, category: 'webdesign',
     details: [
       'Custom web design multi-halaman',
@@ -184,8 +169,8 @@ export const DEFAULT_PRODUCTS: Product[] = [
   // ── Branding ─────────────────────────────────────────────────────────────
   {
     id: 'brnd-paket',
-    name: 'Paket Branding',
-    price: '1500',
+    name: 'Brand Identity',
+    price: 'Start From 350',
     image: '/Assets/brnd_oren.png',
     description: 'Identitas brand lengkap untuk membuat bisnismu profesional dan mudah diingat, dari logo hingga nama yang filosofis.',
     color: '#FF8C2E', textColor: '#FF8C2E',
@@ -220,118 +205,6 @@ export const DEFAULT_PRODUCTS: Product[] = [
       'Support 1 bulan',
     ],
   },
-  {
-    id: 'brnd-complete',
-    name: 'Complete Branding',
-    price: '4000',
-    image: '/Assets/brnd_hijau.png',
-    description: 'Solusi branding end-to-end: visual identity, semua copywriting, dan marketing kit siap pakai.',
-    color: '#00E639', textColor: '#0080FF',
-    isFeatured: false, category: 'branding',
-    details: [
-      'Semua fitur Branding + Copywriting',
-      'Packaging & label design lengkap',
-      'Social media kit (20 template)',
-      'Instagram Highlight covers (5 desain)',
-      'Ads copywriting (Google + Meta)',
-      'Landing page copy + wireframe',
-      'Brand strategy consultation',
-      'Product photography direction',
-      'Print-ready files (PDF, AI, PNG)',
-      'Support 2 bulan',
-    ],
-  },
 ]
 
-interface ProductsContextType {
-  products: Product[]
-  addProduct: (p: Omit<Product, 'id'>) => void
-  updateProduct: (id: string, p: Partial<Product>) => void
-  deleteProduct: (id: string) => void
-}
-
-const ProductsContext = createContext<ProductsContextType | null>(null)
-
-const STORAGE_KEY = 'kinaryaloka_products'
-
-const COLLECTION = 'products'
-
-export function ProductsProvider({ children }: { children: ReactNode }) {
-  const [products, setProducts] = useState<Product[]>(DEFAULT_PRODUCTS)
-  const initRef = useRef(false)
-
-  // Load from Firestore on mount, fall back to localStorage then defaults
-  useEffect(() => {
-    if (initRef.current) return
-    initRef.current = true
-
-    const init = async () => {
-      if (isFirebaseConfigured()) {
-        try {
-          const remote = await firestoreGetAll<Product>(COLLECTION)
-          if (remote.length > 0) {
-            setProducts(remote)
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(remote)) } catch {}
-            return
-          }
-          // Firestore empty: seed defaults
-          await firestoreSeedAll(COLLECTION, DEFAULT_PRODUCTS)
-          setProducts(DEFAULT_PRODUCTS)
-          return
-        } catch (err) {
-          console.error('[Products] Firestore load failed, using cache:', err)
-        }
-      }
-      // Fallback: localStorage
-      try {
-        const stored = localStorage.getItem(STORAGE_KEY)
-        if (stored) { setProducts(JSON.parse(stored)); return }
-      } catch {}
-      setProducts(DEFAULT_PRODUCTS)
-    }
-    init()
-  }, [])
-
-  // Sync to localStorage whenever products change
-  useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(products)) } catch {}
-  }, [products])
-
-  const addProduct = useCallback((p: Omit<Product, 'id'>) => {
-    const newProduct = { ...p, id: `prod-${Date.now()}` } as Product
-    setProducts(prev => [...prev, newProduct])
-    if (isFirebaseConfigured()) {
-      firestorePut(COLLECTION, newProduct).catch(err => console.error('[Products] Firestore add failed:', err))
-    }
-  }, [])
-
-  const updateProduct = useCallback((id: string, p: Partial<Product>) => {
-    setProducts(prev => {
-      const updated = prev.map(prod => prod.id === id ? { ...prod, ...p } : prod)
-      const target = updated.find(prod => prod.id === id)
-      if (target && isFirebaseConfigured()) {
-        firestorePut(COLLECTION, target).catch(err => console.error('[Products] Firestore update failed:', err))
-      }
-      return updated
-    })
-  }, [])
-
-  const deleteProduct = useCallback((id: string) => {
-    setProducts(prev => prev.filter(prod => prod.id !== id))
-    if (isFirebaseConfigured()) {
-      fsDelete(COLLECTION, id).catch(err => console.error('[Products] Firestore delete failed:', err))
-    }
-  }, [])
-
-  return (
-    <ProductsContext.Provider value={{ products, addProduct, updateProduct, deleteProduct }}>
-      {children}
-    </ProductsContext.Provider>
-  )
-}
-
-export function useProducts() {
-  const ctx = useContext(ProductsContext)
-  if (!ctx) throw new Error('useProducts must be used within ProductsProvider')
-  return ctx
-}
+export const PRODUCTS: Product[] = DEFAULT_PRODUCTS

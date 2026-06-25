@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ShoppingCart, X, Check } from 'lucide-react'
 import AuthModal from './AuthModal'
-import { useProducts, Product as CtxProduct } from '../context/ProductsContext'
+import { PRODUCTS, Product as CtxProduct } from '../context/ProductsContext'
 
 // ─── Magic Card: 3D tilt + spotlight + glow border ──────────────────
 function MagicCard({
@@ -236,8 +236,7 @@ export default function Products() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
 
-  const { products: ctxProducts } = useProducts()
-  const products = useMemo(() => groupProducts(ctxProducts), [ctxProducts])
+  const products = useMemo(() => groupProducts(PRODUCTS), [])
 
   const handleSelectPackage = (title: string, price: string) => {
     setSelectedPackage({ title, price })
@@ -257,7 +256,7 @@ export default function Products() {
 
   return (
     <section id="produk" className="bg-black py-12 md:py-20" ref={ref}>
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Title */}
         <motion.div
           className="text-center mb-6 md:mb-8"
@@ -423,9 +422,9 @@ export default function Products() {
           transition={{ duration: 0.5, delay: 0.3 }}
         >
           <MagicCard accentColor={currentProducts.featured.color}>
-          <div className="grid md:grid-cols-[380px_1fr] lg:grid-cols-[515px_1fr]">
+          <div className="grid md:grid-cols-[300px_1fr] lg:grid-cols-[400px_1fr]">
             {/* Left - Image */}
-            <div className="relative h-[441px] overflow-hidden group">
+            <div className="relative h-[300px] overflow-hidden group">
               <motion.img
                 src={currentProducts.featured.image}
                 alt={currentProducts.featured.title}
@@ -444,25 +443,25 @@ export default function Products() {
             </div>
 
             {/* Right - Content */}
-            <div className="p-8 relative">
+            <div className="p-6 relative">
               {currentProducts.featured.badge && (
-                <div className="bg-[#e70000] text-white px-4 py-2 rounded-lg font-bold text-sm inline-block mb-4">
+                <div className="bg-[#e70000] text-white px-3 py-1.5 rounded-lg font-bold text-xs inline-block mb-3">
                   {currentProducts.featured.badge}
                 </div>
               )}
-              <h3 className="font-bold text-[36px] lg:text-[44px] text-[#404040] leading-tight mb-4">
+              <h3 className="font-bold text-[24px] lg:text-[30px] text-[#404040] leading-tight mb-3">
                 {currentProducts.featured.title}
               </h3>
-              <p className="text-[#9f9f9f] text-base lg:text-lg leading-relaxed text-justify max-w-[671px] mb-6">
+              <p className="text-[#9f9f9f] text-sm lg:text-base leading-relaxed text-justify max-w-[671px] mb-4">
                 {currentProducts.featured.description}
               </p>
-              <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-2xl lg:text-[40px] font-semibold" style={{ color: currentProducts.featured.textColor }}>IDR</span>
-                <span className="text-2xl lg:text-[40px] font-semibold text-[#454545]">{currentProducts.featured.price}K</span>
+              <div className="flex items-baseline gap-2 mb-4">
+                <span className="text-xl lg:text-2xl font-semibold" style={{ color: currentProducts.featured.textColor }}>IDR</span>
+                <span className="text-xl lg:text-2xl font-semibold text-[#454545]">{currentProducts.featured.price}K</span>
               </div>
               <motion.button
                 onClick={() => handleSelectPackage(currentProducts.featured!.title, currentProducts.featured!.price)}
-                className="w-full py-4 rounded-xl text-white font-semibold flex items-center justify-center gap-3 text-lg"
+                className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 text-base"
                 style={{ background: `linear-gradient(135deg, ${currentProducts.featured.color}, ${currentProducts.featured.color}cc)`, boxShadow: `0 4px 16px ${currentProducts.featured.color}50` }}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
@@ -472,7 +471,7 @@ export default function Products() {
               </motion.button>
               <button
                 onClick={() => setDetailProduct(currentProducts.featured!)}
-                className="absolute top-8 right-8 text-lg font-semibold flex items-center gap-1.5 hover:underline cursor-pointer transition-colors duration-200"
+                className="absolute top-6 right-6 text-sm font-semibold flex items-center gap-1.5 hover:underline cursor-pointer transition-colors duration-200"
                 style={{ color: currentProducts.featured.textColor }}
               >
                 Detail
@@ -494,7 +493,7 @@ export default function Products() {
               transition={{ duration: 0.6, delay: 0.4 + index * 0.12, ease: [0.16, 1, 0.3, 1] }}
             >
               <MagicCard accentColor={product.color} fullHeight>
-                <div className="relative h-[200px] overflow-hidden">
+                <div className="relative h-[160px] overflow-hidden">
                   <motion.img
                     src={product.image}
                     alt={product.title}
@@ -520,10 +519,10 @@ export default function Products() {
                     IDR {product.price}K
                   </motion.div>
                 </div>
-                <div className="p-6 flex flex-col flex-1">
+                <div className="p-4 flex flex-col flex-1">
                   <div className="flex justify-between items-start mb-3">
                     <motion.h3
-                      className="font-bold text-[28px] md:text-[32px] text-[#404040] leading-tight"
+                      className="font-bold text-[20px] md:text-[22px] text-[#404040] leading-tight"
                       whileHover={{ x: 4 }}
                       transition={{ duration: 0.2 }}
                     >
@@ -533,7 +532,7 @@ export default function Products() {
                     </motion.h3>
                     <motion.button
                       onClick={() => setDetailProduct(product)}
-                      className="text-lg font-semibold flex items-center gap-1 whitespace-nowrap mt-2"
+                      className="text-sm font-semibold flex items-center gap-1 whitespace-nowrap mt-1"
                       style={{ color: product.textColor }}
                       whileHover={{ x: 4 }}
                       transition={{ duration: 0.2 }}
@@ -541,7 +540,7 @@ export default function Products() {
                       Detail
                     </motion.button>
                   </div>
-                  <p className="text-[#9f9f9f] text-sm leading-relaxed text-justify mb-4 flex-1">
+                  <p className="text-[#9f9f9f] text-xs leading-relaxed text-justify mb-3 flex-1">
                     {product.description}
                   </p>
                   <motion.div
@@ -549,8 +548,8 @@ export default function Products() {
                     whileHover={{ scale: 1.04 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <span className="text-[28px] md:text-[32px] font-semibold" style={{ color: product.textColor }}>IDR</span>
-                    <span className="text-[28px] md:text-[32px] font-semibold text-[#454545]">{product.price}K</span>
+                    <span className="text-lg md:text-xl font-semibold" style={{ color: product.textColor }}>IDR</span>
+                    <span className="text-lg md:text-xl font-semibold text-[#454545]">{product.price}K</span>
                   </motion.div>
                   <motion.button
                     onClick={() => handleSelectPackage(product.title, product.price)}

@@ -1,7 +1,8 @@
-import { motion, useScroll, useMotionValueEvent } from 'framer-motion'
-import { User } from 'lucide-react'
-import { useState } from 'react'
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
+import { User, Menu, X } from 'lucide-react'
+import { useState, useEffect } from 'react'
 import AuthModal from './AuthModal'
+import { LanguageBadge } from './FloatingWA'
 
 interface NavbarProps {
   activeSection: string
@@ -23,12 +24,17 @@ const pageItems = [
 
 export default function Navbar({ activeSection, activePage, onPageChange }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
+  const [pastHero, setPastHero] = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { scrollY } = useScroll()
 
   useMotionValueEvent(scrollY, 'change', (latest) => {
     setScrolled(latest > 50)
+    setPastHero(latest > 50)
   })
+
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
@@ -36,8 +42,26 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
 
   const handlePageChange = (page: string) => {
     onPageChange(page)
-    window.scrollTo({ top: 0, behavior: 'instant' })
+    setMobileMenuOpen(false)
   }
+
+  // Close mobile menu on scroll
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const close = () => setMobileMenuOpen(false)
+    window.addEventListener('scroll', close, { passive: true })
+    return () => window.removeEventListener('scroll', close)
+  }, [mobileMenuOpen])
+
+  // Lock body scroll when menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [mobileMenuOpen])
 
   return (
     <>
@@ -47,11 +71,17 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
-          background: scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.7)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: scrolled ? '0 1px 32px rgba(0,0,0,0.08)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent',
+          background: isMobile
+            ? (pastHero ? 'rgba(255,255,255,0.92)' : 'transparent')
+            : (scrolled ? 'rgba(255,255,255,0.92)' : 'rgba(255,255,255,0.7)'),
+          backdropFilter: isMobile ? (pastHero ? 'blur(20px)' : 'none') : 'blur(20px)',
+          WebkitBackdropFilter: isMobile ? (pastHero ? 'blur(20px)' : 'none') : 'blur(20px)',
+          boxShadow: isMobile
+            ? (pastHero ? '0 1px 32px rgba(0,0,0,0.08)' : 'none')
+            : (scrolled ? '0 1px 32px rgba(0,0,0,0.08)' : 'none'),
+          borderBottom: isMobile
+            ? (pastHero ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent')
+            : (scrolled ? '1px solid rgba(0,0,0,0.06)' : '1px solid transparent'),
         }}
       >
         <div className="max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-12 py-3 md:py-5 flex items-center justify-between">
@@ -116,23 +146,23 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
           </div>
 
           {/* Right side */}
-          <div className="flex items-center gap-2">
-            {/* Mobile page tabs (Home / Portfolio) */}
-            <div className="flex lg:hidden items-center gap-1 bg-gray-100 rounded-xl p-1">
-              {pageItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handlePageChange(item.id)}
-                  className={`relative px-3.5 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                    activePage === item.id
-                      ? 'bg-black text-white shadow-sm'
-                      : 'text-gray-500 hover:text-gray-800'
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
+          <div className="flex items-center gap-4">
+            {/* Language Badge */}
+            <div className="hidden lg:block">
+              <LanguageBadge />
             </div>
+
+            {/* Mobile hamburger button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden w-10 h-10 rounded-xl bg-black flex items-center justify-center"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 text-white" />
+              ) : (
+                <Menu className="w-5 h-5 text-white" />
+              )}
+            </button>
 
             {/* Desktop user icon */}
             <motion.button
@@ -147,6 +177,74 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
         </div>
       </motion.nav>
 
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              className="fixed top-[64px] left-0 right-0 z-40 lg:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+            >
+              <div className="px-5 py-5 space-y-4">
+                {/* Page links */}
+                <div className="space-y-1">
+                  {pageItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => handlePageChange(item.id)}
+                      className={`w-full text-left px-4 py-3 rounded-xl font-semibold text-[15px] transition-all duration-200 ${
+                        activePage === item.id
+                          ? 'bg-black text-white'
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Section links - only on home */}
+                {activePage === 'home' && (
+                  <>
+                    <div className="h-px bg-gray-200" />
+                    <div className="space-y-1">
+                      {navItems.map((item) => (
+                        <button
+                          key={item.id}
+                          onClick={() => { scrollToSection(item.id); setMobileMenuOpen(false) }}
+                          className={`w-full text-left px-4 py-3 rounded-xl font-medium text-[15px] transition-all duration-200 ${
+                            activeSection === item.id
+                              ? 'text-[#D4912A] bg-[#F5C542]/10'
+                              : 'text-gray-500 hover:bg-gray-100'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {/* Language Badge - mobile */}
+                <div className="h-px bg-gray-200" />
+                <div className="flex justify-center py-1">
+                  <LanguageBadge />
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Auth Modal */}
       <AuthModal

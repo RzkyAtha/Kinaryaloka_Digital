@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { ExternalLink, Globe, X, ChevronLeft, ChevronRight, Image } from 'lucide-react'
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import { usePortfolio, PortfolioProject, PortfolioCategory, PortfolioSubcategory } from '../context/PortfolioContext'
+import { PORTFOLIO_PROJECTS, PortfolioProject, PortfolioCategory, PortfolioSubcategory } from '../context/PortfolioContext'
 
 const mainTabs: { id: PortfolioCategory; label: string; color: string; glow: string }[] = [
   { id: 'Website', label: 'Website', color: '#E5A830', glow: '#E5A83050' },
@@ -226,7 +226,7 @@ function Lightbox({
 
 // ─── Main Portfolio Component ────────────────────────────────────────────────
 export default function Portfolio() {
-  const { projects } = usePortfolio()
+  const projects = PORTFOLIO_PROJECTS
   const [mainCategory, setMainCategory] = useState<PortfolioCategory>('Website')
   const [activeSub, setActiveSub] = useState<PortfolioSubcategory>(subTabs['Website'][0].id)
   const [lightboxProject, setLightboxProject] = useState<PortfolioProject | null>(null)
@@ -328,7 +328,7 @@ export default function Portfolio() {
         </motion.div>
 
         {/* Project Cards Grid */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="popLayout">
         <motion.div
           key={`${mainCategory}-${activeSub}`}
           variants={containerVariants}
