@@ -1,6 +1,7 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { MessageCircleQuestion, ImageOff, BarChart3, Clock, X } from 'lucide-react'
+import { useLanguage } from '../context/LanguageContext'
 
 const pains = [
   {
@@ -10,6 +11,11 @@ const pains = [
     color: '#E8651A',
     btnColor: '#B85A1E',
     icon: MessageCircleQuestion,
+    images: {
+      id: '/Assets/CARD_jwb_manual.png',
+      en: '/Assets/en_CARD_jwb_manual.png',
+      zh: '/Assets/zh_CARD_jwb_manual.png',
+    },
   },
   {
     title: 'BELUM\u00A0PUNYA\nTOKO?',
@@ -18,6 +24,11 @@ const pains = [
     color: '#D4912A',
     btnColor: '#A06B1A',
     icon: ImageOff,
+    images: {
+      id: '/Assets/CARD_no_img.png',
+      en: '/Assets/en_CARD_no_img.png',
+      zh: '/Assets/zh_CARD_no_img.png',
+    },
   },
   {
     title: 'PROMOSI\nTANPA\u00A0DATA?',
@@ -26,6 +37,11 @@ const pains = [
     color: '#C8752E',
     btnColor: '#B85A1E',
     icon: BarChart3,
+    images: {
+      id: '/Assets/CARD_no_data.png',
+      en: '/Assets/en_CARD_no_data.png',
+      zh: '/Assets/zh_CARD_no_data.png',
+    },
   },
   {
     title: 'KERJA\u00A0MANUAL\nTERUS?',
@@ -34,6 +50,11 @@ const pains = [
     color: '#B85A1E',
     btnColor: '#8B3E12',
     icon: Clock,
+    images: {
+      id: '/Assets/CARD_no_auto.png',
+      en: '/Assets/en_CARD_no_auto.png',
+      zh: '/Assets/zh_CARD_no_auto.png',
+    },
   },
 ]
 
@@ -42,6 +63,7 @@ export default function PainPoints() {
   const isInView = useInView(ref, { once: true, margin: '-80px' })
   const [showNara, setShowNara] = useState(false)
   const [activeCard, setActiveCard] = useState<number | null>(null)
+  const { language } = useLanguage()
 
   return (
     <section className="bg-[#0a0a0a] py-14 md:py-20 relative overflow-hidden" ref={ref}>
@@ -122,7 +144,6 @@ export default function PainPoints() {
                       key={i}
                       className="relative rounded-2xl sm:rounded-3xl overflow-hidden cursor-pointer select-none"
                       style={{
-                        background: item.color,
                         boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
                       }}
                       initial={{ opacity: 0, y: 16 }}
@@ -130,49 +151,26 @@ export default function PainPoints() {
                       transition={{ duration: 0.35, delay: isInView ? i * 0.05 : 0 }}
                       whileTap={{ scale: 0.97 }}
                     >
-                      <div className="relative p-5 sm:p-6 md:p-8 flex flex-col justify-center" style={{ aspectRatio: '1', minHeight: 0 }}>
-                        {/* Question mark button — top left */}
-                        <button
-                          className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg flex items-center justify-center text-white font-bold text-sm sm:text-base md:text-lg shadow-md hover:brightness-110 hover:scale-110 transition-all duration-200"
-                          style={{ background: '#6B3A1F' }}
-                          onClick={() => setActiveCard(i)}
-                          aria-label="Baca selengkapnya"
-                        >
-                          ?
-                        </button>
+                      {/* Card image */}
+                      <img
+                        src={item.images[language]}
+                        alt={item.title.replace(/\n/g, ' ')}
+                        className="w-full h-auto block"
+                        style={{ imageRendering: 'auto' }}
+                        loading="eager"
+                        decoding="async"
+                        draggable={false}
+                      />
 
-                        {/* Decorative number */}
-                        <span
-                          className="absolute top-3 right-4 sm:top-4 sm:right-5 font-bold pointer-events-none"
-                          style={{
-                            fontFamily: "'Staatliches', cursive",
-                            fontSize: 'clamp(48px, 10vw, 100px)',
-                            color: 'rgba(255,255,255,0.2)',
-                            lineHeight: 1,
-                          }}
-                        >
-                          0{i + 1}
-                        </span>
-
-                        {/* Decorative icon */}
-                        <div className="absolute bottom-4 right-4 sm:bottom-5 sm:right-5 pointer-events-none" style={{ opacity: 0.3 }}>
-                          <item.icon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12" style={{ color: '#ffffff' }} />
-                        </div>
-
-                        {/* Title */}
-                        <p
-                          className="whitespace-pre-line leading-[0.95] tracking-wide overflow-hidden"
-                          style={{
-                            fontFamily: "'Staatliches', cursive",
-                            color: '#ffffff',
-                            fontSize: 'clamp(22px, 5.5vw, 56px)',
-                            wordBreak: 'break-word',
-                          }}
-                        >
-                          {item.title}
-                        </p>
-
-                      </div>
+                      {/* Question mark button — top left */}
+                      <button
+                        className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 w-8 h-8 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-lg flex items-center justify-center text-white font-bold text-sm sm:text-base md:text-lg shadow-md hover:brightness-110 hover:scale-110 transition-all duration-200"
+                        style={{ background: '#6B3A1F' }}
+                        onClick={() => setActiveCard(i)}
+                        aria-label="Baca selengkapnya"
+                      >
+                        ?
+                      </button>
                     </motion.div>
                   ))}
                 </motion.div>
