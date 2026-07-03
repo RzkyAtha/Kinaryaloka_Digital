@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   AlertTriangle,
   DollarSign,
@@ -41,19 +41,11 @@ const GradText = ({ children, grad = gradAmber }: { children: React.ReactNode; g
   </span>
 );
 
-function FadeUp({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-40px" });
+function FadeUp({ children, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 16 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.4, delay: delay * 0.6, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <div className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -111,24 +103,13 @@ const comparisonRows = [
 /* ══════════════════════════════════════════════════ */
 export default function MarketplaceExodus() {
   const [showMore, setShowMore] = useState(false);
-  const wrapRef = useRef<HTMLElement>(null);
-
-  const casesSectionRef = useRef(null);
-  const analogyRef      = useRef(null);
-  const ownRef          = useRef(null);
-  const compareRef      = useRef(null);
-  const ctaRef          = useRef(null);
-
-  const casesInView   = useInView(casesSectionRef, { once: true, margin: "-40px" }); void casesInView;
-  const analogyInView = useInView(analogyRef,      { once: true, margin: "-40px" });
-  const ownInView     = useInView(ownRef,           { once: true, margin: "-40px" }); void ownInView;
-  const compareInView = useInView(compareRef,       { once: true, margin: "-40px" });
-  const ctaInView     = useInView(ctaRef,           { once: true, margin: "-40px" });
+  const analogyInView = true;
+  const compareInView = true;
+  const ctaInView     = true;
 
   return (
     <section
       id="marketplace-vs-website"
-      ref={wrapRef}
       className="relative overflow-hidden py-10 md:py-20 lg:py-28"
       style={{ background: C.bg }}
     >
@@ -151,7 +132,7 @@ export default function MarketplaceExodus() {
 
 
         {/* ══ 4. ANALOGI TOKO MAL ══ */}
-        <div ref={analogyRef} className="mb-10 md:mb-16 lg:mb-20">
+        <div className="mb-10 md:mb-16 lg:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={analogyInView ? { opacity: 1, y: 0 } : {}}
@@ -263,7 +244,7 @@ export default function MarketplaceExodus() {
 
 
         {/* ══ 8. TABEL PERBANDINGAN ══ */}
-        <div ref={compareRef} className="mb-10 md:mb-16 lg:mb-20">
+        <div className="mb-10 md:mb-16 lg:mb-20">
           <FadeUp className="text-center mb-5 md:mb-8">
             <SectionLabel>Perbandingan Langsung</SectionLabel>
             <h3 className="font-poppins font-extrabold text-[19px] sm:text-2xl md:text-3xl text-white leading-tight">
@@ -367,7 +348,6 @@ export default function MarketplaceExodus() {
 
         {/* ══ 10. CTA ══ */}
         <motion.div
-          ref={ctaRef}
           initial={{ opacity: 0, y: 28 }}
           animate={ctaInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}

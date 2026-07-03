@@ -1,5 +1,5 @@
-import { motion, AnimatePresence, useInView } from 'framer-motion'
-import { useRef, useState, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState, useCallback } from 'react'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 const valueCards = [
@@ -132,8 +132,7 @@ function PoliceLine({
 }
 
 export default function About() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const isInView = true
   const [activeIndex, setActiveIndex] = useState(0)
   const [showPopup, setShowPopup] = useState(false)
 
@@ -149,7 +148,7 @@ export default function About() {
 
   return (
     <section id="tentang" className="bg-white py-8 md:py-12 relative overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10" ref={ref}>
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
           {/* Left - Police Line Value Cards Scene */}
           <div className="w-full">
@@ -355,7 +354,7 @@ export default function About() {
                 className="relative h-40 overflow-hidden flex items-center justify-center"
                 style={{ background: `${activeCard.color}10` }}
               >
-                <img src={activeCard.image} alt={activeCard.title} className="w-28 h-28 object-contain" loading="lazy" decoding="async" />
+                <img src={activeCard.image} alt={activeCard.title} className="w-28 h-28 object-contain" loading="eager" decoding="async" />
               </div>
 
               {/* Content */}

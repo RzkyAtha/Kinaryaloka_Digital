@@ -1,5 +1,5 @@
-import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { useRef, useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 import { MessageCircleQuestion, ImageOff, BarChart3, Clock, X } from 'lucide-react'
 import { useLanguage } from '../context/LanguageContext'
 
@@ -59,14 +59,13 @@ const pains = [
 ]
 
 export default function PainPoints() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-80px' })
+  const isInView = true
   const [showNara, setShowNara] = useState(false)
   const [activeCard, setActiveCard] = useState<number | null>(null)
   const { language } = useLanguage()
 
   return (
-    <section className="bg-[#0a0a0a] py-14 md:py-20 relative overflow-hidden" ref={ref}>
+    <section className="bg-[#0a0a0a] py-14 md:py-20 relative overflow-hidden">
       {/* Subtle top accent line */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F5C542]/40 to-transparent" />
 
@@ -310,7 +309,7 @@ export default function PainPoints() {
               {/* Content */}
               <div className="text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl overflow-hidden" style={{ border: '2px solid rgba(245,197,66,0.3)' }}>
-                  <img src="/Assets/nara_mask.png" alt="Nara" className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <img src="/Assets/nara_mask.png" alt="Nara" className="w-full h-full object-cover" loading="eager" decoding="async" />
                 </div>
                 <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
                   Kenalan dulu, yuk!

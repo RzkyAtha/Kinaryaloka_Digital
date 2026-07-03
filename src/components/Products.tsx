@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useMemo } from 'react'
-import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ShoppingCart, X, Check } from 'lucide-react'
 import AuthModal from './AuthModal'
 import { PRODUCTS, Product as CtxProduct } from '../context/ProductsContext'
@@ -233,8 +233,7 @@ export default function Products() {
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [selectedPackage, setSelectedPackage] = useState<{ title: string; price: string } | null>(null)
   const [detailProduct, setDetailProduct] = useState<UIProduct | null>(null)
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = true
 
   const products = useMemo(() => groupProducts(PRODUCTS), [])
 
@@ -255,7 +254,7 @@ export default function Products() {
   const isOddCount = allMobileProducts.length % 2 !== 0
 
   return (
-    <section id="produk" className="bg-black py-12 md:py-20" ref={ref}>
+    <section id="produk" className="bg-black py-12 md:py-20">
       <div className="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-10">
         {/* Section Title */}
         <motion.div
@@ -335,7 +334,7 @@ export default function Products() {
             >
               <MagicCard accentColor={allMobileProducts[0].color}>
                 <div className="relative h-[160px] overflow-hidden">
-                  <img src={allMobileProducts[0].image} alt={allMobileProducts[0].title} className="w-full h-full object-cover" loading="lazy" />
+                  <img src={allMobileProducts[0].image} alt={allMobileProducts[0].title} className="w-full h-full object-cover" loading="eager" />
                 </div>
                 <div className="p-3 relative">
                   {allMobileProducts[0].badge && (
@@ -378,7 +377,7 @@ export default function Products() {
               >
                 <MagicCard accentColor={product.color} fullHeight>
                   <div className="relative h-[110px] overflow-hidden">
-                    <img src={product.image} alt={product.title} className="w-full h-full object-cover" loading="lazy" />
+                    <img src={product.image} alt={product.title} className="w-full h-full object-cover" loading="eager" />
                   </div>
                   <div className="p-2.5 flex flex-col flex-1">
                     <div className="flex justify-between items-start mb-1.5">
@@ -429,7 +428,7 @@ export default function Products() {
                 src={currentProducts.featured.image}
                 alt={currentProducts.featured.title}
                 className="w-full h-full object-cover"
-                loading="lazy"
+                loading="eager"
                 whileHover={{ scale: 1.08 }}
                 transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               />
@@ -498,7 +497,7 @@ export default function Products() {
                     src={product.image}
                     alt={product.title}
                     className="w-full h-full object-cover"
-                    loading="lazy"
+                    loading="eager"
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                   />

@@ -1,5 +1,5 @@
-import { motion, useInView } from 'framer-motion'
-import { useRef, useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 
 const stats = [
   { value: 24, suffix: '/7', label: 'Tim Kami Aktif Berkomunikasi', icon: '�' },
@@ -28,11 +28,10 @@ function AnimatedNumber({ target, suffix, start }: { target: number; suffix: str
 }
 
 export default function TrustBar() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: '-60px' })
+  const isInView = true
 
   return (
-    <section ref={ref} className="bg-[#0d0d0d] border-y border-[#1e1e1e] py-6 md:py-8 overflow-hidden">
+    <section className="bg-[#0d0d0d] border-y border-[#1e1e1e] py-6 md:py-8 overflow-hidden">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-3 sm:flex sm:flex-row items-center justify-center gap-4 sm:gap-0 sm:divide-x divide-[#2a2a2a]">
           {stats.map((stat, i) => (

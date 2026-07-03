@@ -41,7 +41,7 @@ function ThumbnailImage({ src, alt, hasUrl, url, isDesign }: { src?: string; alt
         <img
           src={imgSrc}
           alt={alt}
-          loading="lazy"
+          loading="eager"
           onLoad={() => setStatus('loaded')}
           onError={() => setStatus('error')}
           className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${

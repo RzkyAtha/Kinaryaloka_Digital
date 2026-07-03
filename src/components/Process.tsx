@@ -1,5 +1,4 @@
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { motion } from 'framer-motion'
 import { MessageCircle, CheckCircle2 } from 'lucide-react'
 
 const steps = [
@@ -26,11 +25,10 @@ const steps = [
 ]
 
 export default function Process() {
-  const ref = useRef(null)
-  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const isInView = true
 
   return (
-    <section className="bg-[#fdfdfd] py-20 relative overflow-hidden" ref={ref}>
+    <section className="bg-[#fdfdfd] py-20 relative overflow-hidden">
       {/* Grid Background */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div

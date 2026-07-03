@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Moon, Instagram, MessageCircle, Music2, Mail } from 'lucide-react'
+import { Moon, Instagram, MessageCircle, Music2 } from 'lucide-react'
 
 const footerLinks = {
   produk: [
@@ -31,16 +31,12 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 mb-8 md:mb-12">
           {/* Brand Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <img 
               src="/Assets/logo_kinarya.png" 
               alt="KINARYALOKA"
               className="h-10 md:h-12 w-auto object-contain mb-4"
+              loading="eager"
             />
             
             <div className="flex items-start gap-3 mb-6">
@@ -71,15 +67,10 @@ export default function Footer() {
                 </motion.a>
               ))}
             </div>
-          </motion.div>
+          </div>
 
           {/* Products Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <h4 className="font-bold text-lg mb-4">Produk</h4>
             <ul className="space-y-2">
               {footerLinks.produk.map((link) => (
@@ -93,15 +84,10 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Help Column */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
-          >
+          <div>
             <h4 className="font-bold text-lg mb-4">Bantuan</h4>
             <ul className="space-y-2">
               {footerLinks.bantuan.map((link) => (
@@ -115,37 +101,13 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
         </div>
 
         {/* Newsletter & Copyright */}
-        <motion.div
+        <div
           className="border-t border-[#3a3a3a] pt-8 flex flex-col md:flex-row items-center justify-between gap-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          viewport={{ once: true }}
         >
-          {/* Newsletter */}
-          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="email"
-                placeholder="Masukan emailmu disini"
-                className="bg-[#3a3a3a] rounded-lg pl-10 pr-4 py-3 text-white placeholder-gray-400 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-[#F5C542]"
-              />
-            </div>
-            <motion.button
-              className="text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 cursor-pointer"
-              style={{ background: 'linear-gradient(135deg, #F5C542, #D91A60)', boxShadow: '0 2px 12px #F5C54230' }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Subscribe
-            </motion.button>
-          </div>
-
           {/* Copyright */}
           <div className="text-center md:text-right">
             <p className="text-gray-400 text-sm">
@@ -160,7 +122,7 @@ export default function Footer() {
               />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </footer>
   )

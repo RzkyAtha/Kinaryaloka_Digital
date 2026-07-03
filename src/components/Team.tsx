@@ -1,6 +1,6 @@
-import { motion, useInView } from 'framer-motion'
+import { motion } from 'framer-motion'
 import type { TargetAndTransition } from 'framer-motion'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { ChevronLeft, ChevronRight, Crosshair, Headphones, ShieldCheck } from 'lucide-react'
 
 const cards = [
@@ -76,15 +76,14 @@ const positionStyles: Record<Pos, TargetAndTransition> = {
 }
 
 export default function Team() {
-  const sectionRef = useRef(null)
-  const isInView = useInView(sectionRef, { once: true, margin: '-100px' })
+  const isInView = true
   const [active, setActive] = useState(0)
 
   const next = () => setActive((p) => (p + 1) % cards.length)
   const prev = () => setActive((p) => (p - 1 + cards.length) % cards.length)
 
   return (
-    <section id="komitmen" className="bg-[#050510] py-20 md:py-32 relative overflow-hidden" ref={sectionRef}>
+    <section id="komitmen" className="bg-[#050510] py-20 md:py-32 relative overflow-hidden">
       {/* Mesh gradient background (desktop only for performance) */}
       <div className="absolute inset-0 pointer-events-none hidden md:block">
         <motion.div
@@ -170,7 +169,7 @@ export default function Team() {
                       src={card.image}
                       alt={card.label}
                       className="w-full h-full object-cover"
-                      loading="lazy"
+                      loading="eager"
                       draggable={false}
                     />
                   </div>

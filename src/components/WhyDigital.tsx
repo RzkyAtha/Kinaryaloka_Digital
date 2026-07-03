@@ -1,13 +1,11 @@
-import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { motion } from 'framer-motion'
 
 
 export default function WhyDigital() {
-  const sectionRef = useRef<HTMLDivElement>(null)
-  const isInView = useInView(sectionRef, { once: true, margin: '-80px' })
+  const isInView = true
 
   return (
-    <section id="digital" ref={sectionRef} className="bg-black py-16 md:py-28 relative overflow-hidden">
+    <section id="digital" className="bg-black py-16 md:py-28 relative overflow-hidden">
       {/* Top accent */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#F5C542]/40 to-transparent" />
       {/* Top glow */}
