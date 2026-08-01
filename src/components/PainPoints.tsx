@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
-import { MessageCircleQuestion, ImageOff, BarChart3, Clock, X } from 'lucide-react'
+import { QuestionMarkCircleIcon as MessageCircleQuestion, PhotoIcon as ImageOff, ChartBarIcon as BarChart3, ClockIcon as Clock, XMarkIcon as X } from '@heroicons/react/24/solid'
 import { useLanguage } from '../context/LanguageContext'
 
 const pains = [
@@ -93,21 +93,14 @@ export default function PainPoints() {
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8">
           {/* ── Left: Hero Image ── */}
           <div className="lg:w-[38%] flex-shrink-0">
-            <div className="relative rounded-3xl overflow-hidden w-full h-fit"
-              style={{ boxShadow: "0 32px 150px rgba(245,197,66,0.20)" }}>
+            <div className="relative w-full h-fit">
               <img
-                src="/Assets/nara_ber3.png"
+                src="/Assets/nara_doodle.png"
                 alt="KINARYALOKA Team"
                 className="w-full h-auto block"
                 loading="eager"
                 decoding="async"
               />
-              {/* Gradient overlay bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-                style={{ background: "linear-gradient(to top,rgba(15,10,30,0.75),transparent)" }} />
-              {/* Accent border glow */}
-              <div className="absolute inset-0 rounded-3xl pointer-events-none"
-                style={{ boxShadow: "inset 0 0 0 1px rgba(245,197,66,0.00)" }} />
             </div>
 
             {/* Button: Tunggu, siapa mereka? */}

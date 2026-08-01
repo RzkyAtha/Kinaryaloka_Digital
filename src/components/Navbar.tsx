@@ -1,5 +1,5 @@
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
-import { User, Menu, X } from 'lucide-react'
+import { UserIcon as User, Bars3Icon as Menu, XMarkIcon as X } from '@heroicons/react/24/solid'
 import { useState, useEffect } from 'react'
 import AuthModal from './AuthModal'
 import { LanguageBadge } from './FloatingWA'
@@ -14,7 +14,6 @@ const navItems = [
   { id: 'tentang', label: 'Tentang' },
   { id: 'produk', label: 'Produk' },
   { id: 'komitmen', label: 'Komitmen' },
-  { id: 'digital', label: 'Mengapa Digital' },
 ]
 
 const pageItems = [

@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage, Language } from '../context/LanguageContext'
-import { X, Languages } from 'lucide-react'
+import { XMarkIcon as X, LanguageIcon as Languages } from '@heroicons/react/24/solid'
 
 const contacts = [
   { name: 'Atha', number: '6281219579683' },

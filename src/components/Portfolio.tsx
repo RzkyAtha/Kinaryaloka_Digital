@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { ExternalLink, Globe, X, ChevronLeft, ChevronRight, Image } from 'lucide-react'
+import { ArrowTopRightOnSquareIcon as ExternalLink, GlobeAltIcon as Globe, XMarkIcon as X, ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, PhotoIcon as Image } from '@heroicons/react/24/solid'
 import { useState, useMemo, useCallback, useEffect } from 'react'
 import { PORTFOLIO_PROJECTS, PortfolioProject, PortfolioCategory, PortfolioSubcategory } from '../context/PortfolioContext'
 

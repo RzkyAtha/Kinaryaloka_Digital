@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useCallback } from 'react'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, XMarkIcon as X } from '@heroicons/react/24/solid'
 
 const valueCards = [
   {
@@ -225,7 +225,7 @@ export default function About() {
                 style={{ zIndex: 20, backgroundColor: `${activeCard.color}20`, borderColor: `${activeCard.color}40`, border: `1px solid ${activeCard.color}40`, color: activeCard.color }}
                 aria-label="Previous value"
               >
-                <ChevronLeft size={20} />
+                <ChevronLeft className="w-5 h-5" />
               </button>
 
               {/* Navigation Arrow - Right */}
@@ -235,7 +235,7 @@ export default function About() {
                 style={{ zIndex: 20, backgroundColor: `${activeCard.color}20`, border: `1px solid ${activeCard.color}40`, color: activeCard.color }}
                 aria-label="Next value"
               >
-                <ChevronRight size={20} />
+                <ChevronRight className="w-5 h-5" />
               </button>
 
               {/* Dots Indicator */}
@@ -346,7 +346,7 @@ export default function About() {
                 className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 hover:bg-white/20 hover:text-white transition-all"
                 style={{ zIndex: 10 }}
               >
-                <X size={16} />
+                <X className="w-4 h-4" />
               </button>
 
               {/* Image */}

@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ShoppingCart, X, Check } from 'lucide-react'
+import { ShoppingCartIcon as ShoppingCart, XMarkIcon as X, CheckIcon as Check } from '@heroicons/react/24/solid'
 import AuthModal from './AuthModal'
 import { PRODUCTS, Product as CtxProduct } from '../context/ProductsContext'
 

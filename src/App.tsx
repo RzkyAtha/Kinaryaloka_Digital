@@ -5,7 +5,6 @@ import Hero from './components/Hero'
 import About from './components/About'
 import Products from './components/Products'
 import Team from './components/Team'
-import WhyDigital from './components/WhyDigital'
 import Process from './components/Process'
 import Footer from './components/Footer'
 import PainPoints from './components/PainPoints'
@@ -42,7 +41,7 @@ function MainSite() {
 
   useEffect(() => {
     if (activePage !== 'home') return
-    const sectionIds = ['tentang', 'produk', 'komitmen', 'digital']
+    const sectionIds = ['tentang', 'produk', 'komitmen']
     const handleScroll = () => {
       const offset = 200
       let current = ''
@@ -82,7 +81,6 @@ function MainSite() {
             <MarketplaceExodus />
             <Products />
             <Team />
-            <WhyDigital />
             <Process />
           </>
         ) : (

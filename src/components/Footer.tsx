@@ -1,5 +1,24 @@
 import { motion } from 'framer-motion'
-import { Moon, Instagram, MessageCircle, Music2 } from 'lucide-react'
+import { MoonIcon as Moon, ChatBubbleOvalLeftIcon as MessageCircle } from '@heroicons/react/24/solid'
+
+// Brand logos (not available in Heroicons) — custom inline SVGs
+function Instagram({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
+      <rect x="2" y="2" width="20" height="20" rx="5.5" />
+      <circle cx="12" cy="12" r="4.2" />
+      <circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function Music2({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M16.5 3c.32 2.19 1.62 3.75 3.72 4v2.46c-1.3 0-2.57-.4-3.72-1.13v5.9a5.42 5.42 0 1 1-5.42-5.42c.19 0 .37.01.56.03v2.55a2.9 2.9 0 1 0 2.35 2.84V3h2.51z" />
+    </svg>
+  )
+}
 
 const footerLinks = {
   produk: [

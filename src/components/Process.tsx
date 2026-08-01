@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { MessageCircle, CheckCircle2 } from 'lucide-react'
+import { ChatBubbleOvalLeftIcon as MessageCircle, CheckCircleIcon as CheckCircle2 } from '@heroicons/react/24/solid'
 
 const steps = [
   {

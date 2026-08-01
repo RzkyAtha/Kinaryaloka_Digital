@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, User, ShoppingCart, Check, Sparkles, PartyPopper, ShieldCheck, Eye, EyeOff, ArrowLeft } from 'lucide-react'
+import { XMarkIcon as X, UserIcon as User, ShoppingCartIcon as ShoppingCart, CheckIcon as Check, SparklesIcon as Sparkles, CheckBadgeIcon as PartyPopper, ShieldCheckIcon as ShieldCheck, EyeIcon as Eye, EyeSlashIcon as EyeOff, ArrowLeftIcon as ArrowLeft } from '@heroicons/react/24/solid'
 import { useState, useRef } from 'react'
 import { GoogleLogin } from '@react-oauth/google'
 import { jwtDecode } from 'jwt-decode'

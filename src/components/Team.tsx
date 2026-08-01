@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import type { TargetAndTransition } from 'framer-motion'
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Crosshair, Headphones, ShieldCheck } from 'lucide-react'
+import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, ViewfinderCircleIcon as Crosshair, LifebuoyIcon as Headphones, ShieldCheckIcon as ShieldCheck } from '@heroicons/react/24/solid'
 
 const cards = [
   {
@@ -182,7 +182,7 @@ export default function Team() {
                         className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                         style={{ background: `${card.color}18` }}
                       >
-                        <card.icon size={18} style={{ color: card.color }} />
+                        <card.icon className="w-[18px] h-[18px]" style={{ color: card.color }} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-white text-sm leading-snug">{card.title}</h3>
