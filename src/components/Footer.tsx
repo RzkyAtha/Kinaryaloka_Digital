@@ -52,7 +52,7 @@ export default function Footer() {
           {/* Brand Column */}
           <div>
             <img 
-              src="/Assets/logo_kinarya.png" 
+              src="/Assets/logo_kinarya.webp" 
               alt="KINARYALOKA"
               className="h-10 md:h-12 w-auto object-contain mb-4"
               loading="eager"
@@ -135,7 +135,7 @@ export default function Footer() {
             <div className="flex items-center gap-2 mt-1">
               <span className="text-gray-500 text-xs">Powered by</span>
               <img 
-                src="/Assets/logo_kinarya.png" 
+                src="/Assets/logo_kinarya.webp" 
                 alt="KINARYALOKA"
                 className="h-4 w-auto object-contain"
               />

@@ -321,7 +321,7 @@ export default function Portfolio() {
             <span>Produk kami dapat dikenali dengan adanya</span>
             <span className="inline-flex items-center gap-1.5 bg-[#2a2a2a] rounded-md px-2.5 py-1">
               <span className="text-gray-300 text-xs font-medium">Powered by</span>
-              <img src="/Assets/logo_kinarya.png" alt="Kinaryaloka" className="h-4 w-4 object-contain" />
+              <img src="/Assets/logo_kinarya.webp" alt="Kinaryaloka" className="h-4 w-4 object-contain" />
             </span>
             <span>di tiap footer websitenya, hak cipta dilindungi.</span>
           </p>

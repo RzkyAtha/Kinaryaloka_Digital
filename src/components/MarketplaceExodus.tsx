@@ -98,33 +98,33 @@ export default function MarketplaceExodus() {
         <div className="grid grid-cols-2 gap-3.5 md:grid-cols-2 md:gap-4 lg:grid-cols-4 lg:auto-rows-[minmax(200px,auto)]">
 
           {/* HERO — Properti Digital Milikmu (2×2) */}
-          <ImgCard src="/Assets/properti_aset.png" alt="Properti Digital Milikmu — website adalah aset yang kamu miliki" spanClass="col-span-2 md:col-span-2 lg:row-span-2" delay={0} />
+          <ImgCard src="/Assets/properti_aset.webp" alt="Properti Digital Milikmu — website adalah aset yang kamu miliki" spanClass="col-span-2 md:col-span-2 lg:row-span-2" delay={0} />
 
           {/* STAT — Nilai transaksi e-commerce (wide) */}
-          <ImgCard src="/Assets/nilai_transaksi.png" alt="Rp 487 T — nilai transaksi e-commerce Indonesia" spanClass="col-span-2 md:col-span-2" delay={0.05} />
+          <ImgCard src="/Assets/nilai_transaksi.webp" alt="Rp 487 T — nilai transaksi e-commerce Indonesia" spanClass="col-span-2 md:col-span-2" delay={0.05} />
 
           {/* Harga & SEO */}
-          <ImgCard src="/Assets/harga.png" alt="Harga dan margin terkontrol" delay={0.1} />
-          <ImgCard src="/Assets/seo.png" alt="SEO: aset jangka panjang" delay={0.15} />
+          <ImgCard src="/Assets/harga.webp" alt="Harga dan margin terkontrol" delay={0.1} />
+          <ImgCard src="/Assets/seo.webp" alt="SEO: aset jangka panjang" delay={0.15} />
 
           {/* SHOWCASE — Manajemen stok & pesanan (wide) — moved below harga/seo/kampanye/brand on mobile & tablet */}
-          <ImgCard src="/Assets/manajemen.png" alt="Manajemen stok & pesanan" spanClass="order-1 lg:order-none col-span-2 md:col-span-2" delay={0.1} />
+          <ImgCard src="/Assets/manajemen.webp" alt="Manajemen stok & pesanan" spanClass="order-1 lg:order-none col-span-2 md:col-span-2" delay={0.1} />
 
           {/* Kampanye & Brand */}
-          <ImgCard src="/Assets/kampanye.png" alt="Kampanye bebas tanpa izin" delay={0.15} />
-          <ImgCard src="/Assets/brand.png" alt="Brand identity penuh" delay={0.2} />
+          <ImgCard src="/Assets/kampanye.webp" alt="Kampanye bebas tanpa izin" delay={0.15} />
+          <ImgCard src="/Assets/brand.webp" alt="Brand identity penuh" delay={0.2} />
 
           {/* COMPANY PROFILE — full width */}
-          <ImgCard src="/Assets/compro.png" alt="Website company profile = identitas profesional perusahaanmu" spanClass="order-2 lg:order-none col-span-2 md:col-span-2 lg:col-span-4" delay={0.15} />
+          <ImgCard src="/Assets/compro.webp" alt="Website company profile = identitas profesional perusahaanmu" spanClass="order-2 lg:order-none col-span-2 md:col-span-2 lg:col-span-4" delay={0.15} />
 
         </div>
 
         {/* COMPANY PROFILE benefits — 2×2 on mobile, 4-across on desktop */}
         <div className="mt-3.5 grid grid-cols-2 items-center gap-3.5 md:mt-4 md:gap-4 lg:grid-cols-4">
-          <ImgCard src="/Assets/kontak.png" alt="Kontak Resmi" delay={0.2} contain radiusClass="rounded-lg md:rounded-xl" />
-          <ImgCard src="/Assets/ditemukan.png" alt="Ditemukan di Internet" delay={0.25} contain radiusClass="rounded-lg md:rounded-xl" />
-          <ImgCard src="/Assets/porto.png" alt="Portofolio & Legalitas" delay={0.3} contain radiusClass="rounded-lg md:rounded-xl" />
-          <ImgCard src="/Assets/kredibilitas.png" alt="Kredibilitas Instan" delay={0.35} contain radiusClass="rounded-lg md:rounded-xl" />
+          <ImgCard src="/Assets/kontak.webp" alt="Kontak Resmi" delay={0.2} contain radiusClass="rounded-lg md:rounded-xl" />
+          <ImgCard src="/Assets/ditemukan.webp" alt="Ditemukan di Internet" delay={0.25} contain radiusClass="rounded-lg md:rounded-xl" />
+          <ImgCard src="/Assets/porto.webp" alt="Portofolio & Legalitas" delay={0.3} contain radiusClass="rounded-lg md:rounded-xl" />
+          <ImgCard src="/Assets/kredibilitas.webp" alt="Kredibilitas Instan" delay={0.35} contain radiusClass="rounded-lg md:rounded-xl" />
         </div>
       </div>
 

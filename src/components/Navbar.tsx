@@ -1,8 +1,9 @@
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
 import { UserIcon as User, Bars3Icon as Menu, XMarkIcon as X } from '@heroicons/react/24/solid'
-import { useState, useEffect } from 'react'
-import AuthModal from './AuthModal'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { LanguageBadge } from './FloatingWA'
+
+const AuthModal = lazy(() => import('./AuthModal'))
 
 interface NavbarProps {
   activeSection: string
@@ -87,12 +88,12 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
           {/* Logo */}
           <motion.div className="flex items-center gap-2 md:gap-4" whileHover={{ scale: 1.02 }}>
             <img 
-              src="/Assets/logo_kinarya.png" 
+              src="/Assets/logo_kinarya.webp" 
               alt="KINARYALOKA"
               className="w-10 h-10 md:w-[56px] md:h-[54px] lg:w-[77px] lg:h-[74px] object-contain"
             />
             <img 
-              src="/Assets/font_kinarya.png" 
+              src="/Assets/font_kinarya.webp" 
               alt="KINARYALOKA"
               className="h-6 md:h-9 lg:h-11 object-contain"
             />
@@ -246,10 +247,14 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
       </AnimatePresence>
 
       {/* Auth Modal */}
-      <AuthModal
-        isOpen={authModalOpen}
-        onClose={() => setAuthModalOpen(false)}
-      />
+      {authModalOpen && (
+        <Suspense fallback={null}>
+          <AuthModal
+            isOpen={authModalOpen}
+            onClose={() => setAuthModalOpen(false)}
+          />
+        </Suspense>
+      )}
     </>
   )
 }

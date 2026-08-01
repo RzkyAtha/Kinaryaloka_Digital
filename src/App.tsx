@@ -1,4 +1,4 @@
-import { useState, useEffect, Component, ErrorInfo, ReactNode } from 'react'
+import { useState, useEffect, Component, ErrorInfo, ReactNode, lazy, Suspense } from 'react'
 import { motion, useScroll, useSpring } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -10,9 +10,11 @@ import Footer from './components/Footer'
 import PainPoints from './components/PainPoints'
 import MarketplaceExodus from './components/MarketplaceExodus'
 import FloatingWA from './components/FloatingWA'
-import Chatbot from './components/Nara'
-import Portfolio from './components/Portfolio'
 import { LanguageProvider } from './context/LanguageContext'
+
+// Code-split heavy, non-critical components (interactive / off-route)
+const Chatbot = lazy(() => import('./components/Nara'))
+const Portfolio = lazy(() => import('./components/Portfolio'))
 
 function ScrollProgressBar() {
   const { scrollYProgress } = useScroll()
@@ -65,7 +67,9 @@ function MainSite() {
     <div className="min-h-screen bg-[#f5f5f5] overflow-x-hidden">
       <ScrollProgressBar />
       <FloatingWA activePage={activePage} />
-      <Chatbot activePage={activePage} />
+      <Suspense fallback={null}>
+        <Chatbot activePage={activePage} />
+      </Suspense>
       <Navbar activeSection={activeSection} activePage={activePage} onPageChange={setActivePage} />
       <motion.main
         key={activePage}
@@ -84,7 +88,9 @@ function MainSite() {
             <Process />
           </>
         ) : (
-          <Portfolio />
+          <Suspense fallback={<div className="min-h-screen" />}>
+            <Portfolio />
+          </Suspense>
         )}
       </motion.main>
       <Footer />

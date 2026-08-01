@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChatBubbleOvalLeftIcon as MessageCircle, XMarkIcon as X, PaperAirplaneIcon as Send, ChevronRightIcon as ChevronRight, ArrowTopRightOnSquareIcon as ExternalLink, ArrowPathIcon as RotateCcw } from '@heroicons/react/24/solid'
 import { sendMessage as geminiSend, resetChat as geminiReset, isGeminiAvailable } from '../services/gemini'
 
-const naraImg = '/Assets/nara_mask.png'
+const naraImg = '/Assets/nara_mask.webp'
 
 // ─── Knowledge Base ─────────────────────────────────────────────────────────
 const KB = {

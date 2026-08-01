@@ -9,7 +9,7 @@ const valueCards = [
     badge: 'Support Berkelanjutan',
     description: 'Kami tidak pergi setelah project selesai. Support dan komunikasi tetap berjalan.',
     color: '#FFA500',
-    image: '/Assets/partner_vendor.png',
+    image: '/Assets/partner_vendor.webp',
     policeText: 'PARTNER, BUKAN VENDOR',
   },
   {
@@ -18,7 +18,7 @@ const valueCards = [
     badge: 'Riset Dulu, Baru Bangun',
     description: 'Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
     color: '#FF2D55',
-    image: '/Assets/tepatsasaran.png',
+    image: '/Assets/tepatsasaran.webp',
     policeText: 'TEPAT SASARAN',
   },
   {
@@ -27,7 +27,7 @@ const valueCards = [
     badge: 'Tanpa Ribet Teknis',
     description: 'Semua yang kami bangun dirancang agar bisa dipakai sehari-hari, tanpa perlu teknikal tinggi.',
     color: '#0080FF',
-    image: '/Assets/langsungkepakai.png',
+    image: '/Assets/langsungkepakai.webp',
     policeText: 'LANGSUNG KEPAKAI',
   },
   {
@@ -36,7 +36,7 @@ const valueCards = [
     badge: 'Harga & Progress Jelas',
     description: 'Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi ataupun janji kosong.',
     color: '#00C851',
-    image: '/Assets/harga_jelas.png',
+    image: '/Assets/harga_jelas.webp',
     policeText: 'TRANSPARAN & JELAS',
   },
 ]

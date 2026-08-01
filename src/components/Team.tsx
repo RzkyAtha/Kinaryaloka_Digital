@@ -5,7 +5,7 @@ import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, Viewf
 
 const cards = [
   {
-    image: '/Assets/komitmen1.png',
+    image: '/Assets/komitmen1.webp',
     icon: Crosshair,
     title: 'Akurasi Desain.',
     subtitle: 'Presisi Tinggi',
@@ -15,7 +15,7 @@ const cards = [
     gradient: 'from-[#F5C542] to-[#D4912A]',
   },
   {
-    image: '/Assets/kmt247.png',
+    image: '/Assets/kmt247.webp',
     icon: Headphones,
     title: 'Support Aktif.',
     subtitle: 'Tanpa Batas Waktu',
@@ -25,7 +25,7 @@ const cards = [
     gradient: 'from-[#F5C542] to-[#D4912A]',
   },
   {
-    image: '/Assets/kmt100.png',
+    image: '/Assets/kmt100.webp',
     icon: ShieldCheck,
     title: 'Integrasi Penuh.',
     subtitle: 'Sistem Andal',

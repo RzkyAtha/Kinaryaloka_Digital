@@ -103,9 +103,11 @@ export default function Hero() {
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <img
-                  src="/Assets/KNY_deskTOPP.png"
+                  src="/Assets/KNY_deskTOPP.webp"
                   alt="Digital Workspace"
                   className="w-full object-contain"
+                  width={931}
+                  height={932}
                   decoding="async"
                   fetchPriority="high"
                 />

@@ -12,9 +12,9 @@ const pains = [
     btnColor: '#B85A1E',
     icon: MessageCircleQuestion,
     images: {
-      id: '/Assets/CARD_jwb_manual.png',
-      en: '/Assets/en_CARD_jwb_manual.png',
-      zh: '/Assets/zh_CARD_jwb_manual.png',
+      id: '/Assets/CARD_jwb_manual.webp',
+      en: '/Assets/en_CARD_jwb_manual.webp',
+      zh: '/Assets/zh_CARD_jwb_manual.webp',
     },
   },
   {
@@ -25,9 +25,9 @@ const pains = [
     btnColor: '#A06B1A',
     icon: ImageOff,
     images: {
-      id: '/Assets/CARD_no_img.png',
-      en: '/Assets/en_CARD_no_img.png',
-      zh: '/Assets/zh_CARD_no_img.png',
+      id: '/Assets/CARD_no_img.webp',
+      en: '/Assets/en_CARD_no_img.webp',
+      zh: '/Assets/zh_CARD_no_img.webp',
     },
   },
   {
@@ -38,9 +38,9 @@ const pains = [
     btnColor: '#B85A1E',
     icon: BarChart3,
     images: {
-      id: '/Assets/CARD_no_data.png',
-      en: '/Assets/en_CARD_no_data.png',
-      zh: '/Assets/zh_CARD_no_data.png',
+      id: '/Assets/CARD_no_data.webp',
+      en: '/Assets/en_CARD_no_data.webp',
+      zh: '/Assets/zh_CARD_no_data.webp',
     },
   },
   {
@@ -51,9 +51,9 @@ const pains = [
     btnColor: '#8B3E12',
     icon: Clock,
     images: {
-      id: '/Assets/CARD_no_auto.png',
-      en: '/Assets/en_CARD_no_auto.png',
-      zh: '/Assets/zh_CARD_no_auto.png',
+      id: '/Assets/CARD_no_auto.webp',
+      en: '/Assets/en_CARD_no_auto.webp',
+      zh: '/Assets/zh_CARD_no_auto.webp',
     },
   },
 ]
@@ -95,10 +95,12 @@ export default function PainPoints() {
           <div className="lg:w-[38%] flex-shrink-0">
             <div className="relative w-full h-fit">
               <img
-                src="/Assets/nara_doodle.png"
+                src="/Assets/nara_doodle.webp"
                 alt="KINARYALOKA Team"
                 className="w-full h-auto block"
-                loading="eager"
+                width={1280}
+                height={1006}
+                loading="lazy"
                 decoding="async"
               />
             </div>
@@ -302,7 +304,7 @@ export default function PainPoints() {
               {/* Content */}
               <div className="text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl overflow-hidden" style={{ border: '2px solid rgba(245,197,66,0.3)' }}>
-                  <img src="/Assets/nara_mask.png" alt="Nara" className="w-full h-full object-cover" loading="eager" decoding="async" />
+                  <img src="/Assets/nara_mask.webp" alt="Nara" className="w-full h-full object-cover" loading="eager" decoding="async" />
                 </div>
                 <h3 className="text-white text-xl md:text-2xl font-bold mb-2">
                   Kenalan dulu, yuk!

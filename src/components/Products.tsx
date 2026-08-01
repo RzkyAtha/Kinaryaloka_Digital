@@ -1,8 +1,9 @@
-import { useState, useRef, useCallback, useMemo } from 'react'
+import { useState, useRef, useCallback, useMemo, lazy, Suspense } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ShoppingCartIcon as ShoppingCart, XMarkIcon as X, CheckIcon as Check } from '@heroicons/react/24/solid'
-import AuthModal from './AuthModal'
 import { PRODUCTS, Product as CtxProduct } from '../context/ProductsContext'
+
+const AuthModal = lazy(() => import('./AuthModal'))
 
 // ─── Magic Card: 3D tilt + spotlight + glow border ──────────────────
 function MagicCard({
@@ -572,11 +573,15 @@ export default function Products() {
         </AnimatePresence>
 
         {/* Auth Modal */}
-        <AuthModal
-          isOpen={authModalOpen}
-          onClose={() => setAuthModalOpen(false)}
-          selectedPackage={selectedPackage}
-        />
+        {authModalOpen && (
+          <Suspense fallback={null}>
+            <AuthModal
+              isOpen={authModalOpen}
+              onClose={() => setAuthModalOpen(false)}
+              selectedPackage={selectedPackage}
+            />
+          </Suspense>
+        )}
 
         {/* Detail Modal */}
         <DetailModal
