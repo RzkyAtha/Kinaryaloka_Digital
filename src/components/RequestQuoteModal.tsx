@@ -55,6 +55,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
   const [lastBlob, setLastBlob] = useState<Blob | null>(null)
   const [lastFileName, setLastFileName] = useState('')
   const [lastRef, setLastRef] = useState('')
+  const [method, setMethod] = useState<'share' | 'link'>('link')
 
   const accent = product?.color ?? '#000000'
 
@@ -77,6 +78,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
     setLastBlob(null)
     setLastFileName('')
     setLastRef('')
+    setMethod('link')
   }
 
   const handleClose = () => {
@@ -111,6 +113,29 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
     window.open(`https://wa.me/${BUSINESS_WHATSAPP}?text=${text}`, '_blank')
   }
 
+  const pdfFile = () =>
+    lastBlob ? new File([lastBlob], lastFileName, { type: 'application/pdf' }) : null
+
+  const canShareFile = (file: File): boolean =>
+    typeof navigator !== 'undefined' &&
+    typeof navigator.canShare === 'function' &&
+    navigator.canShare({ files: [file] })
+
+  const shareAgain = async () => {
+    if (!product) return
+    const file = pdfFile()
+    if (!file || !canShareFile(file)) return
+    try {
+      await navigator.share({
+        files: [file],
+        title: 'Quote Request KINARYALOKA',
+        text: buildWhatsAppMessage(form, product, lastRef),
+      })
+    } catch {
+      /* user batal share — abaikan */
+    }
+  }
+
   const handleSend = async () => {
     if (!product) return
     try {
@@ -122,12 +147,38 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
       setLastFileName(fileName)
       setLastRef(ref)
 
-      // Unduh PDF otomatis supaya customer punya file untuk dilampirkan di WA.
-      downloadBlob(blob, fileName)
-      // Buka WhatsApp dengan ringkasan; PDF dilampirkan manual oleh customer.
-      const text = encodeURIComponent(buildWhatsAppMessage(form, product, ref))
-      window.open(`https://wa.me/${BUSINESS_WHATSAPP}?text=${text}`, '_blank')
+      const message = buildWhatsAppMessage(form, product, ref)
+      const file = new File([blob], fileName, { type: 'application/pdf' })
 
+      // Mobile: Web Share API bisa melampirkan PDF langsung ke WhatsApp
+      // (customer memilih WhatsApp di share sheet OS).
+      if (canShareFile(file)) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: 'Quote Request KINARYALOKA',
+            text: message,
+          })
+          setMethod('share')
+          setStatus('success')
+          return
+        } catch (err) {
+          // Batal dari share sheet → kembali ke form, jangan dianggap error.
+          if (err instanceof DOMException && err.name === 'AbortError') {
+            setStatus('idle')
+            return
+          }
+          // Error lain → lanjut ke fallback di bawah.
+        }
+      }
+
+      // Desktop / tidak didukung: unduh PDF + buka WhatsApp (lampirkan manual).
+      setMethod('link')
+      downloadBlob(blob, fileName)
+      window.open(
+        `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodeURIComponent(message)}`,
+        '_blank',
+      )
       setStatus('success')
     } catch (err) {
       console.error(err)
@@ -201,29 +252,57 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                     >
                       <Check className="w-8 h-8 text-white" />
                     </div>
-                    <h4 className="text-xl font-black text-black mb-2">
-                      PDF Terunduh — Lampirkan di WhatsApp
-                    </h4>
-                    <p className="text-gray-600 text-sm mb-4">
-                      File brief <span className="font-bold">{lastFileName}</span>{' '}
-                      sudah terunduh dan chat WhatsApp KINARYALOKA sudah terbuka.
-                      <span className="font-bold text-black">
-                        {' '}Tinggal lampirkan (attach) PDF tadi ke chat lalu kirim.
-                      </span>{' '}
-                      Tim kami akan memproses dari sana. Terima kasih!
-                    </p>
-                    <button
-                      onClick={openWhatsApp}
-                      className="w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 mb-2"
-                      style={{ background: accent }}
-                    >
-                      <Send className="w-4 h-4" /> Buka WhatsApp Lagi
-                    </button>
+                    {method === 'share' ? (
+                      <>
+                        <h4 className="text-xl font-black text-black mb-2">
+                          PDF Siap Dibagikan
+                        </h4>
+                        <p className="text-gray-600 text-sm mb-4">
+                          Kamu baru saja membagikan brief{' '}
+                          <span className="font-bold">{lastFileName}</span>. Jika
+                          kamu memilih WhatsApp,{' '}
+                          <span className="font-bold text-black">
+                            PDF sudah otomatis terlampir
+                          </span>{' '}
+                          di chat — tinggal kirim. Terima kasih!
+                        </p>
+                        <button
+                          onClick={shareAgain}
+                          className="w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 mb-2"
+                          style={{ background: accent }}
+                        >
+                          <Send className="w-4 h-4" /> Bagikan Lagi
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <h4 className="text-xl font-black text-black mb-2">
+                          PDF Terunduh — Lampirkan di WhatsApp
+                        </h4>
+                        <p className="text-gray-600 text-sm mb-4">
+                          File brief{' '}
+                          <span className="font-bold">{lastFileName}</span> sudah
+                          terunduh dan chat WhatsApp KINARYALOKA sudah terbuka.
+                          <span className="font-bold text-black">
+                            {' '}Tinggal lampirkan (attach) PDF tadi ke chat lalu
+                            kirim.
+                          </span>{' '}
+                          Tim kami akan memproses dari sana. Terima kasih!
+                        </p>
+                        <button
+                          onClick={openWhatsApp}
+                          className="w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 mb-2"
+                          style={{ background: accent }}
+                        >
+                          <Send className="w-4 h-4" /> Buka WhatsApp Lagi
+                        </button>
+                      </>
+                    )}
                     <button
                       onClick={downloadPdf}
                       className="w-full py-3 rounded-xl border-2 border-black text-black font-bold text-sm flex items-center justify-center gap-2 mb-2"
                     >
-                      <Download className="w-4 h-4" /> Unduh PDF Lagi
+                      <Download className="w-4 h-4" /> Unduh PDF
                     </button>
                     <button
                       onClick={handleClose}
