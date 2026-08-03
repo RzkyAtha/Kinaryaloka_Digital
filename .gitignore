@@ -10,6 +10,7 @@ dist/
 # Env
 .env*.local
 .env
+!.env.example
 
 # Editor
 .vscode/
@@ -25,3 +26,4 @@ Thumbs.db
 # Large files
 kosong/
 .env*
+!.env.example
