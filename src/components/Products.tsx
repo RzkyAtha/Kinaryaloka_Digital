@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from
 import { ShoppingCartIcon as ShoppingCart, XMarkIcon as X, CheckIcon as Check } from '@heroicons/react/24/solid'
 import { PRODUCTS, Product as CtxProduct } from '../context/ProductsContext'
 
-const AuthModal = lazy(() => import('./AuthModal'))
+const RequestQuoteModal = lazy(() => import('./RequestQuoteModal'))
 
 // ─── Magic Card: 3D tilt + spotlight + glow border ──────────────────
 function MagicCard({
@@ -104,7 +104,7 @@ interface UIProduct {
   color: string
   textColor: string
   badge?: string
-  details?: string[]
+  details: string[]
 }
 
 interface TabData {
@@ -142,7 +142,7 @@ function groupProducts(ctxProducts: CtxProduct[]): Record<string, TabData> {
   return result
 }
 
-function DetailModal({ product, onClose, onSelect }: { product: UIProduct | null; onClose: () => void; onSelect: (title: string, price: string) => void }) {
+function DetailModal({ product, onClose, onSelect }: { product: UIProduct | null; onClose: () => void; onSelect: (product: UIProduct) => void }) {
   if (!product) return null
   return (
     <AnimatePresence>
@@ -212,7 +212,7 @@ function DetailModal({ product, onClose, onSelect }: { product: UIProduct | null
             {/* CTA */}
             <div className="p-5 pt-0 flex-shrink-0">
               <motion.button
-                onClick={() => { onSelect(product.title, product.price); onClose() }}
+                onClick={() => { onSelect(product); onClose() }}
                 className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 text-base"
                 style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}dd)`, boxShadow: `0 4px 20px ${product.color}50` }}
                 whileHover={{ scale: 1.02 }}
@@ -231,16 +231,16 @@ function DetailModal({ product, onClose, onSelect }: { product: UIProduct | null
 
 export default function Products() {
   const [activeTab, setActiveTab] = useState('ecommerce')
-  const [authModalOpen, setAuthModalOpen] = useState(false)
-  const [selectedPackage, setSelectedPackage] = useState<{ title: string; price: string } | null>(null)
+  const [quoteOpen, setQuoteOpen] = useState(false)
+  const [selectedProduct, setSelectedProduct] = useState<UIProduct | null>(null)
   const [detailProduct, setDetailProduct] = useState<UIProduct | null>(null)
   const isInView = true
 
   const products = useMemo(() => groupProducts(PRODUCTS), [])
 
-  const handleSelectPackage = (title: string, price: string) => {
-    setSelectedPackage({ title, price })
-    setAuthModalOpen(true)
+  const handleSelectPackage = (product: UIProduct) => {
+    setSelectedProduct(product)
+    setQuoteOpen(true)
   }
 
   const currentProducts = products[activeTab as keyof typeof products]
@@ -265,7 +265,7 @@ export default function Products() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">Produk Kami</h2>
-          <p className="text-white/50 text-sm md:text-base mt-3">Harga fleksibel dan bisa nego sesuai kebutuhan.</p>
+          <p className="text-white/50 text-sm md:text-base mt-3">Harga tertera hanya estimasi, fleksibel dan bisa disesuaikan berdasarkan kebutuhan.</p>
         </motion.div>
 
         {/* Tabs */}
@@ -353,7 +353,7 @@ export default function Products() {
                     <span className="text-[18px] font-semibold text-[#454545]">{allMobileProducts[0].price}K</span>
                   </div>
                   <motion.button
-                    onClick={() => handleSelectPackage(allMobileProducts[0].title, allMobileProducts[0].price)}
+                    onClick={() => handleSelectPackage(allMobileProducts[0])}
                     className="w-full py-2.5 rounded-lg text-white font-semibold flex items-center justify-center gap-1.5 text-[12px]"
                     style={{ background: `linear-gradient(135deg, ${allMobileProducts[0].color}, ${allMobileProducts[0].color}cc)`, boxShadow: `0 4px 16px ${allMobileProducts[0].color}50` }}
                     whileTap={{ scale: 0.97 }}
@@ -395,7 +395,7 @@ export default function Products() {
                       <span className="text-[14px] font-semibold text-[#454545]">{product.price}K</span>
                     </div>
                     <motion.button
-                      onClick={() => handleSelectPackage(product.title, product.price)}
+                      onClick={() => handleSelectPackage(product)}
                       className="w-full py-2 rounded-lg text-white font-semibold flex items-center justify-center gap-1.5 text-[11px]"
                       style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}cc)`, boxShadow: `0 4px 16px ${product.color}50` }}
                       whileTap={{ scale: 0.97 }}
@@ -460,7 +460,7 @@ export default function Products() {
                 <span className="text-xl lg:text-2xl font-semibold text-[#454545]">{currentProducts.featured.price}K</span>
               </div>
               <motion.button
-                onClick={() => handleSelectPackage(currentProducts.featured!.title, currentProducts.featured!.price)}
+                onClick={() => handleSelectPackage(currentProducts.featured!)}
                 className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 text-base"
                 style={{ background: `linear-gradient(135deg, ${currentProducts.featured.color}, ${currentProducts.featured.color}cc)`, boxShadow: `0 4px 16px ${currentProducts.featured.color}50` }}
                 whileHover={{ scale: 1.01 }}
@@ -552,7 +552,7 @@ export default function Products() {
                     <span className="text-lg md:text-xl font-semibold text-[#454545]">{product.price}K</span>
                   </motion.div>
                   <motion.button
-                    onClick={() => handleSelectPackage(product.title, product.price)}
+                    onClick={() => handleSelectPackage(product)}
                     className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2"
                     style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}cc)`, boxShadow: `0 4px 16px ${product.color}50` }}
                     whileHover={{ scale: 1.03, boxShadow: `0 8px 24px ${product.color}60` }}
@@ -572,13 +572,13 @@ export default function Products() {
         </motion.div>
         </AnimatePresence>
 
-        {/* Auth Modal */}
-        {authModalOpen && (
+        {/* Request Quote Modal */}
+        {quoteOpen && (
           <Suspense fallback={null}>
-            <AuthModal
-              isOpen={authModalOpen}
-              onClose={() => setAuthModalOpen(false)}
-              selectedPackage={selectedPackage}
+            <RequestQuoteModal
+              isOpen={quoteOpen}
+              onClose={() => setQuoteOpen(false)}
+              product={selectedProduct}
             />
           </Suspense>
         )}
