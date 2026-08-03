@@ -2,8 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   makeQuoteRef,
   buildQuoteFileName,
-  buildEmailSubject,
-  buildEmailBody,
+  buildWhatsAppMessage,
 } from '../quoteText'
 import type { QuoteForm, QuoteProduct } from '../quoteText'
 
@@ -44,18 +43,29 @@ describe('quoteText', () => {
     )
   })
 
-  it('buildEmailSubject includes business and product', () => {
-    expect(buildEmailSubject(form, product)).toBe(
-      '[Quote Request] Toko Budi — Company Catalog',
-    )
+  it('buildWhatsAppMessage includes ref and key customer + package info', () => {
+    const msg = buildWhatsAppMessage(form, product, 'KNY-QR-20260803-AB12')
+    expect(msg).toContain('KNY-QR-20260803-AB12')
+    expect(msg).toContain('Toko Budi')
+    expect(msg).toContain('Company Catalog')
+    expect(msg).toContain('IDR 5000')
+    expect(msg).toContain('budi@gmail.com')
   })
 
-  it('buildEmailBody includes key customer + package info', () => {
-    const body = buildEmailBody(form, product, 'KNY-QR-20260803-AB12')
-    expect(body).toContain('Toko Budi')
-    expect(body).toContain('Company Catalog')
-    expect(body).toContain('IDR 5000')
-    expect(body).toContain('budi@gmail.com')
-    expect(body).toContain('KNY-QR-20260803-AB12')
+  it('buildWhatsAppMessage falls back to "-" for empty optional fields', () => {
+    const sparse: QuoteForm = {
+      ...form,
+      industry: '',
+      city: '',
+      existingWebOrSocial: '',
+      customFeatures: '',
+      deadline: '',
+      budgetEstimate: '',
+      referenceLinks: '',
+      notes: '',
+    }
+    const msg = buildWhatsAppMessage(sparse, product, 'KNY-QR-20260803-AB12')
+    expect(msg).toContain('Industri: -')
+    expect(msg).toContain('Catatan: -')
   })
 })

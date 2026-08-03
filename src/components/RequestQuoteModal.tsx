@@ -9,9 +9,12 @@ import {
   ArrowDownTrayIcon as Download,
 } from '@heroicons/react/24/solid'
 import type { QuoteForm, QuoteProduct } from '../lib/quoteText'
-import { makeQuoteRef, buildQuoteFileName } from '../lib/quoteText'
+import {
+  makeQuoteRef,
+  buildQuoteFileName,
+  buildWhatsAppMessage,
+} from '../lib/quoteText'
 import { generateQuotePdf } from '../lib/generateQuotePdf'
-import { submitQuote } from '../lib/submitQuote'
 import { BUSINESS_WHATSAPP } from '../config/quote'
 
 export interface RequestQuoteProduct extends QuoteProduct {
@@ -51,6 +54,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
   const [errorMsg, setErrorMsg] = useState('')
   const [lastBlob, setLastBlob] = useState<Blob | null>(null)
   const [lastFileName, setLastFileName] = useState('')
+  const [lastRef, setLastRef] = useState('')
 
   const accent = product?.color ?? '#000000'
 
@@ -72,6 +76,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
     setErrorMsg('')
     setLastBlob(null)
     setLastFileName('')
+    setLastRef('')
   }
 
   const handleClose = () => {
@@ -87,20 +92,22 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
     form.businessName.trim()
   const step2Valid = form.needsDescription.trim()
 
-  const downloadPdf = () => {
-    if (!lastBlob) return
-    const url = URL.createObjectURL(lastBlob)
+  const downloadBlob = (blob: Blob, fileName: string) => {
+    const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = lastFileName
+    a.download = fileName
     a.click()
     URL.revokeObjectURL(url)
   }
 
-  const fallbackWhatsApp = () => {
-    const text = encodeURIComponent(
-      `Halo KINARYALOKA, saya ${form.fullName} dari ${form.businessName} ingin request paket ${product?.title}. (PDF brief akan saya lampirkan)`,
-    )
+  const downloadPdf = () => {
+    if (lastBlob) downloadBlob(lastBlob, lastFileName)
+  }
+
+  const openWhatsApp = () => {
+    if (!product) return
+    const text = encodeURIComponent(buildWhatsAppMessage(form, product, lastRef))
     window.open(`https://wa.me/${BUSINESS_WHATSAPP}?text=${text}`, '_blank')
   }
 
@@ -110,16 +117,24 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
       setStatus('sending')
       const ref = makeQuoteRef()
       const fileName = buildQuoteFileName(ref)
-      const { blob, base64 } = await generateQuotePdf(form, product, ref)
+      const { blob } = await generateQuotePdf(form, product, ref)
       setLastBlob(blob)
       setLastFileName(fileName)
+      setLastRef(ref)
 
-      await submitQuote({ form, product, ref, pdfBase64: base64, fileName })
+      // Unduh PDF otomatis supaya customer punya file untuk dilampirkan di WA.
+      downloadBlob(blob, fileName)
+      // Buka WhatsApp dengan ringkasan; PDF dilampirkan manual oleh customer.
+      const text = encodeURIComponent(buildWhatsAppMessage(form, product, ref))
+      window.open(`https://wa.me/${BUSINESS_WHATSAPP}?text=${text}`, '_blank')
+
       setStatus('success')
     } catch (err) {
       console.error(err)
       setErrorMsg(
-        err instanceof Error ? err.message : 'Terjadi kesalahan saat mengirim.',
+        err instanceof Error
+          ? err.message
+          : 'Terjadi kesalahan saat membuat PDF.',
       )
       setStatus('error')
     }
@@ -187,17 +202,28 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                       <Check className="w-8 h-8 text-white" />
                     </div>
                     <h4 className="text-xl font-black text-black mb-2">
-                      Request Terkirim!
+                      PDF Terunduh — Lampirkan di WhatsApp
                     </h4>
-                    <p className="text-gray-600 text-sm mb-6">
-                      Tim KINARYALOKA akan mengirim quote harga final ke email kamu
-                      melalui Xero. Terima kasih!
+                    <p className="text-gray-600 text-sm mb-4">
+                      File brief <span className="font-bold">{lastFileName}</span>{' '}
+                      sudah terunduh dan chat WhatsApp KINARYALOKA sudah terbuka.
+                      <span className="font-bold text-black">
+                        {' '}Tinggal lampirkan (attach) PDF tadi ke chat lalu kirim.
+                      </span>{' '}
+                      Tim kami akan memproses dari sana. Terima kasih!
                     </p>
+                    <button
+                      onClick={openWhatsApp}
+                      className="w-full py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 mb-2"
+                      style={{ background: accent }}
+                    >
+                      <Send className="w-4 h-4" /> Buka WhatsApp Lagi
+                    </button>
                     <button
                       onClick={downloadPdf}
                       className="w-full py-3 rounded-xl border-2 border-black text-black font-bold text-sm flex items-center justify-center gap-2 mb-2"
                     >
-                      <Download className="w-4 h-4" /> Unduh PDF
+                      <Download className="w-4 h-4" /> Unduh PDF Lagi
                     </button>
                     <button
                       onClick={handleClose}
@@ -240,7 +266,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                             placeholder="email@kamu.com"
                           />
                           <p className="text-[11px] text-gray-400 mt-1">
-                            Quote harga final akan dikirim ke email ini.
+                            Dipakai tim kami untuk mengirim quote harga final.
                           </p>
                         </div>
                         <div>
@@ -408,10 +434,10 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                           <div className="text-red-600 text-xs font-medium">
                             {errorMsg}
                             <button
-                              onClick={fallbackWhatsApp}
+                              onClick={openWhatsApp}
                               className="block mt-2 underline font-bold"
                             >
-                              Kirim via WhatsApp
+                              Lanjut ke WhatsApp tanpa PDF
                             </button>
                           </div>
                         )}
@@ -449,10 +475,10 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                           style={{ background: accent }}
                         >
                           {status === 'sending' ? (
-                            'Mengirim...'
+                            'Membuat PDF...'
                           ) : (
                             <>
-                              <Send className="w-4 h-4" /> Kirim Request
+                              <Send className="w-4 h-4" /> Buat PDF & Kirim via WA
                             </>
                           )}
                         </button>

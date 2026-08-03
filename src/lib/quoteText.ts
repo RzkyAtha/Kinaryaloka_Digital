@@ -39,47 +39,41 @@ export function buildQuoteFileName(ref: string): string {
   return `KNY-Quote-Request-${ref}.pdf`
 }
 
-export function buildEmailSubject(form: QuoteForm, product: QuoteProduct): string {
-  return `[Quote Request] ${form.businessName} — ${product.title}`
-}
-
-export function buildEmailBody(
+export function buildWhatsAppMessage(
   form: QuoteForm,
   product: QuoteProduct,
   ref: string,
 ): string {
   return [
-    `Halo Tim KINARYALOKA,`,
-    ``,
-    `Ada permintaan quote baru (${ref}).`,
+    `Halo KINARYALOKA, saya mau request quote. (Ref: ${ref})`,
     ``,
     `— Data Customer —`,
-    `Nama       : ${form.fullName}`,
-    `Email      : ${form.email}`,
-    `WhatsApp   : ${form.whatsapp}`,
+    `Nama: ${form.fullName}`,
+    `Email: ${form.email}`,
+    `WhatsApp: ${form.whatsapp}`,
     `Kontak pref: ${form.contactPreference}`,
     ``,
     `— Detail Bisnis —`,
-    `Bisnis     : ${form.businessName}`,
-    `Industri   : ${form.industry}`,
-    `Kota       : ${form.city}`,
-    `Web/Sosmed : ${form.existingWebOrSocial || '-'}`,
+    `Bisnis: ${form.businessName}`,
+    `Industri: ${form.industry || '-'}`,
+    `Kota: ${form.city || '-'}`,
+    `Web/Sosmed: ${form.existingWebOrSocial || '-'}`,
     ``,
     `— Paket —`,
-    `Produk     : ${product.title}`,
-    `Harga est. : IDR ${product.price}`,
+    `Produk: ${product.title}`,
+    `Harga est.: IDR ${product.price}`,
     ``,
     `— Requirement —`,
-    `Kebutuhan  : ${form.needsDescription}`,
-    `Fitur      : ${form.selectedFeatures.join(', ') || '-'}`,
-    `Fitur lain : ${form.customFeatures || '-'}`,
-    `Deadline   : ${form.deadline || '-'}`,
-    `Budget     : ${form.budgetEstimate || '-'}`,
+    `Kebutuhan: ${form.needsDescription}`,
+    `Fitur: ${form.selectedFeatures.join(', ') || '-'}`,
+    `Fitur lain: ${form.customFeatures || '-'}`,
+    `Deadline: ${form.deadline || '-'}`,
+    `Budget: ${form.budgetEstimate || '-'}`,
     ``,
     `— Referensi & Catatan —`,
-    `Referensi  : ${form.referenceLinks || '-'}`,
-    `Catatan    : ${form.notes || '-'}`,
+    `Referensi: ${form.referenceLinks || '-'}`,
+    `Catatan: ${form.notes || '-'}`,
     ``,
-    `PDF brief lengkap terlampir.`,
+    `PDF brief sudah saya unduh & akan saya lampirkan di chat ini.`,
   ].join('\n')
 }
