@@ -8,17 +8,11 @@ import {
   PaperAirplaneIcon as Send,
   ArrowDownTrayIcon as Download,
 } from '@heroicons/react/24/solid'
-import { useGoogleLogin } from '@react-oauth/google'
 import type { QuoteForm, QuoteProduct } from '../lib/quoteText'
-import {
-  makeQuoteRef,
-  buildQuoteFileName,
-  buildEmailSubject,
-  buildEmailBody,
-} from '../lib/quoteText'
+import { makeQuoteRef, buildQuoteFileName } from '../lib/quoteText'
 import { generateQuotePdf } from '../lib/generateQuotePdf'
-import { sendViaGmail } from '../lib/sendViaGmail'
-import { XERO_INBOX_EMAIL, BUSINESS_WHATSAPP, GMAIL_SCOPE } from '../config/quote'
+import { submitQuote } from '../lib/submitQuote'
+import { BUSINESS_WHATSAPP } from '../config/quote'
 
 export interface RequestQuoteProduct extends QuoteProduct {
   textColor?: string
@@ -85,8 +79,12 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
     onClose()
   }
 
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())
   const step1Valid =
-    form.fullName.trim() && form.whatsapp.trim() && form.businessName.trim()
+    form.fullName.trim() &&
+    emailValid &&
+    form.whatsapp.trim() &&
+    form.businessName.trim()
   const step2Valid = form.needsDescription.trim()
 
   const downloadPdf = () => {
@@ -106,41 +104,17 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
     window.open(`https://wa.me/${BUSINESS_WHATSAPP}?text=${text}`, '_blank')
   }
 
-  const doSendWithToken = async (accessToken: string) => {
+  const handleSend = async () => {
     if (!product) return
     try {
       setStatus('sending')
-      // Ambil email user dari userinfo dan kunci ke form
-      let email = form.email
-      try {
-        const uRes = await fetch(
-          'https://www.googleapis.com/oauth2/v3/userinfo',
-          { headers: { Authorization: `Bearer ${accessToken}` } },
-        )
-        if (uRes.ok) {
-          const info = await uRes.json()
-          if (info.email) email = info.email
-        }
-      } catch {
-        /* abaikan; pakai email dari form jika ada */
-      }
-      const filledForm: QuoteForm = { ...form, email }
-      setForm(filledForm)
-
       const ref = makeQuoteRef()
       const fileName = buildQuoteFileName(ref)
-      const { blob, base64 } = await generateQuotePdf(filledForm, product, ref)
+      const { blob, base64 } = await generateQuotePdf(form, product, ref)
       setLastBlob(blob)
       setLastFileName(fileName)
 
-      await sendViaGmail({
-        accessToken,
-        to: XERO_INBOX_EMAIL,
-        subject: buildEmailSubject(filledForm, product),
-        bodyText: buildEmailBody(filledForm, product, ref),
-        attachmentBase64: base64,
-        fileName,
-      })
+      await submitQuote({ form, product, ref, pdfBase64: base64, fileName })
       setStatus('success')
     } catch (err) {
       console.error(err)
@@ -150,16 +124,6 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
       setStatus('error')
     }
   }
-
-  const login = useGoogleLogin({
-    flow: 'implicit',
-    scope: GMAIL_SCOPE,
-    onSuccess: (resp) => doSendWithToken(resp.access_token),
-    onError: () => {
-      setErrorMsg('Login/izin Gmail dibatalkan. Coba lagi atau kirim via WhatsApp.')
-      setStatus('error')
-    },
-  })
 
   const inputCls =
     'w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:outline-none transition-all font-medium text-sm'
@@ -265,6 +229,19 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                             onChange={(e) => set('fullName', e.target.value)}
                             placeholder="Nama kamu"
                           />
+                        </div>
+                        <div>
+                          <label className={labelCls}>Email *</label>
+                          <input
+                            type="email"
+                            className={inputCls}
+                            value={form.email}
+                            onChange={(e) => set('email', e.target.value)}
+                            placeholder="email@kamu.com"
+                          />
+                          <p className="text-[11px] text-gray-400 mt-1">
+                            Quote harga final akan dikirim ke email ini.
+                          </p>
                         </div>
                         <div>
                           <label className={labelCls}>WhatsApp *</label>
@@ -466,7 +443,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                       )}
                       {step === 3 && (
                         <button
-                          onClick={() => login()}
+                          onClick={handleSend}
                           disabled={status === 'sending'}
                           className="flex-1 py-3 rounded-xl text-white font-bold text-sm flex items-center justify-center gap-2 disabled:opacity-60"
                           style={{ background: accent }}
@@ -475,7 +452,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                             'Mengirim...'
                           ) : (
                             <>
-                              <Send className="w-4 h-4" /> Login Gmail & Kirim
+                              <Send className="w-4 h-4" /> Kirim Request
                             </>
                           )}
                         </button>
