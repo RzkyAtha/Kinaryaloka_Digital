@@ -9,6 +9,8 @@ export default {
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],
         fredoka: ['Fredoka', 'sans-serif'],
+        audiowide: ['Audiowide', 'cursive'],
+        rocksalt: ['"Rock Salt"', 'cursive'],
       },
       colors: {
         primary: '#831449',

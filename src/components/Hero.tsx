@@ -6,7 +6,7 @@ const TYPEWRITER_PHRASES: Record<Language, { text: string; punctuation: string }
   id: [
     { text: 'Selamat datang', punctuation: '!' },
     { text: 'Bisnis kamu', punctuation: ',' },
-    { text: 'butuh Lebih dari', punctuation: '..' },
+    { text: 'butuh lebih dari', punctuation: '..' },
     { text: 'sekedar hadir', punctuation: '.' },
   ],
   en: [
@@ -69,8 +69,8 @@ function TypewriterTitle() {
   }, [tick, isDeleting])
 
   return (
-    <div className="notranslate min-h-[60px] sm:min-h-[80px] md:min-h-[100px] lg:min-h-[80px] flex items-center justify-center lg:justify-start" translate="no">
-      <h1 className="font-poppins font-bold text-[32px] sm:text-[42px] md:text-[52px] lg:text-[56px] text-[#2a2a2a] leading-tight">
+    <div className="notranslate min-h-[44px] sm:min-h-[60px] md:min-h-[72px] lg:min-h-[70px] flex items-center justify-center lg:justify-start" translate="no">
+      <h1 className="font-audiowide font-bold text-[32px] sm:text-[42px] md:text-[52px] lg:text-[56px] text-[#2a2a2a] leading-tight">
         {displayText}
         <span className="text-[#F5C542]">{displayText.length === fullText.length ? currentPhrase.punctuation : ''}</span>
         <span className="inline-block w-[3px] h-[0.9em] bg-[#F5C542] ml-1 animate-pulse align-middle" />
@@ -83,7 +83,7 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
 
   return (
-    <section ref={sectionRef} className="min-h-screen bg-white pt-16 md:pt-20 lg:pt-20 pb-6 md:pb-10 relative overflow-hidden w-full">
+    <section ref={sectionRef} className="min-h-screen bg-white pt-24 md:pt-20 lg:pt-20 pb-6 md:pb-10 relative overflow-hidden w-full">
       <div className="relative max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-16 py-6 md:py-16">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full min-w-0">
 
@@ -94,18 +94,27 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="relative w-full max-w-[340px] xs:max-w-[380px] sm:max-w-[400px] md:max-w-[480px] mx-auto lg:max-w-[550px] lg:mr-auto lg:ml-0">
+            <div className="relative w-full max-w-[440px] xs:max-w-[480px] sm:max-w-[520px] md:max-w-[560px] mx-auto lg:max-w-[600px] lg:mr-auto lg:ml-0">
 
-              {/* Hero image - main */}
+              {/* Doodle background - static (no floating), defines the box size */}
+              <img
+                src="/Assets/doodle3d.png"
+                alt=""
+                aria-hidden="true"
+                className="w-full object-contain z-0 pointer-events-none select-none"
+                decoding="async"
+              />
+
+              {/* Hero image - main, floating & centered over the doodle */}
               <motion.div
-                className="relative z-10"
+                className="absolute inset-0 z-10 flex items-center justify-center pt-[10%]"
                 animate={{ y: [0, -18, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <img
                   src="/Assets/KNY_deskTOPP.webp"
                   alt="Digital Workspace"
-                  className="w-full object-contain"
+                  className="w-[61%] object-contain [filter:drop-shadow(0_25px_30px_rgba(0,0,0,0.35))]"
                   width={931}
                   height={932}
                   decoding="async"
@@ -127,7 +136,7 @@ export default function Hero() {
 
             {/* Description - mobile */}
             <motion.p
-              className="text-[#828282] text-[13px] leading-relaxed text-center mx-auto sm:hidden"
+              className="text-[#828282] text-[13px] leading-relaxed text-center mx-auto sm:hidden !mt-0"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
@@ -136,14 +145,12 @@ export default function Hero() {
             </motion.p>
             {/* Description - desktop */}
             <motion.p
-              className="text-[#828282] hidden sm:block sm:text-[15px] md:text-[18px] lg:text-[15px] sm:max-w-[587px] lg:max-w-[460px] leading-relaxed text-justify lg:mx-0"
+              className="text-[#828282] hidden sm:block sm:text-[15px] md:text-[18px] lg:text-[15px] sm:max-w-[587px] lg:max-w-[460px] leading-relaxed text-justify lg:mx-0 sm:!mt-1"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
             >
-              KINARYALOKA Digital Studio hadir untuk UMKM yang sudah siap kami
-              bantu terjemahkan cara bisnis kamu jalan ke dalam sistem digital
-              yang rapi, jelas, dan kepakai.
+              Kami hadir untuk brand kamu sebagai teman yang membantu proses digitalisasi bisnis kamu.
             </motion.p>
 
             {/* CTA Buttons */}
