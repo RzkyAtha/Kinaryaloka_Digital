@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import type { TargetAndTransition } from 'framer-motion'
 import { useState } from 'react'
-import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, ViewfinderCircleIcon as Crosshair, FaceSmileIcon, LifebuoyIcon as Headphones, PaintBrushIcon, ShieldCheckIcon as ShieldCheck } from '@heroicons/react/24/solid'
+import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, FaceSmileIcon, PaintBrushIcon, ShieldCheckIcon as ShieldCheck } from '@heroicons/react/24/solid'
 
 const cards = [
   {
