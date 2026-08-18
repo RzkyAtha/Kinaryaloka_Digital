@@ -1,9 +1,8 @@
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
-import { UserIcon as User, Bars3Icon as Menu, XMarkIcon as X } from '@heroicons/react/24/solid'
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { Bars3Icon as Menu, XMarkIcon as X } from '@heroicons/react/24/solid'
+import { useState, useEffect} from 'react'
 import { LanguageBadge } from './FloatingWA'
 
-const AuthModal = lazy(() => import('./AuthModal'))
 
 interface NavbarProps {
   activeSection: string
@@ -25,7 +24,6 @@ const pageItems = [
 export default function Navbar({ activeSection, activePage, onPageChange }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false)
   const [pastHero, setPastHero] = useState(false)
-  const [authModalOpen, setAuthModalOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { scrollY } = useScroll()
 
@@ -163,16 +161,6 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
                 <Menu className="w-5 h-5 text-white" />
               )}
             </button>
-
-            {/* Desktop user icon */}
-            <motion.button
-              whileHover={{ scale: 1.06 }}
-              whileTap={{ scale: 0.94 }}
-              onClick={() => setAuthModalOpen(true)}
-              className="hidden lg:flex w-[70px] h-[58px] bg-black rounded-xl items-center justify-center"
-            >
-              <User className="w-7 h-7 text-white" />
-            </motion.button>
           </div>
         </div>
       </motion.nav>
@@ -245,16 +233,6 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
           </>
         )}
       </AnimatePresence>
-
-      {/* Auth Modal */}
-      {authModalOpen && (
-        <Suspense fallback={null}>
-          <AuthModal
-            isOpen={authModalOpen}
-            onClose={() => setAuthModalOpen(false)}
-          />
-        </Suspense>
-      )}
     </>
   )
 }

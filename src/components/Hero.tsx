@@ -1,10 +1,13 @@
 import { motion } from 'framer-motion'
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { useLanguage, Language } from '../context/LanguageContext'
+import HeroBrandVisual from './HeroBrandVisual'
+import WhatsAppPopup from './WhatsAppPopup'
 
 const TYPEWRITER_PHRASES: Record<Language, { text: string; punctuation: string }[]> = {
   id: [
-    { text: 'Selamat datang', punctuation: '!' },
+    { text: 'KINARYALOKA', punctuation: ',' },
+    { text: 'menyambutmu', punctuation: '!' },
     { text: 'Bisnis kamu', punctuation: ',' },
     { text: 'butuh lebih dari', punctuation: '..' },
     { text: 'sekedar hadir', punctuation: '.' },
@@ -69,8 +72,8 @@ function TypewriterTitle() {
   }, [tick, isDeleting])
 
   return (
-    <div className="notranslate min-h-[44px] sm:min-h-[60px] md:min-h-[72px] lg:min-h-[70px] flex items-center justify-center lg:justify-start" translate="no">
-      <h1 className="font-audiowide font-bold text-[32px] sm:text-[42px] md:text-[52px] lg:text-[56px] text-[#2a2a2a] leading-tight">
+    <div className="notranslate w-full min-h-[62px] sm:min-h-[82px] md:min-h-[100px] lg:min-h-[96px] flex items-center justify-center lg:justify-start" translate="no">
+      <h1 className="font-climate whitespace-nowrap text-[28px] sm:text-[38px] md:text-[50px] lg:text-[54px] text-[#2a2a2a] leading-[1.15]">
         {displayText}
         <span className="text-[#F5C542]">{displayText.length === fullText.length ? currentPhrase.punctuation : ''}</span>
         <span className="inline-block w-[3px] h-[0.9em] bg-[#F5C542] ml-1 animate-pulse align-middle" />
@@ -81,47 +84,21 @@ function TypewriterTitle() {
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
+  const [showWhatsApp, setShowWhatsApp] = useState(false)
 
   return (
-    <section ref={sectionRef} className="min-h-screen bg-white pt-24 md:pt-20 lg:pt-20 pb-6 md:pb-10 relative overflow-hidden w-full">
-      <div className="relative max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-16 py-6 md:py-16">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full min-w-0">
+    <section ref={sectionRef} className="min-h-screen bg-white pt-20 md:pt-16 lg:pt-16 pb-6 md:pb-10 relative overflow-hidden w-full">
+      <div className="relative max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-16 py-2 md:py-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 sm:gap-4 lg:gap-16 items-center w-full min-w-0">
 
           {/* Isometric - shows on top on mobile */}
           <motion.div
-            className="relative w-full order-first lg:order-last min-w-0"
+            className="relative w-full order-first lg:order-last min-w-0 -mt-4 -mb-12 sm:-mt-2 sm:-mb-8 lg:mt-0 lg:mb-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="relative w-full max-w-[440px] xs:max-w-[480px] sm:max-w-[520px] md:max-w-[560px] mx-auto lg:max-w-[600px] lg:mr-auto lg:ml-0">
-
-              {/* Doodle background - static (no floating), defines the box size */}
-              <img
-                src="/Assets/doodle3d.png"
-                alt=""
-                aria-hidden="true"
-                className="w-full object-contain z-0 pointer-events-none select-none"
-                decoding="async"
-              />
-
-              {/* Hero image - main, floating & centered over the doodle */}
-              <motion.div
-                className="absolute inset-0 z-10 flex items-center justify-center pt-[10%]"
-                animate={{ y: [0, -18, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <img
-                  src="/Assets/KNY_deskTOPP.webp"
-                  alt="Digital Workspace"
-                  className="w-[61%] object-contain [filter:drop-shadow(0_25px_30px_rgba(0,0,0,0.35))]"
-                  width={931}
-                  height={932}
-                  decoding="async"
-                  fetchPriority="high"
-                />
-              </motion.div>
-            </div>
+            <HeroBrandVisual />
           </motion.div>
 
           {/* Left Content */}
@@ -141,7 +118,7 @@ export default function Hero() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
             >
-              KINARYALOKA untuk UMKM yang sudah siap.
+              Hadir membuatmu dilihat, kesan membuatmu berarti. 
             </motion.p>
             {/* Description - desktop */}
             <motion.p
@@ -150,7 +127,7 @@ export default function Hero() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
             >
-              Kami hadir untuk brand kamu sebagai teman yang membantu proses digitalisasi bisnis kamu.
+              Hadir membuatmu dilihat, kesan membuatmu berarti. Selamat datang di taman bermain kami!
             </motion.p>
 
             {/* CTA Buttons */}
@@ -166,7 +143,7 @@ export default function Hero() {
                   whileTap={{ scale: 0.98 }}
                   className="text-white w-full py-3 sm:py-4 md:py-5 lg:py-3 rounded-xl font-bold text-[14px] sm:text-[16px] md:text-[18px] lg:text-[14px] flex items-center justify-center shadow-lg text-center"
                   style={{ background: 'linear-gradient(135deg, #F5C542, #E5A830, #D4912A)', boxShadow: '0 4px 16px rgba(245,197,66,0.4)' }}
-                  onClick={() => window.open('https://wa.me/6281357662424?text=' + encodeURIComponent('Halo KINARYALOKA! Saya mau konsultasi gratis 30 menit untuk bisnis saya.'), '_blank')}
+                  onClick={() => setShowWhatsApp(true)}
                 >
                   <span>Ngobrol Dulu</span>
                 </motion.button>
@@ -189,6 +166,8 @@ export default function Hero() {
 
         </div>
       </div>
+
+      <WhatsAppPopup open={showWhatsApp} onClose={() => setShowWhatsApp(false)} />
     </section>
   )
 }

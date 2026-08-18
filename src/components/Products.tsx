@@ -264,7 +264,7 @@ export default function Products() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white">Produk Kami</h2>
+          <h2 className="font-climate text-[26px] md:text-[34px] lg:text-[40px] text-white">Produk Kami</h2>
           <p className="text-white/50 text-sm md:text-base mt-3">Harga tertera hanya estimasi, fleksibel dan bisa disesuaikan berdasarkan kebutuhan.</p>
         </motion.div>
 

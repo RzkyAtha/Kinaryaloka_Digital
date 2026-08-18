@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ChatBubbleOvalLeftIcon as MessageCircle, CheckCircleIcon as CheckCircle2 } from '@heroicons/react/24/solid'
+import { CheckCircleIcon as CheckCircle2 } from '@heroicons/react/24/solid'
 
 const steps = [
   {
@@ -59,7 +59,7 @@ export default function Process() {
               Proses Kerja Kami
             </p>
             
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-5 md:mb-6 leading-tight">
+            <h2 className="font-climate text-[24px] sm:text-[30px] md:text-[36px] text-gray-900 mb-5 md:mb-6 leading-[1.2]">
               Kita Ngobrol Dulu.
               <br />
               <span className="text-gray-400">Tanpa Komitmen,</span>
@@ -76,15 +76,6 @@ export default function Process() {
             </p>
 
             <div className="space-y-3">
-              <motion.button
-                className="bg-[#1a1a1a] text-white px-8 py-4 rounded-xl font-semibold flex items-center gap-3 hover:bg-black transition-colors"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => window.open('https://wa.me/6281357662424?text=' + encodeURIComponent('Halo KINARYALOKA! Saya mau konsultasi gratis 30 menit untuk bisnis saya.'), '_blank')}
-              >
-                <MessageCircle className="w-5 h-5 text-green-400" />
-                Ngobrol Dulu Yuk?
-              </motion.button>
               <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-gray-400 text-sm">
                 {['Gratis konsultasi 30 menit', 'Tanpa komitmen', 'Tanpa dipaksa beli'].map((item) => (
                   <span key={item} className="flex items-center gap-1.5">

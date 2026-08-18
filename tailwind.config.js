@@ -11,6 +11,7 @@ export default {
         fredoka: ['Fredoka', 'sans-serif'],
         audiowide: ['Audiowide', 'cursive'],
         rocksalt: ['"Rock Salt"', 'cursive'],
+        climate: ['"Climate Crisis"', 'cursive'],
       },
       colors: {
         primary: '#831449',

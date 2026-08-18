@@ -77,12 +77,8 @@ export default function PainPoints() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <p className="text-xs font-bold tracking-[0.2em] uppercase mb-3" style={{ background: 'linear-gradient(135deg, #F5C542, #E5A830)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Kamu Sendirian?
-          </p>
-          <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold leading-tight max-w-2xl mx-auto">
-            Cerita ini terdengar
-            <span style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}> familiar?</span>
+          <h2 className="font-climate text-white text-[30px] sm:text-[40px] md:text-[48px] leading-[1.2] max-w-2xl mx-auto">
+            Familiar?
           </h2>
           <p className="text-[#666] mt-3 text-xs md:text-sm max-w-xl leading-relaxed mx-auto">
             Masalah-masalah ini bukan karena bisnis kamu kurang bagus, tapi karena belum ada sistem yang mendukungnya.

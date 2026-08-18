@@ -17,21 +17,6 @@ const C = {
   subtle:  "#a0a0a0",
 };
 
-const gradAmber = `linear-gradient(135deg, ${C.orange}, ${C.gold})`;
-
-/* ─── Helpers ─── */
-const GradText = ({ children, grad = gradAmber }: { children: React.ReactNode; grad?: string }) => (
-  <span style={{ background: grad, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-    {children}
-  </span>
-);
-
-const SectionLabel = ({ children, color = C.orange }: { children: React.ReactNode; color?: string }) => (
-  <p className="text-[10px] font-bold tracking-[0.22em] uppercase mb-2.5" style={{ color }}>
-    {children}
-  </p>
-);
-
 /* ─── Image bento card ─── */
 function ImgCard({
   src,
@@ -73,9 +58,8 @@ export default function MarketplaceExodus() {
       <div className="relative z-10 mx-auto max-w-[1220px] px-4 sm:px-6 lg:px-8">
         {/* ── Header ── */}
         <div className="mx-auto mb-9 max-w-2xl text-center md:mb-14">
-          <SectionLabel>Marketplace vs Rumah Digital</SectionLabel>
-          <h2 className="font-poppins text-[26px] font-extrabold leading-[1.1] text-white sm:text-4xl lg:text-5xl">
-            Berhenti Ngontrak, <GradText>Bangun Rumah Digitalmu</GradText>
+          <h2 className="font-climate text-[22px] leading-[1.2] text-white sm:text-[30px] lg:text-[38px]">
+            Kamu Harus Punya Identitas
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed md:text-base" style={{ color: C.subtle }}>
             Jualan cuma di marketplace itu seperti buka toko di mal orang lain. Inilah yang kamu dapat saat punya rumah sendiri.

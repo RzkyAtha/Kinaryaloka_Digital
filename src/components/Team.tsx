@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
 import type { TargetAndTransition } from 'framer-motion'
 import { useState } from 'react'
-import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, ViewfinderCircleIcon as Crosshair, LifebuoyIcon as Headphones, ShieldCheckIcon as ShieldCheck } from '@heroicons/react/24/solid'
+import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, ViewfinderCircleIcon as Crosshair, FaceSmileIcon, LifebuoyIcon as Headphones, PaintBrushIcon, ShieldCheckIcon as ShieldCheck } from '@heroicons/react/24/solid'
 
 const cards = [
   {
     image: '/Assets/komitmen1.webp',
-    icon: Crosshair,
+    icon: PaintBrushIcon,
     title: 'Akurasi Desain.',
     subtitle: 'Presisi Tinggi',
     label: '90%',
@@ -16,7 +16,7 @@ const cards = [
   },
   {
     image: '/Assets/kmt247.webp',
-    icon: Headphones,
+    icon: FaceSmileIcon,
     title: 'Support Aktif.',
     subtitle: 'Tanpa Batas Waktu',
     label: '24/7',
@@ -116,15 +116,7 @@ export default function Team() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <motion.p
-            className="text-sm md:text-base font-medium tracking-[0.2em] uppercase mb-4"
-            style={{ color: cards[active].color }}
-            animate={{ color: cards[active].color }}
-            transition={{ duration: 0.5 }}
-          >
-            Our Promise
-          </motion.p>
-          <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
+          <h2 className="font-climate text-[30px] md:text-[48px] text-white tracking-tight">
             Komitmen Kami
           </h2>
         </motion.div>

@@ -1,8 +1,20 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useCallback } from 'react'
-import { ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, XMarkIcon as X } from '@heroicons/react/24/solid'
+import { ChevronRightIcon as ChevronRight, XMarkIcon as X } from '@heroicons/react/24/solid'
 
-const valueCards = [
+type ValueCard = {
+  title: string
+  subtitle: string
+  badge: string
+  description: string
+  color: string
+  image: string
+  idleImage: string
+  policeText: string
+  code: string
+}
+
+const valueCards: ValueCard[] = [
   {
     title: 'Partner, Bukan Vendor.',
     subtitle: 'Hubungan Jangka Panjang',
@@ -10,7 +22,9 @@ const valueCards = [
     description: 'Kami tidak pergi setelah project selesai. Support dan komunikasi tetap berjalan.',
     color: '#FFA500',
     image: '/Assets/partner_vendor.webp',
+    idleImage: '/Assets/PARTNER%20BUKAN%20VENDOR.png',
     policeText: 'PARTNER, BUKAN VENDOR',
+    code: 'Selalu Ada',
   },
   {
     title: 'Tepat Sasaran.',
@@ -19,7 +33,9 @@ const valueCards = [
     description: 'Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
     color: '#FF2D55',
     image: '/Assets/tepatsasaran.webp',
+    idleImage: '/Assets/SELALU%20SESUAI%20TARGET.png',
     policeText: 'TEPAT SASARAN',
+    code: 'Selalu Sesuai',
   },
   {
     title: 'Langsung Kepakai.',
@@ -28,7 +44,9 @@ const valueCards = [
     description: 'Semua yang kami bangun dirancang agar bisa dipakai sehari-hari, tanpa perlu teknikal tinggi.',
     color: '#0080FF',
     image: '/Assets/langsungkepakai.webp',
+    idleImage: '/Assets/DAPAT%20SEGERA%20DIPAKAI.png',
     policeText: 'LANGSUNG KEPAKAI',
+    code: 'Selalu Efisien',
   },
   {
     title: 'Transparan & Jelas.',
@@ -37,342 +55,446 @@ const valueCards = [
     description: 'Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi ataupun janji kosong.',
     color: '#00C851',
     image: '/Assets/harga_jelas.webp',
+    idleImage: '/Assets/RINCI%20JELAS%20AMAN.png',
     policeText: 'TRANSPARAN & JELAS',
+    code: 'Selalu Terbuka',
   },
 ]
 
-const policeLineConfigs = [
-  // Upper-left: shallow strip, slopes slightly down from left to right
-  { rotate: 12, top: '12%', direction: 'left' as const, speed: 35, height: '44px', textSize: 'text-sm sm:text-xl', initialRotateOffset: -8, initialYOffset: -30 },
-  // Upper-left: steep strip, slopes steeply up from left to right, crosses strip 1
-  { rotate: -50, top: '-20%', direction: 'right' as const, speed: 30, height: '44px', textSize: 'text-sm sm:text-xl', initialRotateOffset: 10, initialYOffset: 25 },
-  // Lower-right: large strip, slopes slightly up from left to right, shifted right
-  { rotate: -12, top: '75%', direction: 'left' as const, speed: 40, height: '58px', textSize: 'text-lg sm:text-2xl', left: '-10%', initialRotateOffset: 6, initialYOffset: 35 },
+const BRAND_ACCENT = '#F5C542'
+const BRAND_GRADIENT = 'linear-gradient(135deg, #F5C542, #E5A830, #D4912A)'
+
+const processSteps = [
+  { code: 'Pertama', label: 'Dengar & Riset', note: 'Pahami cara bisnis berjalan di lapangan.' },
+  { code: 'Lalu kita', label: 'Rancang Blueprint', note: 'Susun alur, identitas, dan prioritas.' },
+  { code: 'Dilanjutkan dengan', label: 'Bangun Bertahap', note: 'Eksekusi rapi, bisa dipantau tiap langkah.' },
+  { code: 'Tidak lupa juga', label: 'Dampingi Jalan', note: 'Support setelah rilis, bukan ditinggal.' },
 ]
 
-function PoliceLine({
-  text,
-  color,
-  rotate,
-  top,
-  direction,
-  speed,
-  height,
-  textSize,
-  left,
+function BlueprintFrame({ accent, active }: { accent: string; active: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 h-full w-full"
+    >
+      <g
+        fill="none"
+        stroke={accent}
+        strokeWidth="1"
+        strokeDasharray="3 4"
+        vectorEffect="non-scaling-stroke"
+        style={{ opacity: active ? 0.18 : 0.07, transition: 'opacity 400ms ease' }}
+      >
+        <line x1="0" y1="24" x2="100" y2="24" />
+        <line x1="0" y1="76" x2="100" y2="76" />
+        <line x1="16" y1="0" x2="16" y2="100" />
+        <line x1="84" y1="0" x2="84" y2="100" />
+      </g>
+      <g
+        fill="none"
+        stroke={accent}
+        strokeWidth="1.5"
+        vectorEffect="non-scaling-stroke"
+        style={{ opacity: active ? 0.45 : 0.16, transition: 'opacity 400ms ease' }}
+      >
+        <path d="M3,10 L3,3 L10,3" />
+        <path d="M90,3 L97,3 L97,10" />
+        <path d="M97,90 L97,97 L90,97" />
+        <path d="M10,97 L3,97 L3,90" />
+      </g>
+    </svg>
+  )
+}
+
+function ValueTile({
+  card,
   index,
-  initialRotateOffset,
-  initialYOffset,
+  total,
+  active,
+  onHover,
+  onOpen,
 }: {
-  text: string
-  color: string
-  rotate: number
-  top: string
-  direction: 'left' | 'right'
-  speed: number
-  height: string
-  textSize: string
-  left?: string
+  card: ValueCard
   index: number
-  initialRotateOffset: number
-  initialYOffset: number
+  total: number
+  active: boolean
+  onHover: (index: number) => void
+  onOpen: (index: number) => void
 }) {
-  const repeatedText = Array(10).fill(` ${text} \u2022`).join('')
+  const meta = (
+    <div className="relative flex items-center justify-between gap-3">
+      <span className="font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: card.color }}>
+        {card.code}
+      </span>
+      <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.18em] text-[#bdbdbd]">
+        {String(index + 1).padStart(2, '0')}/{String(total).padStart(2, '0')}
+      </span>
+    </div>
+  )
+
+  const visual = (
+    <div className="relative flex items-center justify-center py-3 sm:py-5">
+      <span
+        className="absolute rounded-full blur-2xl"
+        style={{ width: '52%', height: '52%', background: `${card.color}0b` }}
+      />
+      <motion.img
+        src={card.image}
+        alt={card.title}
+        loading="lazy"
+        decoding="async"
+        className="relative w-[68px] object-contain sm:w-28"
+        animate={active ? { y: [-6, 6, -6], rotate: [-1.5, 1.5, -1.5] } : { y: 0, rotate: 0 }}
+        transition={{ duration: 5, repeat: active ? Infinity : 0, ease: 'easeInOut' }}
+        style={{ filter: `drop-shadow(0 8px 14px rgba(42,42,42,0.10))` }}
+      />
+    </div>
+  )
+
+  const readMore = (
+    <span className="inline-flex items-center gap-1 text-[10px] font-bold sm:text-[11px]" style={{ color: card.color }}>
+      Baca detail
+      <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" />
+    </span>
+  )
+
+  const idleBody = (
+    <div className="relative flex min-h-0 flex-1 flex-col">
+      <div className="relative flex min-h-0 flex-1 items-center justify-center py-3 sm:py-5">
+        <img
+          src={card.idleImage}
+          alt={card.policeText}
+          loading="lazy"
+          decoding="async"
+          className="relative max-h-[74px] w-auto max-w-[82%] object-contain sm:max-h-[118px]"
+        />
+      </div>
+      <div className="relative mt-auto">{readMore}</div>
+    </div>
+  )
+
+  const copy = (
+    <div className="relative mt-auto space-y-1.5">
+      <span
+        className="block text-[9px] font-bold uppercase tracking-[0.14em] sm:text-[10px]"
+        style={{ color: card.color }}
+      >
+        {card.badge}
+      </span>
+      <h3 className="font-poppins text-[13px] font-bold leading-snug text-[#2a2a2a] sm:text-[17px]">{card.title}</h3>
+      <p className="text-[10px] leading-relaxed text-[#8a8a8a] sm:text-[12px]">{card.subtitle}</p>
+      <span className="pt-1">{readMore}</span>
+    </div>
+  )
 
   return (
-    <motion.div
-      className="absolute overflow-hidden"
-      initial={{
-        rotate: rotate + initialRotateOffset,
-        y: initialYOffset,
-        opacity: 0,
-      }}
-      animate={{
-        rotate,
-        y: 0,
-        opacity: 1,
-        backgroundColor: color,
-      }}
-      exit={{
-        rotate: rotate - initialRotateOffset,
-        y: -initialYOffset,
-        opacity: 0,
-      }}
-      transition={{
-        duration: 0.6,
-        ease: [0.16, 1, 0.3, 1],
-        delay: index * 0.12,
-        backgroundColor: { duration: 0.4 },
-      }}
+    <motion.button
+      type="button"
+      onPointerEnter={() => onHover(index)}
+      onFocus={() => onHover(index)}
+      onClick={() => onOpen(index)}
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      whileHover={{ y: -6 }}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.16, 1, 0.3, 1] }}
+      className="group relative flex h-full min-h-[178px] overflow-hidden rounded-2xl bg-white p-3.5 text-left outline-none sm:min-h-[252px] sm:rounded-3xl sm:p-6"
       style={{
-        top,
-        left: left || '-40%',
-        width: '180%',
-        height,
-        backgroundColor: color,
-        zIndex: 2,
-        boxShadow: `0 2px 10px ${color}20`,
+        border: `1px solid ${active ? `${card.color}45` : 'rgba(42,42,42,0.08)'}`,
+        boxShadow: active ? `0 10px 22px rgba(42,42,42,0.07)` : '0 2px 12px rgba(42,42,42,0.04)',
+        transition: 'border-color 350ms ease, box-shadow 350ms ease',
       }}
+      aria-label={`${card.title} — ${card.badge}`}
     >
-      <motion.div
-        className="flex items-center h-full"
-        style={{ width: 'max-content', willChange: 'transform' }}
-        animate={{ x: direction === 'left' ? ['0%', '-50%'] : ['-50%', '0%'] }}
-        transition={{ duration: speed, repeat: Infinity, ease: 'linear' }}
+      <div
+        className="pointer-events-none absolute inset-0 transition-opacity duration-500"
+        style={{
+          background: `radial-gradient(100% 70% at 50% 2%, ${card.color}07, transparent 62%)`,
+          opacity: active ? 1 : 0,
+        }}
+      />
+      <BlueprintFrame accent={card.color} active={active} />
+
+      {/* Ghost marquee — selalu berjalan, menguat saat kartu aktif */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-3 overflow-hidden transition-opacity duration-500"
+        style={{ opacity: active ? 1 : 0.6 }}
+        aria-hidden="true"
       >
-        <span className={`whitespace-nowrap font-black text-white ${textSize} tracking-[0.12em] px-3`}>
-          {repeatedText}
-        </span>
-        <span className={`whitespace-nowrap font-black text-white ${textSize} tracking-[0.12em] px-3`}>
-          {repeatedText}
-        </span>
-      </motion.div>
-    </motion.div>
+        <motion.div
+          className="flex w-max"
+          animate={{ x: ['0%', '-50%'] }}
+          transition={{ duration: 26, repeat: Infinity, ease: 'linear' }}
+        >
+          {[0, 1].map((k) => (
+            <span
+              key={k}
+              className="whitespace-nowrap px-3 text-[26px] font-black leading-none tracking-[0.16em] sm:text-[32px]"
+              style={{ color: `${card.color}12` }}
+            >
+              {Array(5).fill(`${card.policeText} \u2022 `).join('')}
+            </span>
+          ))}
+        </motion.div>
+      </div>
+
+      <div className="relative flex h-full w-full flex-col">
+        {meta}
+        <AnimatePresence initial={false} mode="wait">
+          {active ? (
+            <motion.div
+              key="active"
+              className="flex min-h-0 flex-1 flex-col"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {visual}
+              {copy}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="idle"
+              className="flex min-h-0 flex-1 flex-col"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              {idleBody}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.button>
   )
 }
 
 export default function About() {
-  const isInView = true
-  const [activeIndex, setActiveIndex] = useState(0)
-  const [showPopup, setShowPopup] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(-1)
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
 
-  const activeCard = valueCards[activeIndex]
+  const popupCard = openIndex === null ? null : valueCards[openIndex]
 
-  const goNext = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % valueCards.length)
-  }, [])
-
-  const goPrev = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + valueCards.length) % valueCards.length)
-  }, [])
+  const handleHover = useCallback((index: number) => setActiveIndex(index), [])
+  const clearHover = useCallback(() => setActiveIndex(-1), [])
+  const handleOpen = useCallback((index: number) => setOpenIndex(index), [])
+  const closePopup = useCallback(() => setOpenIndex(null), [])
 
   return (
-    <section id="tentang" className="bg-white py-8 md:py-12 relative overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-          {/* Left - Police Line Value Cards Scene */}
-          <div className="w-full">
-            <p className="text-xs font-bold tracking-[0.2em] uppercase mb-2 lg:hidden text-center text-[#FFCC00]">VALUE CARDS</p>
-            <h3 className="text-3xl font-bold mb-8 lg:hidden text-center">
-              <span className="text-[#2a2a2a]">Upaya </span>
-              <span><span style={{ color: '#FF2D55' }}>K</span><span style={{ color: '#FFA500' }}>a</span><span style={{ color: '#0080FF' }}>m</span><span style={{ color: '#00C851' }}>i</span></span>
-            </h3>
+    <section id="tentang" className="relative overflow-hidden bg-white py-12 md:py-20">
+      {/* Blueprint paper grid */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
+        style={{
+          backgroundImage:
+            'linear-gradient(rgba(42,42,42,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(42,42,42,0.028) 1px, transparent 1px)',
+          backgroundSize: '56px 56px',
+          maskImage: 'radial-gradient(125% 85% at 50% 25%, #000 35%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(125% 85% at 50% 25%, #000 35%, transparent 100%)',
+        }}
+      />
 
-            {/* Police Line Scene Container */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={isInView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full aspect-square max-w-[550px] mx-auto rounded-2xl overflow-hidden transition-all duration-500"
-              style={{ background: '#ffffff', border: `2px solid ${activeCard.color}40` }}
-            >
-              {/* Police Line Strips */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeIndex}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="absolute inset-0"
-                >
-                  {policeLineConfigs.map((config, i) => (
-                    <PoliceLine
-                      key={`${activeIndex}-${i}`}
-                      text={activeCard.policeText}
-                      color={activeCard.color}
-                      index={i}
-                      {...config}
-                    />
-                  ))}
-                </motion.div>
-              </AnimatePresence>
-
-              {/* Center Floating Image */}
-              <div className="absolute inset-0 flex items-center justify-center" style={{ zIndex: 5 }}>
-                <motion.div
-                  className="cursor-pointer relative"
-                  onClick={() => setShowPopup(true)}
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <motion.div
-                    animate={{ y: [-10, 10, -10] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    <AnimatePresence mode="wait">
-                      <motion.img
-                        key={activeCard.image}
-                        src={activeCard.image}
-                        alt={activeCard.title}
-                        initial={{ opacity: 0, scale: 0.7, rotate: -5 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        exit={{ opacity: 0, scale: 0.7, rotate: 5 }}
-                        transition={{ duration: 0.4 }}
-                        className="w-44 h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain"
-                        style={{ filter: `drop-shadow(0 0 15px ${activeCard.color}20)` }}
-                      />
-                    </AnimatePresence>
-                  </motion.div>
-
-                </motion.div>
-              </div>
-
-              {/* Navigation Arrow - Left */}
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
+        {/* Section marker */}
+        <motion.div
+          className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-[#2a2a2a]/[0.15] pb-4"
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.5 }}
+        >
+          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#9a9a9a] sm:text-[11px]">
+            Sec 02 — Visual Identity Blueprint
+          </span>
+          <div className="flex items-center gap-2">
+            {valueCards.map((card, i) => (
               <button
-                onClick={goPrev}
-                className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full backdrop-blur-sm flex items-center justify-center transition-all duration-200 active:scale-90"
-                style={{ zIndex: 20, backgroundColor: `${activeCard.color}20`, borderColor: `${activeCard.color}40`, border: `1px solid ${activeCard.color}40`, color: activeCard.color }}
-                aria-label="Previous value"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
+                key={card.code}
+                type="button"
+                onPointerEnter={() => handleHover(i)}
+                onClick={() => handleOpen(i)}
+                className="h-2.5 w-2.5 rounded-full transition-transform duration-300"
+                style={{
+                  background: i === activeIndex ? card.color : 'rgba(42,42,42,0.15)',
+                  transform: i === activeIndex ? 'scale(1.35)' : 'scale(1)',
+                  boxShadow: i === activeIndex ? `0 0 8px ${card.color}55` : 'none',
+                }}
+                aria-label={card.title}
+              />
+            ))}
+          </div>
+        </motion.div>
 
-              {/* Navigation Arrow - Right */}
-              <button
-                onClick={goNext}
-                className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full backdrop-blur-sm flex items-center justify-center transition-all duration-200 active:scale-90"
-                style={{ zIndex: 20, backgroundColor: `${activeCard.color}20`, border: `1px solid ${activeCard.color}40`, color: activeCard.color }}
-                aria-label="Next value"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+        {/* Bento grid */}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
+          {/* Identity tile */}
+          <motion.div
+            className="relative overflow-hidden rounded-3xl bg-white p-6 sm:p-8"
+            style={{ border: '1px solid rgba(42,42,42,0.08)', boxShadow: '0 2px 12px rgba(42,42,42,0.05)' }}
+            initial={{ opacity: 0, y: 26 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <BlueprintFrame accent={BRAND_ACCENT} active={false} />
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{ background: `radial-gradient(110% 80% at 12% 0%, ${BRAND_ACCENT}0d, transparent 62%)` }}
+            />
 
-              {/* Dots Indicator */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2" style={{ zIndex: 20 }}>
-                {valueCards.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveIndex(i)}
-                    className="w-2.5 h-2.5 rounded-full transition-all duration-300"
-                    style={{
-                      backgroundColor: i === activeIndex ? activeCard.color : 'rgba(0,0,0,0.15)',
-                      transform: i === activeIndex ? 'scale(1.3)' : 'scale(1)',
-                      boxShadow: i === activeIndex ? `0 0 8px ${activeCard.color}80` : 'none',
-                    }}
-                    aria-label={`Go to ${valueCards[i].title}`}
-                  />
+            <div className="relative flex h-full flex-col">
+              <h2 className="mt-5 font-climate text-[21px] leading-[1.25] sm:text-[27px] md:text-[31px]">
+                <span className="block text-[#2a2a2a]">Bukan Agency Biasa.</span>
+                <span
+                  className="block"
+                  style={{
+                    background: BRAND_GRADIENT,
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Partner yang Ngerti
+                </span>
+                <span className="block text-[#2a2a2a]">Bisnis Kamu.</span>
+              </h2>
+
+              <p className="mt-4 text-justify text-[13px] leading-[1.75] text-[#5a5a5a] sm:text-[14px]">
+                KINARYALOKA Digital Studio lahir dari satu pemahaman: kebanyakan UMKM bukan tidak mau digital, tetapi
+                tidak tahu mulai dari mana atau sudah coba tapi hasilnya tidak kepakai. Kami duduk bareng kamu,
+                pelajari cara bisnismu berjalan, lalu terjemahkan ke sistem digital yang rapi dan bisa dikontrol.
+              </p>
+
+              {/* Process spec sheet */}
+              <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-[#2a2a2a]/[0.10]">
+                {processSteps.map((step, i) => (
+                  <div key={step.code} className="group/step bg-white p-3.5 transition-colors duration-300 hover:bg-[#fafafa]">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="font-mono text-[10px] font-bold tracking-[0.14em]"
+                        style={{ color: valueCards[i % valueCards.length].color }}
+                      >
+                        {step.code}
+                      </span>
+                      <span className="h-px flex-1" style={{ background: 'rgba(42,42,42,0.12)' }} />
+                    </div>
+                    <p className="mt-1.5 text-[12px] font-bold text-[#2a2a2a] sm:text-[13px]">{step.label}</p>
+                    <p className="text-[10.5px] leading-relaxed text-[#8f8f8f] sm:text-[11px]">{step.note}</p>
+                  </div>
                 ))}
               </div>
-            </motion.div>
-
-            {/* Instruction text below value cards */}
-            <p className="text-[11px] sm:text-xs text-[#999] text-center mt-4 leading-relaxed max-w-[550px] mx-auto">
-              Interaktif: Tekan tombol <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-black/5 text-[10px] align-middle mx-0.5">‹</span> <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-black/5 text-[10px] align-middle mx-0.5">›</span> untuk pindah, tekan ilustrasi untuk membaca lebih detail dari setiap upaya kami.
-            </p>
-          </div>
-
-          {/* Right - Content */}
-          <motion.div
-            className="space-y-6 md:space-y-8"
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            {/* Badge */}
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ delay: 0.4 }}
-            >
-              <span className="inline-flex items-center text-[11px] sm:text-xs font-bold tracking-[0.15em] uppercase px-4 py-2 rounded-lg text-white"
-                style={{ background: 'linear-gradient(135deg, #FFA500, #FF2D55)' }}>
-                Tentang Kami
-              </span>
-            </motion.div>
-
-            {/* Main Title */}
-            <h2 className="text-[28px] sm:text-[36px] md:text-[44px] lg:text-[50px] font-bold leading-[1.1]">
-              <span className="block text-[#2a2a2a]">Bukan Agency Biasa.</span>
-              <span className="block" style={{ background: 'linear-gradient(135deg, #FFA500, #FF2D55)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Partner yang Ngerti</span>
-              <span className="block text-[#2a2a2a]">Bisnis Kamu.</span>
-            </h2>
-            
-            {/* Description Card */}
-            <div className="rounded-2xl p-5 md:p-7 space-y-3 md:space-y-4"
-              style={{ background: 'linear-gradient(145deg, #f8f8f8, #ffffff)', border: '1px solid #eee' }}>
-              <p className="text-[#555] text-[13px] sm:text-[15px] md:text-[16px] leading-[1.7] text-justify">
-                KINARYALOKA Digital Studio lahir dari pemahaman satu hal: kebanyakan UMKM bukan tidak mau digital, tetapi mereka tidak tahu mulai dari mana, atau sudah coba tapi hasilnya tidak kepakai.
-              </p>
-              <p className="text-[#555] text-[13px] sm:text-[15px] md:text-[16px] leading-[1.7] text-justify">
-                Kami duduk bareng kamu untuk mempelajari cara bisnis kamu berjalan di lapangan, lalu bantu terjemahkannya ke sistem digital yang rapi, jelas, dan bisa dikontrol.
-              </p>
             </div>
-
-            {/* Quote Section */}
-            <motion.div
-              className="rounded-2xl p-5 md:p-7 relative overflow-hidden"
-              style={{ background: '#1a1a1a' }}
-              initial={{ opacity: 0, y: 15 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.5, duration: 0.5 }}
-            >
-              <div className="absolute top-0 left-0 w-full h-1 rounded-t-2xl" style={{ background: 'linear-gradient(90deg, #FFA500, #FF2D55, #0080FF, #00C851)' }} />
-              <p className="text-white text-[16px] sm:text-[20px] md:text-[24px] leading-[1.3] font-bold italic">
-                "Website itu bukan tujuan akhir, tapi alat biar operasional jadi lebih rapi dan jelas."
-              </p>
-              <p className="text-[#888] text-[12px] sm:text-[14px] mt-3 font-semibold">
-                — KINARYALOKA Digital Studio
-              </p>
-            </motion.div>
           </motion.div>
+
+          {/* Value tiles 2x2 */}
+          <div className="grid h-full auto-rows-fr grid-cols-2 gap-3 sm:gap-5" onPointerLeave={clearHover}>
+            {valueCards.map((card, i) => (
+              <ValueTile
+                key={card.code}
+                card={card}
+                index={i}
+                total={valueCards.length}
+                active={activeIndex === i}
+                onHover={handleHover}
+                onOpen={handleOpen}
+              />
+            ))}
+          </div>
         </div>
+
+        <p className="mx-auto mt-5 max-w-[640px] text-center text-[11px] leading-relaxed text-[#9a9a9a] sm:text-xs">
+          Interaktif: arahkan kursor ke tiap kartu untuk melihat blueprint-nya menyala, lalu klik kartu untuk membaca
+          detail dari setiap upaya kami.
+        </p>
       </div>
 
-      {/* Description Popup */}
+      {/* Blueprint detail sheet */}
       <AnimatePresence>
-        {showPopup && (
+        {popupCard && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="fixed inset-0 z-50 flex items-center justify-center px-4"
-            style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}
-            onClick={() => setShowPopup(false)}
+            style={{ backgroundColor: 'rgba(10,10,12,0.82)', backdropFilter: 'blur(4px)' }}
+            onClick={closePopup}
           >
             <motion.div
-              initial={{ scale: 0.85, opacity: 0, y: 20 }}
+              initial={{ scale: 0.9, opacity: 0, y: 18 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.85, opacity: 0, y: 20 }}
+              exit={{ scale: 0.9, opacity: 0, y: 18 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="relative max-w-sm w-full rounded-2xl overflow-hidden"
-              style={{ background: '#141416', border: `1px solid ${activeCard.color}30` }}
+              className="relative w-full max-w-sm overflow-hidden rounded-3xl bg-white p-5 sm:p-6"
+              style={{
+                border: `1px solid ${popupCard.color}45`,
+                boxShadow: '0 24px 60px rgba(10,10,12,0.35)',
+              }}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
-              {/* Close button */}
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{ background: `radial-gradient(100% 70% at 50% 2%, ${popupCard.color}07, transparent 62%)` }}
+              />
+              <BlueprintFrame accent={popupCard.color} active />
+
               <button
-                onClick={() => setShowPopup(false)}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white/70 hover:bg-white/20 hover:text-white transition-all"
-                style={{ zIndex: 10 }}
+                onClick={closePopup}
+                className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-[#2a2a2a]/[0.06] text-[#8a8a8a] transition-all hover:bg-[#2a2a2a]/10 hover:text-[#2a2a2a]"
+                aria-label="Tutup"
               >
-                <X className="w-4 h-4" />
+                <X className="h-4 w-4" />
               </button>
 
-              {/* Image */}
-              <div
-                className="relative h-40 overflow-hidden flex items-center justify-center"
-                style={{ background: `${activeCard.color}10` }}
-              >
-                <img src={activeCard.image} alt={activeCard.title} className="w-28 h-28 object-contain" loading="eager" decoding="async" />
-              </div>
+              <div className="relative">
+                <div className="flex items-center gap-3 pr-10">
+                  <span
+                    className="font-mono text-[10px] font-bold uppercase tracking-[0.18em]"
+                    style={{ color: popupCard.color }}
+                  >
+                    {popupCard.code}
+                  </span>
+                  <span className="font-mono text-[10px] tracking-[0.18em] text-[#bdbdbd]">
+                    {String(valueCards.indexOf(popupCard) + 1).padStart(2, '0')}/
+                    {String(valueCards.length).padStart(2, '0')}
+                  </span>
+                </div>
 
-              {/* Content */}
-              <div className="p-5 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-1">{activeCard.title}</h3>
-                <p className="text-xs sm:text-sm mb-3" style={{ color: '#777' }}>{activeCard.subtitle}</p>
+                <div className="relative flex items-center justify-center py-6">
+                  <span
+                    className="absolute rounded-full blur-2xl"
+                    style={{ width: '52%', height: '52%', background: `${popupCard.color}0b` }}
+                  />
+                  <motion.img
+                    src={popupCard.image}
+                    alt={popupCard.title}
+                    className="relative w-28 object-contain sm:w-32"
+                    loading="eager"
+                    decoding="async"
+                    animate={{ y: [-5, 5, -5] }}
+                    transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+                    style={{ filter: 'drop-shadow(0 8px 14px rgba(42,42,42,0.10))' }}
+                  />
+                </div>
 
                 <span
-                  className="inline-block text-[10px] sm:text-xs font-bold rounded-lg px-3 py-1.5 text-white mb-4"
-                  style={{ background: `linear-gradient(135deg, ${activeCard.color}, ${activeCard.color}CC)` }}
+                  className="block text-[10px] font-bold uppercase tracking-[0.14em]"
+                  style={{ color: popupCard.color }}
                 >
-                  {activeCard.badge}
+                  {popupCard.badge}
                 </span>
+                <h3 className="mt-1.5 font-poppins text-[19px] font-bold leading-snug text-[#2a2a2a] sm:text-[21px]">
+                  {popupCard.title}
+                </h3>
+                <p className="mt-1 text-[12px] leading-relaxed text-[#8a8a8a]">{popupCard.subtitle}</p>
 
-                <div className="border-l-2 pl-3" style={{ borderColor: `${activeCard.color}50` }}>
-                  <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#999' }}>
-                    {activeCard.description}
-                  </p>
+                <div className="mt-4 border-l-2 pl-3" style={{ borderColor: `${popupCard.color}45` }}>
+                  <p className="text-[13px] leading-relaxed text-[#5a5a5a] sm:text-[14px]">{popupCard.description}</p>
                 </div>
               </div>
             </motion.div>

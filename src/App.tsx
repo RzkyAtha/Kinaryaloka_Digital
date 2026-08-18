@@ -9,7 +9,6 @@ import Process from './components/Process'
 import Footer from './components/Footer'
 import PainPoints from './components/PainPoints'
 import MarketplaceExodus from './components/MarketplaceExodus'
-import FloatingWA from './components/FloatingWA'
 import { LanguageProvider } from './context/LanguageContext'
 
 // Code-split heavy, non-critical components (interactive / off-route)
@@ -66,7 +65,6 @@ function MainSite() {
   return (
     <div className="min-h-screen bg-[#f5f5f5] overflow-x-hidden">
       <ScrollProgressBar />
-      <FloatingWA activePage={activePage} />
       <Suspense fallback={null}>
         <Chatbot activePage={activePage} />
       </Suspense>

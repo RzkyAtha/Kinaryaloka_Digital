@@ -254,7 +254,7 @@ export default function Portfolio() {
           <span className="inline-block px-5 py-2 rounded-lg text-white font-bold text-sm mb-4 tracking-wide" style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}>
             PORTFOLIO
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#2a2a2a] mb-4">
+          <h2 className="font-climate text-[24px] sm:text-[30px] lg:text-[38px] text-[#2a2a2a] mb-4 leading-[1.2]">
             Projek yang Telah <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #F5C542, #D4912A)' }}>Kami</span> Kerjakan
           </h2>
         </motion.div>
