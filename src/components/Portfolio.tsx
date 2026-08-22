@@ -1,23 +1,20 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowTopRightOnSquareIcon as ExternalLink, GlobeAltIcon as Globe, XMarkIcon as X, ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, PhotoIcon as Image } from '@heroicons/react/24/solid'
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import { PORTFOLIO_PROJECTS, PortfolioProject, PortfolioCategory, PortfolioSubcategory } from '../context/PortfolioContext'
+import { PORTFOLIO_PROJECTS, PortfolioProject, PortfolioCategory } from '../context/PortfolioContext'
 
-const mainTabs: { id: PortfolioCategory; label: string; color: string; glow: string }[] = [
-  { id: 'Website', label: 'Website', color: '#E5A830', glow: '#E5A83050' },
-  { id: 'Design', label: 'Design', color: '#D4912A', glow: '#D4912A50' },
-]
+/** Tab colors are cycled, so any number of categories stays on-brand. */
+const TAB_COLORS = ['#E5A830', '#D4912A', '#C8752E', '#E8651A']
 
-const subTabs: Record<PortfolioCategory, { id: PortfolioSubcategory; label: string }[]> = {
-  Website: [
-    { id: 'Reservasi', label: 'Reservasi' },
-    { id: 'E-Commerce', label: 'E-Commerce' },
-    { id: 'Company Profile', label: 'Company Profile' },
-  ],
-  Design: [
-    { id: 'UI/UX', label: 'UI/UX' },
-    { id: 'Branding', label: 'Branding' },
-  ],
+function buildTabs(projects: PortfolioProject[]) {
+  const seen: PortfolioCategory[] = []
+  for (const p of projects) {
+    if (!seen.includes(p.category)) seen.push(p.category)
+  }
+  return seen.map((category, i) => {
+    const color = TAB_COLORS[i % TAB_COLORS.length]
+    return { id: category, label: category, color, glow: `${color}50` }
+  })
 }
 
 function ThumbnailImage({ src, alt, hasUrl, url, isDesign }: { src?: string; alt: string; hasUrl: boolean; url?: string; isDesign?: boolean }) {
@@ -227,19 +224,14 @@ function Lightbox({
 // ─── Main Portfolio Component ────────────────────────────────────────────────
 export default function Portfolio() {
   const projects = PORTFOLIO_PROJECTS
-  const [mainCategory, setMainCategory] = useState<PortfolioCategory>('Website')
-  const [activeSub, setActiveSub] = useState<PortfolioSubcategory>(subTabs['Website'][0].id)
+  const mainTabs = useMemo(() => buildTabs(projects), [projects])
+  const [mainCategory, setMainCategory] = useState<PortfolioCategory>(() => mainTabs[0]?.id ?? '')
   const [lightboxProject, setLightboxProject] = useState<PortfolioProject | null>(null)
 
   const filteredProjects = useMemo(
-    () => projects.filter((p) =>
-      p.category === mainCategory && p.subcategory === activeSub
-    ),
-    [projects, mainCategory, activeSub]
+    () => projects.filter((p) => p.category === mainCategory),
+    [projects, mainCategory]
   )
-
-  const currentMainTab = mainTabs.find(t => t.id === mainCategory)!
-  const currentSubTabs = subTabs[mainCategory]
 
   return (
     <section className="min-h-screen bg-[#f5f5f5] pt-32 pb-20 px-4 sm:px-8 lg:px-12">
@@ -272,7 +264,7 @@ export default function Portfolio() {
               return (
                 <button
                   key={tab.id}
-                  onClick={() => { setMainCategory(tab.id); setActiveSub(subTabs[tab.id][0].id) }}
+                  onClick={() => setMainCategory(tab.id)}
                   className="relative px-6 md:px-10 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base whitespace-nowrap transition-colors duration-200 outline-none cursor-pointer"
                   style={{ color: isActive ? '#fff' : '#666' }}
                 >
@@ -298,24 +290,6 @@ export default function Portfolio() {
             })}
           </div>
 
-          {/* Sub-category pills */}
-          <div className="flex gap-2">
-            {currentSubTabs.map((sub) => (
-              <button
-                key={sub.id}
-                onClick={() => setActiveSub(sub.id)}
-                className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 ${
-                  activeSub === sub.id
-                    ? 'text-white shadow-md'
-                    : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
-                }`}
-                style={activeSub === sub.id ? { background: currentMainTab.color } : {}}
-              >
-                {sub.label}
-              </button>
-            ))}
-          </div>
-
           {/* Subtitle */}
           <p className="text-gray-500 text-xs sm:text-sm max-w-2xl mx-auto inline-flex items-center justify-center flex-wrap gap-1 mt-2">
             <span>Produk kami dapat dikenali dengan adanya</span>
@@ -330,7 +304,7 @@ export default function Portfolio() {
         {/* Project Cards Grid */}
         <AnimatePresence mode="popLayout">
         <motion.div
-          key={`${mainCategory}-${activeSub}`}
+          key={mainCategory}
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -339,7 +313,7 @@ export default function Portfolio() {
         >
           {filteredProjects.map((project) => {
             const hasUrl = !!project.url
-            const hasGallery = project.category === 'Design' && project.images && project.images.length > 0
+            const hasGallery = !!project.images && project.images.length > 0
             return (
             <motion.div
               key={project.id}
@@ -350,7 +324,7 @@ export default function Portfolio() {
             >
               {/* Thumbnail */}
               <div className="relative w-full aspect-[16/10] overflow-hidden bg-gray-100">
-                <ThumbnailImage src={project.thumbnail} alt={project.name} hasUrl={hasUrl} url={project.url} isDesign={project.category === 'Design'} />
+                <ThumbnailImage src={project.thumbnail} alt={project.name} hasUrl={hasUrl} url={project.url} isDesign={hasGallery} />
                 {/* Overlay on hover - website projects */}
                 {hasUrl && (
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
@@ -387,7 +361,7 @@ export default function Portfolio() {
                   </span>
                 )}
                 <h3 className="text-2xl font-bold text-[#2a2a2a] mb-1">{project.name}</h3>
-                <p className="text-xs font-semibold text-[#D4912A] mb-3">{project.category} &middot; {project.subcategory}</p>
+                <p className="text-xs font-semibold text-[#D4912A] mb-3">{project.category}</p>
                 <p className="text-gray-500 text-sm leading-relaxed mb-4">
                   {project.description}
                 </p>

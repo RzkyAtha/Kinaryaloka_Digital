@@ -93,7 +93,7 @@ export default function Hero() {
 
           {/* Isometric - shows on top on mobile */}
           <motion.div
-            className="relative w-full order-first lg:order-last min-w-0 -mt-4 -mb-12 sm:-mt-2 sm:-mb-8 lg:mt-0 lg:mb-0"
+            className="relative w-full order-first lg:order-last min-w-0 -mt-4 -mb-6 sm:-mt-2 sm:-mb-4 lg:mt-0 lg:mb-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -106,7 +106,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="space-y-4 md:space-y-8 order-last lg:order-first w-full min-w-0 text-center lg:text-left lg:pl-32"
+            className="space-y-4 md:space-y-8 order-last lg:order-first w-full min-w-0 mt-4 sm:mt-5 lg:mt-0 text-center lg:text-left lg:pl-32"
           >
             {/* Typewriter Title */}
             <TypewriterTitle />
@@ -127,7 +127,7 @@ export default function Hero() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
             >
-              Hadir membuatmu dilihat, kesan membuatmu berarti. Selamat datang di taman bermain kami!
+              Hadir membuatmu dilihat, kesan membuatmu berarti. Selamat datang di dunia kami!
             </motion.p>
 
             {/* CTA Buttons */}

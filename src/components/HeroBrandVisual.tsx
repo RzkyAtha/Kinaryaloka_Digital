@@ -384,31 +384,52 @@ export default function HeroBrandVisual() {
                 textAlign: p.align === 'center' ? 'center' : p.align,
               }}
             >
-              <button
-                type="button"
-                onPointerEnter={() => focus(p.id)}
-                onFocus={() => focus(p.id)}
-                onClick={() => focus(p.id, true)}
-                className={`inline-block max-w-full rounded-xl border bg-white outline-none transition-[border-color,box-shadow] duration-300 ${
-                  isActive(p.id) ? 'px-2.5 py-1.5 sm:px-3 sm:py-2' : 'px-3.5 py-2.5 sm:px-4 sm:py-3'
-                }`}
-                style={{
-                  textAlign: p.align === 'center' ? 'center' : p.align,
-                  borderColor: isActive(p.id) ? 'rgba(245,197,66,0.75)' : 'rgba(42,42,42,0.10)',
-                  boxShadow: isActive(p.id)
-                    ? '0 6px 18px rgba(245,197,66,0.22)'
-                    : '0 2px 8px rgba(42,42,42,0.06)',
-                }}
-              >
-                <AnimatePresence initial={false} mode="wait">
-                  {isActive(p.id) ? (
-                    <motion.span
-                      key="copy"
-                      className="block"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
+              <div className="relative inline-block max-w-full align-top">
+                {/* Idle card — fixed size, never resizes (only fades) */}
+                <button
+                  type="button"
+                  onPointerEnter={() => focus(p.id)}
+                  onFocus={() => focus(p.id)}
+                  onClick={() => focus(p.id, true)}
+                  className="inline-block max-w-full rounded-xl border bg-white px-3.5 py-2.5 outline-none sm:px-4 sm:py-3"
+                  style={{
+                    borderColor: 'rgba(42,42,42,0.10)',
+                    boxShadow: '0 2px 8px rgba(42,42,42,0.06)',
+                    opacity: isActive(p.id) ? 0 : 1,
+                    transition: 'opacity 200ms ease',
+                    willChange: 'opacity',
+                  }}
+                >
+                  <span className="flex items-center gap-2.5 py-0.5 sm:gap-3" aria-hidden="true">
+                    {PILLAR_ICONS[p.id].map((Icon, i) => (
+                      <Icon key={i} className="h-[22px] w-[22px] sm:h-7 sm:w-7 text-[#F5C542]" />
+                    ))}
+                  </span>
+                  <span className="sr-only">{copy[p.id].label}</span>
+                </button>
+
+                {/* Active card — a separate card that pops in above the idle one */}
+                <AnimatePresence>
+                  {isActive(p.id) && (
+                    <motion.button
+                      key="detail"
+                      type="button"
+                      onPointerEnter={() => focus(p.id)}
+                      onClick={() => focus(p.id, true)}
+                      className="absolute top-1/2 w-[240px] max-w-[76vw] rounded-xl border bg-white px-2.5 py-1.5 outline-none sm:px-3 sm:py-2"
+                      style={{
+                        left: p.align === 'right' ? undefined : 0,
+                        right: p.align === 'right' ? 0 : undefined,
+                        textAlign: p.align === 'center' ? 'center' : p.align,
+                        borderColor: 'rgba(245,197,66,0.75)',
+                        boxShadow: '0 6px 18px rgba(245,197,66,0.22)',
+                        transformOrigin: p.align === 'right' ? 'right center' : 'left center',
+                        willChange: 'transform, opacity',
+                      }}
+                      initial={{ opacity: 0, scale: 0.94, y: '-50%' }}
+                      animate={{ opacity: 1, scale: 1, y: '-50%' }}
+                      exit={{ opacity: 0, scale: 0.96, y: '-50%' }}
+                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                     >
                       <span className="block font-poppins font-semibold text-[11px] sm:text-[13px] tracking-wide text-[#2a2a2a]">
                         {copy[p.id].label}
@@ -416,25 +437,10 @@ export default function HeroBrandVisual() {
                       <span className="block text-[9px] sm:text-[11px] leading-snug text-[#828282]">
                         {copy[p.id].caption}
                       </span>
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="icons"
-                      className="flex items-center gap-2.5 py-0.5 sm:gap-3"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                      aria-hidden="true"
-                    >
-                      {PILLAR_ICONS[p.id].map((Icon, i) => (
-                        <Icon key={i} className="h-[22px] w-[22px] sm:h-7 sm:w-7 text-[#F5C542]" />
-                      ))}
-                    </motion.span>
+                    </motion.button>
                   )}
                 </AnimatePresence>
-                <span className="sr-only">{copy[p.id].label}</span>
-              </button>
+              </div>
             </div>
           ))}
         </div>

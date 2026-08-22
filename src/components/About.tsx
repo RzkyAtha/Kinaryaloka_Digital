@@ -22,7 +22,7 @@ const valueCards: ValueCard[] = [
     description: 'Kami tidak pergi setelah project selesai. Support dan komunikasi tetap berjalan.',
     color: '#FFA500',
     image: '/Assets/partner_vendor.webp',
-    idleImage: '/Assets/PARTNER%20BUKAN%20VENDOR.png',
+    idleImage: '/Assets/PARTNER%20BUKAN%20VENDOR.webp',
     policeText: 'PARTNER, BUKAN VENDOR',
     code: 'Selalu Ada',
   },
@@ -33,7 +33,7 @@ const valueCards: ValueCard[] = [
     description: 'Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
     color: '#FF2D55',
     image: '/Assets/tepatsasaran.webp',
-    idleImage: '/Assets/SELALU%20SESUAI%20TARGET.png',
+    idleImage: '/Assets/SELALU%20SESUAI%20TARGET.webp',
     policeText: 'TEPAT SASARAN',
     code: 'Selalu Sesuai',
   },
@@ -44,7 +44,7 @@ const valueCards: ValueCard[] = [
     description: 'Semua yang kami bangun dirancang agar bisa dipakai sehari-hari, tanpa perlu teknikal tinggi.',
     color: '#0080FF',
     image: '/Assets/langsungkepakai.webp',
-    idleImage: '/Assets/DAPAT%20SEGERA%20DIPAKAI.png',
+    idleImage: '/Assets/DAPAT%20SEGERA%20DIPAKAI.webp',
     policeText: 'LANGSUNG KEPAKAI',
     code: 'Selalu Efisien',
   },
@@ -55,10 +55,25 @@ const valueCards: ValueCard[] = [
     description: 'Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi ataupun janji kosong.',
     color: '#00C851',
     image: '/Assets/harga_jelas.webp',
-    idleImage: '/Assets/RINCI%20JELAS%20AMAN.png',
+    idleImage: '/Assets/RINCI%20JELAS%20AMAN.webp',
     policeText: 'TRANSPARAN & JELAS',
     code: 'Selalu Terbuka',
   },
+]
+
+/** Chromatic-aberration ghosts for the active card illustration. */
+const GLITCH_LAYERS = [
+  { tint: '#ff2d55', x: [0, -5, 4, -3, 0], delay: 0 },
+  { tint: '#00c2ff', x: [0, 5, -4, 3, 0], delay: 0.07 },
+]
+
+/** Horizontal tear slices swept across the ghosts. */
+const GLITCH_SLICES = [
+  'inset(0% 0% 100% 0%)',
+  'inset(8% 0% 64% 0%)',
+  'inset(46% 0% 36% 0%)',
+  'inset(72% 0% 14% 0%)',
+  'inset(0% 0% 100% 0%)',
 ]
 
 const BRAND_ACCENT = '#F5C542'
@@ -111,45 +126,94 @@ function BlueprintFrame({ accent, active }: { accent: string; active: boolean })
 function ValueTile({
   card,
   index,
-  total,
   active,
   onHover,
   onOpen,
 }: {
   card: ValueCard
   index: number
-  total: number
   active: boolean
   onHover: (index: number) => void
   onOpen: (index: number) => void
 }) {
   const meta = (
-    <div className="relative flex items-center justify-between gap-3">
+    <div className="relative flex items-center gap-3">
       <span className="font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: card.color }}>
         {card.code}
-      </span>
-      <span className="font-mono text-[9px] sm:text-[10px] tracking-[0.18em] text-[#bdbdbd]">
-        {String(index + 1).padStart(2, '0')}/{String(total).padStart(2, '0')}
       </span>
     </div>
   )
 
   const visual = (
-    <div className="relative flex items-center justify-center py-3 sm:py-5">
+    <div className="relative flex min-h-0 flex-1 items-center justify-center py-2 sm:py-4">
       <span
         className="absolute rounded-full blur-2xl"
         style={{ width: '52%', height: '52%', background: `${card.color}0b` }}
       />
-      <motion.img
-        src={card.image}
-        alt={card.title}
-        loading="lazy"
-        decoding="async"
-        className="relative w-[68px] object-contain sm:w-28"
+      <motion.div
+        className="relative w-[62px] max-w-full sm:w-24"
         animate={active ? { y: [-6, 6, -6], rotate: [-1.5, 1.5, -1.5] } : { y: 0, rotate: 0 }}
         transition={{ duration: 5, repeat: active ? Infinity : 0, ease: 'easeInOut' }}
-        style={{ filter: `drop-shadow(0 8px 14px rgba(42,42,42,0.10))` }}
-      />
+        style={{ willChange: 'transform' }}
+      >
+        <img
+          src={card.image}
+          alt={card.title}
+          loading="lazy"
+          decoding="async"
+          className="relative block w-full object-contain"
+          style={{ filter: `drop-shadow(0 8px 14px rgba(42,42,42,0.10))` }}
+        />
+
+        {active &&
+          GLITCH_LAYERS.map((layer) => (
+            <motion.span
+              key={layer.tint}
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 block"
+              style={{
+                background: layer.tint,
+                mixBlendMode: 'multiply',
+                WebkitMaskImage: `url(${card.image})`,
+                maskImage: `url(${card.image})`,
+                WebkitMaskSize: 'contain',
+                maskSize: 'contain',
+                WebkitMaskRepeat: 'no-repeat',
+                maskRepeat: 'no-repeat',
+                WebkitMaskPosition: 'center',
+                maskPosition: 'center',
+                willChange: 'transform, clip-path, opacity',
+              }}
+              animate={{
+                x: layer.x,
+                opacity: [0, 0.75, 0.3, 0.6, 0],
+                clipPath: GLITCH_SLICES,
+              }}
+              transition={{
+                duration: 0.7,
+                repeat: Infinity,
+                repeatDelay: 2.1,
+                ease: 'linear',
+                delay: layer.delay,
+              }}
+            />
+          ))}
+
+        {/* Scanline sweep */}
+        {active && (
+          <span aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+            <motion.span
+              className="absolute inset-x-0 top-0 block h-[3px]"
+              style={{
+                background: `linear-gradient(90deg, transparent, ${card.color}80, transparent)`,
+                willChange: 'transform, opacity',
+              }}
+              animate={{ y: [4, 104], opacity: [0, 0.9, 0] }}
+              transition={{ duration: 1.1, repeat: Infinity, repeatDelay: 1.7, ease: 'linear' }}
+            />
+          </span>
+        )}
+      </motion.div>
     </div>
   )
 
@@ -242,32 +306,35 @@ function ValueTile({
 
       <div className="relative flex h-full w-full flex-col">
         {meta}
-        <AnimatePresence initial={false} mode="wait">
-          {active ? (
-            <motion.div
-              key="active"
-              className="flex min-h-0 flex-1 flex-col"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {visual}
-              {copy}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="idle"
-              className="flex min-h-0 flex-1 flex-col"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              {idleBody}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Fixed-size stage: both states are absolutely stacked so the tile never resizes */}
+        <div className="relative min-h-0 flex-1 overflow-hidden">
+          <AnimatePresence initial={false}>
+            {active ? (
+              <motion.div
+                key="active"
+                className="absolute inset-0 flex flex-col"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {visual}
+                {copy}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="idle"
+                className="absolute inset-0 flex flex-col"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {idleBody}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </motion.button>
   )
@@ -300,36 +367,6 @@ export default function About() {
       />
 
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
-        {/* Section marker */}
-        <motion.div
-          className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-[#2a2a2a]/[0.15] pb-4"
-          initial={{ opacity: 0, y: 14 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.5 }}
-        >
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-[#9a9a9a] sm:text-[11px]">
-            Sec 02 — Visual Identity Blueprint
-          </span>
-          <div className="flex items-center gap-2">
-            {valueCards.map((card, i) => (
-              <button
-                key={card.code}
-                type="button"
-                onPointerEnter={() => handleHover(i)}
-                onClick={() => handleOpen(i)}
-                className="h-2.5 w-2.5 rounded-full transition-transform duration-300"
-                style={{
-                  background: i === activeIndex ? card.color : 'rgba(42,42,42,0.15)',
-                  transform: i === activeIndex ? 'scale(1.35)' : 'scale(1)',
-                  boxShadow: i === activeIndex ? `0 0 8px ${card.color}55` : 'none',
-                }}
-                aria-label={card.title}
-              />
-            ))}
-          </div>
-        </motion.div>
-
         {/* Bento grid */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
           {/* Identity tile */}
@@ -341,6 +378,17 @@ export default function About() {
             viewport={{ once: true, amount: 0.15 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           >
+            <div
+              className="pointer-events-none absolute inset-0"
+              aria-hidden="true"
+              style={{
+                backgroundImage: 'url(/Assets/doodle_tech_art.webp)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                opacity: 0.05,
+              }}
+            />
             <BlueprintFrame accent={BRAND_ACCENT} active={false} />
             <div
               className="pointer-events-none absolute inset-0"
@@ -398,7 +446,6 @@ export default function About() {
                 key={card.code}
                 card={card}
                 index={i}
-                total={valueCards.length}
                 active={activeIndex === i}
                 onHover={handleHover}
                 onOpen={handleOpen}
