@@ -17,7 +17,7 @@ const KB = {
       'Langsung Kepakai — Semua yang kami bangun dirancang agar bisa dipakai sehari-hari.',
       'Transparan & Jelas — Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi.',
     ],
-    whatsapp: '6281357662424',
+    whatsapp: '6281219579683',
     whatsappMessage: 'Halo KINARYALOKA! Saya mau konsultasi gratis 30 menit untuk bisnis saya.',
     founded: '29 April 2026',
     sharia: 'KINARYALOKA berprinsip syariah — kami tidak menerima project yang bertentangan dengan hukum syariat Islam.',

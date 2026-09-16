@@ -5,7 +5,6 @@ import { XMarkIcon as X } from '@heroicons/react/24/solid'
 
 export const WA_CONTACTS = [
   { name: 'Atha', number: '6281219579683', role: 'Mastermind' },
-  { name: 'Adhit', number: '6281357662424', role: 'Manager' },
 ]
 
 export const WA_MESSAGE = encodeURIComponent(
@@ -78,7 +77,7 @@ export default function WhatsAppPopup({ open, onClose }: { open: boolean; onClos
 
             <div className="space-y-4 p-5">
               <p className="text-xs leading-relaxed text-white/50">
-                Konsultasi gratis 30 menit, tanpa biaya dan tanpa keharusan lanjut. Pilih tim yang mau kamu ajak ngobrol.
+                Konsultasi gratis 30 menit, tanpa biaya dan tanpa keharusan lanjut.
               </p>
 
               <div className="space-y-2">
