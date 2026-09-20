@@ -12,6 +12,9 @@ export default {
         audiowide: ['Audiowide', 'cursive'],
         rocksalt: ['"Rock Salt"', 'cursive'],
         climate: ['"Climate Crisis"', 'cursive'],
+        marker: ['"Permanent Marker"', 'cursive'],
+        caveat: ['Caveat', 'cursive'],
+        typewriter: ['"Special Elite"', 'monospace'],
       },
       colors: {
         primary: '#831449',

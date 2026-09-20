@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import { useState, useCallback, useEffect } from 'react'
 import { ChevronRightIcon as ChevronRight, XMarkIcon as X } from '@heroicons/react/24/solid'
 
@@ -61,25 +61,6 @@ const valueCards: ValueCard[] = [
   },
 ]
 
-/** Chromatic-aberration ghosts for the active card illustration. */
-const GLITCH_LAYERS = [
-  { tint: '#ff2d55', x: [0, -5, 4, -3, 0], delay: 0 },
-  { tint: '#00c2ff', x: [0, 5, -4, 3, 0], delay: 0.07 },
-]
-
-/** Horizontal tear slices swept across the ghosts. */
-const GLITCH_SLICES = [
-  'inset(0% 0% 100% 0%)',
-  'inset(8% 0% 64% 0%)',
-  'inset(46% 0% 36% 0%)',
-  'inset(72% 0% 14% 0%)',
-  'inset(0% 0% 100% 0%)',
-]
-
-const BRAND_ACCENT = '#F5C542'
-const INK = '#2a2a2a'
-const RULE = `1px solid ${INK}`
-
 const processSteps = [
   { code: 'Pertama', label: 'Dengar & Riset', note: 'Pahami cara bisnis berjalan di lapangan.' },
   { code: 'Lalu kita', label: 'Rancang Blueprint', note: 'Susun alur, identitas, dan prioritas.' },
@@ -87,160 +68,160 @@ const processSteps = [
   { code: 'Tidak lupa juga', label: 'Dampingi Jalan', note: 'Support setelah rilis, bukan ditinggal.' },
 ]
 
+const INK = '#2a2a2a'
+const PAPER = '#fdfbf5'
+const PHOTO_BG = '#f6f1e6'
+const CARD_TILT = [-2.5, 2, 1.5, -2]
+const CIRCLED = ['\u2460', '\u2461', '\u2462', '\u2463']
+
+const TORN_EDGE =
+  'polygon(0 6%, 4% 0, 9% 7%, 15% 1%, 22% 8%, 29% 0, 35% 7%, 42% 1%, 49% 8%, 56% 0, 63% 7%, 70% 1%, 77% 8%, 84% 0, 91% 7%, 97% 1%, 100% 8%, 100% 94%, 96% 100%, 89% 93%, 82% 100%, 75% 92%, 68% 100%, 61% 93%, 54% 100%, 47% 92%, 40% 100%, 33% 93%, 26% 100%, 19% 92%, 12% 100%, 5% 93%, 0 100%)'
+
+const RULED_LINES =
+  'repeating-linear-gradient(transparent 0 21px, rgba(120,150,190,0.16) 21px 22px)'
+
 const pad2 = (n: number) => String(n).padStart(2, '0')
 
-/** Rules for a 2-col (mobile) / 4-col (lg) grid of 4 cells, without doubling the outer border. */
-function cellBorders(i: number) {
-  return [
-    'border-[#2a2a2a]',
-    i % 2 === 0 ? 'border-r' : i < 3 ? 'lg:border-r' : '',
-    i < 2 ? 'border-b lg:border-b-0' : '',
-  ].join(' ')
+function Tape({
+  color,
+  rotate,
+  className = '',
+  width = 64,
+  height = 18,
+  centered = false,
+}: {
+  color: string
+  rotate: number
+  className?: string
+  width?: number
+  height?: number
+  centered?: boolean
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`pointer-events-none absolute z-20 block ${className}`}
+      style={{
+        width,
+        height,
+        background: `${color}66`,
+        transform: `${centered ? 'translateX(-50%) ' : ''}rotate(${rotate}deg)`,
+        boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
+      }}
+    />
+  )
 }
 
-function ValueTile({
+function PolaroidCard({
   card,
   index,
   active,
   onHover,
   onOpen,
+  reduceMotion,
 }: {
   card: ValueCard
   index: number
   active: boolean
   onHover: (index: number) => void
   onOpen: (index: number) => void
+  reduceMotion: boolean
 }) {
+  const tilt = CARD_TILT[index % CARD_TILT.length]
+  const tapeRotate = index % 2 === 0 ? -6 : 6
+  const tapeSide = index % 2 === 0 ? 'left-3' : 'right-3'
+
   return (
     <motion.button
       type="button"
       onPointerEnter={() => onHover(index)}
       onFocus={() => onHover(index)}
       onClick={() => onOpen(index)}
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.5, delay: index * 0.06 }}
-      className="group relative flex aspect-square w-full flex-col overflow-hidden p-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white sm:p-5"
-      style={{ backgroundColor: active ? card.color : '#ffffff', transition: 'background-color 250ms ease' }}
+      initial={{ opacity: 0, y: 24, rotate: tilt * 2 }}
+      whileInView={{ opacity: 1, y: 0, rotate: tilt }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
+      className="group relative block w-full text-left outline-none focus-visible:ring-2 focus-visible:ring-[#2a2a2a] focus-visible:ring-offset-2 focus-visible:ring-offset-[#fdfbf5]"
+      style={{ perspective: 1000 }}
       aria-label={`${card.title} — ${card.badge}`}
     >
-      <div className="relative flex items-start justify-between gap-2">
-        <span
-          className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] transition-colors duration-200"
-          style={{ color: active ? '#ffffff' : '#8a8a8a' }}
-        >
-          {pad2(index + 1)}{' '}
-          <span style={{ color: active ? '#ffffff' : card.color }}>/ {card.code}</span>
-        </span>
-        <span
-          className="text-right text-[9px] font-bold uppercase tracking-[0.12em] text-white transition-opacity duration-200"
-          style={{ opacity: active ? 1 : 0 }}
-        >
-          {card.badge}
-        </span>
-      </div>
+      <Tape color={card.color} rotate={tapeRotate} className={`-top-2 ${tapeSide}`} />
 
-      {/* Fixed-size stage: both states are absolutely stacked so the tile never resizes */}
-      <div className="relative min-h-0 flex-1">
-        <AnimatePresence initial={false}>
-          {active ? (
-            <motion.div
-              key="active"
-              className="absolute inset-0 flex flex-col"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="relative flex min-h-0 flex-1 items-center justify-center py-2">
-                <motion.div
-                  className="relative w-[64px] max-w-full sm:w-24"
-                  animate={{ y: [-6, 6, -6] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{ willChange: 'transform' }}
-                >
-                  <img
-                    src={card.image}
-                    alt={card.title}
-                    loading="lazy"
-                    decoding="async"
-                    className="relative block w-full object-contain"
-                  />
-                  {GLITCH_LAYERS.map((layer) => (
-                    <motion.span
-                      key={layer.tint}
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 block"
-                      style={{
-                        background: layer.tint,
-                        mixBlendMode: 'screen',
-                        WebkitMaskImage: `url(${card.image})`,
-                        maskImage: `url(${card.image})`,
-                        WebkitMaskSize: 'contain',
-                        maskSize: 'contain',
-                        WebkitMaskRepeat: 'no-repeat',
-                        maskRepeat: 'no-repeat',
-                        WebkitMaskPosition: 'center',
-                        maskPosition: 'center',
-                        willChange: 'transform, clip-path, opacity',
-                      }}
-                      animate={{
-                        x: layer.x,
-                        opacity: [0, 0.75, 0.3, 0.6, 0],
-                        clipPath: GLITCH_SLICES,
-                      }}
-                      transition={{
-                        duration: 0.7,
-                        repeat: Infinity,
-                        repeatDelay: 2.1,
-                        ease: 'linear',
-                        delay: layer.delay,
-                      }}
-                    />
-                  ))}
-                </motion.div>
-              </div>
+      <motion.div
+        className="relative w-full"
+        style={{ transformStyle: 'preserve-3d' }}
+        animate={{ rotateY: active ? 180 : 0 }}
+        transition={reduceMotion ? { duration: 0 } : { duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      >
+        {/* Front */}
+        <div
+          className="relative bg-white p-2.5 pb-3 sm:p-3 sm:pb-4"
+          style={{
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            boxShadow: '0 4px 12px rgba(60,40,10,0.14), 0 1px 2px rgba(0,0,0,0.06)',
+          }}
+        >
+          <div className="flex aspect-[4/3] items-center justify-center" style={{ background: PHOTO_BG }}>
+            <motion.img
+              src={card.image}
+              alt={card.title}
+              loading="lazy"
+              decoding="async"
+              className="w-20 object-contain sm:w-28"
+              animate={reduceMotion ? undefined : { y: [-4, 4, -4] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            />
+          </div>
+          <div className="mt-2.5 sm:mt-3">
+            <h3 className="font-poppins text-[13px] font-bold leading-tight text-[#2a2a2a] sm:text-[15px]">{card.title}</h3>
+            <p className="font-caveat text-[15px] leading-tight text-[#8a8a8a] sm:text-[17px]">{card.subtitle}</p>
+          </div>
+        </div>
 
-              <div>
-                <h3 className="font-poppins text-[14px] font-bold leading-tight tracking-[-0.01em] text-white sm:text-[17px]">
-                  {card.title}
-                </h3>
-                <p className="mt-1 hidden text-[11px] leading-snug text-white/85 sm:block">{card.description}</p>
-                <span className="mt-2 inline-flex items-center gap-1 text-[10px] font-bold text-white sm:text-[11px]">
-                  Baca detail
-                  <ChevronRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5" />
-                </span>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="idle"
-              className="absolute inset-0 flex flex-col"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <div className="flex min-h-0 flex-1 items-center justify-center py-3">
-                <img
-                  src={card.idleImage}
-                  alt={card.policeText}
-                  loading="lazy"
-                  decoding="async"
-                  className="max-h-[70px] w-auto max-w-[82%] object-contain sm:max-h-[110px]"
-                />
-              </div>
-              <div>
-                <h3 className="font-poppins text-[14px] font-bold leading-tight tracking-[-0.01em] text-[#2a2a2a] sm:text-[17px]">
-                  {card.title}
-                </h3>
-                <p className="mt-1 text-[11px] leading-snug text-[#8a8a8a]">{card.subtitle}</p>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+        {/* Back */}
+        <div
+          className="absolute inset-0 flex flex-col p-3 sm:p-4"
+          style={{
+            background: PAPER,
+            backgroundImage: RULED_LINES,
+            transform: 'rotateY(180deg)',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            boxShadow: '0 4px 12px rgba(60,40,10,0.14), 0 1px 2px rgba(0,0,0,0.06)',
+          }}
+        >
+          <span className="absolute right-3 top-2 font-caveat text-[14px] font-bold text-[#b5ab98]">
+            {pad2(index + 1)}/{pad2(valueCards.length)}
+          </span>
+          <div className="flex min-h-0 flex-1 items-center justify-center py-1">
+            <img
+              src={card.idleImage}
+              alt={card.policeText}
+              loading="lazy"
+              decoding="async"
+              className="max-h-[44px] w-auto max-w-[80%] object-contain sm:max-h-[56px]"
+              style={{ transform: 'rotate(-4deg)', filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.15))' }}
+            />
+          </div>
+          <span
+            className="inline-block self-start border px-1.5 py-0.5 font-typewriter text-[9px] uppercase tracking-[0.06em] text-[#2a2a2a] sm:text-[10px]"
+            style={{ borderColor: INK, transform: 'rotate(-2deg)', background: '#fff' }}
+          >
+            {card.badge}
+          </span>
+          <p className="mt-1.5 hidden font-poppins text-[11px] leading-snug text-[#5a5a5a] sm:block sm:text-[12px]">
+            {card.description}
+          </p>
+          <span
+            className="mt-1.5 inline-flex items-center gap-0.5 font-caveat text-[15px] font-bold sm:text-[17px]"
+            style={{ color: card.color }}
+          >
+            Baca detail
+            <ChevronRight className="h-3.5 w-3.5" />
+          </span>
+        </div>
+      </motion.div>
     </motion.button>
   )
 }
@@ -248,6 +229,7 @@ function ValueTile({
 export default function About() {
   const [activeIndex, setActiveIndex] = useState(-1)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const reduceMotion = useReducedMotion() ?? false
 
   const popupCard = openIndex === null ? null : valueCards[openIndex]
 
@@ -266,110 +248,144 @@ export default function About() {
   }, [openIndex, closePopup])
 
   return (
-    <section id="tentang" className="relative overflow-hidden bg-white py-12 md:py-20">
-      {/* Blueprint paper grid */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        aria-hidden="true"
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(42,42,42,0.028) 1px, transparent 1px), linear-gradient(90deg, rgba(42,42,42,0.028) 1px, transparent 1px)',
-          backgroundSize: '56px 56px',
-          maskImage: 'radial-gradient(125% 85% at 50% 25%, #000 35%, transparent 100%)',
-          WebkitMaskImage: 'radial-gradient(125% 85% at 50% 25%, #000 35%, transparent 100%)',
-        }}
-      />
-
+    <section
+      id="tentang"
+      className="relative overflow-hidden py-12 md:py-20"
+      style={{
+        background: '#e6d9c4',
+        backgroundImage: 'radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px)',
+        backgroundSize: '6px 6px',
+      }}
+    >
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
         <motion.div
-          className="bg-white"
-          style={{ border: RULE }}
+          className="grid lg:grid-cols-2"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          style={{ boxShadow: '0 14px 30px rgba(60,40,10,0.22)' }}
         >
-          {/* Meta bar */}
-          <div className="flex items-center justify-between gap-4 px-4 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-[#2a2a2a] sm:px-6">
-            <span>01 / Tentang</span>
-            <span className="text-[#8a8a8a]">Kinaryaloka Digital Studio</span>
-          </div>
-          <div className="h-[3px]" style={{ background: INK }} />
+          {/* Left page */}
+          <div
+            className="relative p-6 pb-32 sm:p-8 sm:pb-36 lg:p-10 lg:pb-36"
+            style={{
+              background: PAPER,
+              boxShadow: 'inset -14px 0 18px -14px rgba(0,0,0,0.22)',
+            }}
+          >
+            <div
+              className="pointer-events-none absolute inset-0"
+              aria-hidden="true"
+              style={{
+                backgroundImage: 'url(/Assets/doodle_tech_art.webp)',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                opacity: 0.06,
+              }}
+            />
 
-          {/* Header */}
-          <div className="grid lg:grid-cols-12" style={{ borderBottom: RULE }}>
-            <div className="relative overflow-hidden border-b border-[#2a2a2a] px-4 py-8 sm:px-6 sm:py-10 lg:col-span-7 lg:border-b-0 lg:border-r">
-              <div
-                className="pointer-events-none absolute inset-0"
-                aria-hidden="true"
-                style={{
-                  backgroundImage: 'url(/Assets/doodle_tech_art.webp)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                  opacity: 0.04,
-                }}
-              />
-              <h2
-                className="relative font-poppins font-extrabold leading-[0.95] tracking-[-0.03em] text-[#2a2a2a]"
-                style={{ fontSize: 'clamp(32px, 5vw, 64px)' }}
+            <div className="relative">
+              <span className="inline-block font-caveat text-[18px] font-bold text-[#8a8a8a]" style={{ transform: 'rotate(-2deg)' }}>
+                tentang kami ✎
+              </span>
+
+              <div className="mt-3 inline-block" style={{ transform: 'rotate(-1.5deg)' }}>
+                <div
+                  className="px-4 py-2.5 sm:px-5 sm:py-3"
+                  style={{ background: '#fff2c4', clipPath: TORN_EDGE, boxShadow: '0 2px 4px rgba(0,0,0,0.08)' }}
+                >
+                  <h2 className="font-marker leading-[1.05] text-[#2a2a2a]" style={{ fontSize: 'clamp(26px, 3.2vw, 40px)' }}>
+                    Bukan Agency Biasa.
+                  </h2>
+                </div>
+              </div>
+
+              <p
+                className="mt-3 pl-2 font-caveat font-bold leading-[1.05] text-[#D4912A]"
+                style={{ fontSize: 'clamp(24px, 2.8vw, 36px)' }}
               >
-                <span className="block">Bukan Agency Biasa.</span>
-                <span className="block" style={{ color: BRAND_ACCENT }}>
-                  Partner yang Ngerti
-                </span>
-                <span className="block">Bisnis Kamu.</span>
-              </h2>
-            </div>
-            <div className="flex items-end px-4 py-6 sm:px-6 lg:col-span-5 lg:py-10">
-              <p className="text-left text-[13px] leading-[1.75] text-[#5a5a5a] sm:text-[14px]">
+                Partner yang Ngerti Bisnis Kamu.
+              </p>
+
+              <p className="mt-5 max-w-[540px] font-poppins text-[13px] leading-[1.75] text-[#5a5a5a] sm:text-[14px]">
                 KINARYALOKA Digital Studio lahir dari satu pemahaman: kebanyakan UMKM bukan tidak mau digital, tetapi
                 tidak tahu mulai dari mana atau sudah coba tapi hasilnya tidak kepakai. Kami duduk bareng kamu,
                 pelajari cara bisnismu berjalan, lalu terjemahkan ke sistem digital yang rapi dan bisa dikontrol.
               </p>
+
+              {/* Process */}
+              <div className="relative mt-7">
+                <span
+                  aria-hidden="true"
+                  className="absolute bottom-4 left-[13px] top-3 border-l-2 border-dashed"
+                  style={{ borderColor: '#c9bda3' }}
+                />
+                <ul className="relative space-y-4">
+                  {processSteps.map((step, i) => (
+                    <li key={step.code} className="flex items-start gap-3">
+                      <span
+                        className="flex w-7 flex-shrink-0 justify-center font-caveat text-[26px] font-bold leading-none"
+                        style={{ color: valueCards[i % valueCards.length].color, background: PAPER }}
+                      >
+                        {CIRCLED[i]}
+                      </span>
+                      <div className="pt-0.5">
+                        <span className="font-caveat text-[13px] text-[#a09580]">{step.code}</span>
+                        <p className="font-poppins text-[13px] font-bold leading-tight text-[#2a2a2a] sm:text-[14px]">{step.label}</p>
+                        <p className="font-poppins text-[11px] leading-relaxed text-[#8f8f8f]">{step.note}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
+
+            <img
+              src={valueCards[3].idleImage}
+              alt=""
+              aria-hidden="true"
+              loading="lazy"
+              decoding="async"
+              className="pointer-events-none absolute bottom-6 left-6 w-24 sm:bottom-8 sm:left-8 sm:w-28 lg:w-32"
+              style={{ transform: 'rotate(-6deg)', filter: 'drop-shadow(0 3px 4px rgba(0,0,0,0.18))' }}
+            />
           </div>
 
-          {/* Value modules */}
-          <div className="grid grid-cols-2 lg:grid-cols-4" style={{ borderBottom: RULE }} onPointerLeave={clearHover}>
-            {valueCards.map((card, i) => (
-              <div key={card.code} className={cellBorders(i)}>
-                <ValueTile
+          {/* Right page */}
+          <div
+            className="relative p-6 pb-14 sm:p-8 sm:pb-16 lg:p-10 lg:pb-16"
+            style={{
+              background: PAPER,
+              boxShadow: 'inset 14px 0 18px -14px rgba(0,0,0,0.22)',
+            }}
+          >
+            <div className="grid grid-cols-2 gap-5 pt-3 sm:gap-7" onPointerLeave={clearHover}>
+              {valueCards.map((card, i) => (
+                <PolaroidCard
+                  key={card.code}
                   card={card}
                   index={i}
                   active={activeIndex === i}
                   onHover={handleHover}
                   onOpen={handleOpen}
+                  reduceMotion={reduceMotion}
                 />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Process */}
-          <div className="grid grid-cols-2 lg:grid-cols-4" style={{ borderBottom: RULE }}>
-            {processSteps.map((step, i) => (
-              <div key={step.code} className={`px-4 py-4 sm:px-5 ${cellBorders(i)}`}>
-                <div className="flex items-baseline gap-2 font-mono text-[10px] font-bold tracking-[0.14em]">
-                  <span style={{ color: valueCards[i % valueCards.length].color }}>{pad2(i + 1)}</span>
-                  <span className="uppercase text-[#8a8a8a]">{step.code}</span>
-                </div>
-                <p className="mt-2 font-poppins text-[13px] font-bold leading-tight text-[#2a2a2a] sm:text-[14px]">
-                  {step.label}
-                </p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-[#8f8f8f]">{step.note}</p>
-              </div>
-            ))}
+            <span
+              className="absolute bottom-5 right-6 font-caveat text-[16px] text-[#8a8a8a] sm:right-8 sm:text-[18px]"
+              style={{ transform: 'rotate(3deg)' }}
+            >
+              klik untuk baca ✎
+            </span>
           </div>
-
-          {/* Footer meta */}
-          <p className="px-4 py-2.5 font-mono text-[10px] leading-relaxed tracking-[0.08em] text-[#8a8a8a] sm:px-6">
-            Interaktif: arahkan kursor ke tiap modul untuk melihat nilainya menyala, lalu klik modul untuk membaca
-            detail dari setiap upaya kami.
-          </p>
         </motion.div>
       </div>
 
-      {/* Detail sheet */}
+      {/* Postcard detail */}
       <AnimatePresence>
         {popupCard && (
           <motion.div
@@ -385,58 +401,52 @@ export default function About() {
             aria-label={popupCard.title}
           >
             <motion.div
-              initial={{ scale: 0.96, opacity: 0, y: 12 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.96, opacity: 0, y: 12 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-sm overflow-hidden bg-white"
-              style={{ border: RULE }}
+              initial={{ scale: 0.92, opacity: 0, y: 16, rotate: -3 }}
+              animate={{ scale: 1, opacity: 1, y: 0, rotate: 0 }}
+              exit={{ scale: 0.94, opacity: 0, y: 12, rotate: -2 }}
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-sm bg-white p-4 pb-6"
+              style={{ boxShadow: '0 24px 60px rgba(10,10,12,0.35)' }}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
-              <div className="h-2" style={{ background: popupCard.color }} />
+              <Tape color={popupCard.color} rotate={-3} width={90} height={22} centered className="-top-2.5 left-1/2" />
 
               <button
                 onClick={closePopup}
-                className="absolute right-3 top-5 z-10 flex h-8 w-8 items-center justify-center border border-[#2a2a2a] bg-white text-[#2a2a2a] transition-colors hover:bg-[#2a2a2a] hover:text-white"
+                className="absolute -right-3 -top-3 z-30 flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#2a2a2a] transition-colors hover:bg-[#2a2a2a] hover:text-white"
+                style={{ border: `1px solid ${INK}`, boxShadow: '0 2px 6px rgba(0,0,0,0.2)' }}
                 aria-label="Tutup"
               >
                 <X className="h-4 w-4" />
               </button>
 
-              <div className="p-5 sm:p-6">
-                <div className="flex items-center gap-3 pr-10 font-mono text-[10px] font-bold uppercase tracking-[0.14em]">
-                  <span style={{ color: popupCard.color }}>{popupCard.code}</span>
-                  <span className="text-[#bdbdbd]">
-                    {pad2(valueCards.indexOf(popupCard) + 1)}/{pad2(valueCards.length)}
-                  </span>
-                </div>
+              <div className="flex aspect-[4/3] items-center justify-center" style={{ background: PHOTO_BG }}>
+                <motion.img
+                  src={popupCard.image}
+                  alt={popupCard.title}
+                  className="w-28 object-contain sm:w-32"
+                  loading="eager"
+                  decoding="async"
+                  animate={reduceMotion ? undefined : { y: [-5, 5, -5] }}
+                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+              </div>
 
-                <div className="flex items-center justify-center py-6" style={{ borderBottom: RULE }}>
-                  <motion.img
-                    src={popupCard.image}
-                    alt={popupCard.title}
-                    className="w-28 object-contain sm:w-32"
-                    loading="eager"
-                    decoding="async"
-                    animate={{ y: [-5, 5, -5] }}
-                    transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                  />
-                </div>
-
+              <div className="relative mt-4 px-1">
                 <span
-                  className="mt-4 block text-[10px] font-bold uppercase tracking-[0.14em]"
-                  style={{ color: popupCard.color }}
+                  className="absolute -top-1 right-0 border-2 px-2 py-1 font-typewriter text-[9px] uppercase tracking-[0.06em] sm:text-[10px]"
+                  style={{ borderColor: popupCard.color, color: popupCard.color, transform: 'rotate(-4deg)', background: '#fff' }}
                 >
                   {popupCard.badge}
                 </span>
-                <h3 className="mt-1.5 font-poppins text-[20px] font-bold leading-tight tracking-[-0.01em] text-[#2a2a2a] sm:text-[22px]">
-                  {popupCard.title}
-                </h3>
-                <p className="mt-1 text-[12px] leading-relaxed text-[#8a8a8a]">{popupCard.subtitle}</p>
 
-                <div className="mt-4 border-l-2 pl-3" style={{ borderColor: popupCard.color }}>
-                  <p className="text-[13px] leading-relaxed text-[#5a5a5a] sm:text-[14px]">{popupCard.description}</p>
-                </div>
+                <span className="font-caveat text-[14px] font-bold text-[#b5ab98]">
+                  {popupCard.code} · {pad2(valueCards.indexOf(popupCard) + 1)}/{pad2(valueCards.length)}
+                </span>
+                <h3 className="mt-1 max-w-[70%] font-marker text-[20px] leading-tight text-[#2a2a2a] sm:text-[22px]">{popupCard.title}</h3>
+                <p className="mt-1 font-caveat text-[18px] leading-tight text-[#8a8a8a]">{popupCard.subtitle}</p>
+
+                <p className="mt-3 font-poppins text-[13px] leading-relaxed text-[#5a5a5a] sm:text-[14px]">{popupCard.description}</p>
               </div>
             </motion.div>
           </motion.div>
