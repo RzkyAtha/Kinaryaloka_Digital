@@ -12,6 +12,7 @@ export default {
         audiowide: ['Audiowide', 'cursive'],
         rocksalt: ['"Rock Salt"', 'cursive'],
         climate: ['"Climate Crisis"', 'cursive'],
+        prompt: ['Prompt', 'sans-serif'],
       },
       colors: {
         primary: '#831449',

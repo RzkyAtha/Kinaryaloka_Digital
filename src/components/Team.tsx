@@ -56,11 +56,11 @@ const cards: CommitmentCard[] = [
     Icon: ServerStackIcon,
     hp: '300',
     stage: 'Tahap 3',
-    title: 'Integrasi',
-    subtitle: 'Sistem Andal',
-    description: 'Integrasi sistem yang dapat diandalkan sepenuhnya.',
-    attacks: ['Database Rapi Terstruktur', 'Koneksi Antar Tool'],
-    points: ['Database rapi dan terstruktur', 'Koneksi antar tool bisnis', 'Data aman dan ter-backup'],
+    title: 'Tools',
+    subtitle: 'Praktis & Custom',
+    description: 'Tools bisnis praktis yang langsung bisa dipakai, tanpa perlu database rumit.',
+    attacks: ['Tools Custom Sesuai Kebutuhan', 'Langsung Bisa Dipakai'],
+    points: ['Tools custom sesuai kebutuhan', 'Tanpa setup teknis yang ribet', 'Langsung bisa dipakai tim'],
   },
 ]
 
@@ -225,7 +225,7 @@ export default function Team() {
                       {/* Header: stage + name + HP + type */}
                       <div className="relative z-20 flex items-start gap-2 px-2 pt-1.5">
                         <div className="min-w-0 flex-1">
-                          <span className="inline-block rounded-[3px] bg-[#2b2b2b] px-1.5 py-[1px] font-mono text-[7px] uppercase tracking-[0.18em] text-white/80">
+                          <span className="inline-block rounded-[3px] bg-[#2b2b2b] px-1.5 py-[1px] font-poppins text-[7px] uppercase tracking-[0.18em] text-white/80">
                             {card.stage}
                           </span>
                           <h3 className="mt-0.5 truncate font-climate text-[14px] leading-tight text-[#141414]">
@@ -234,7 +234,7 @@ export default function Team() {
                           <p className="text-[8px] uppercase tracking-[0.16em] text-[#8a8a8a]">{card.subtitle}</p>
                         </div>
                         <div className="flex shrink-0 items-center gap-1 pt-1">
-                          <span className="font-mono text-[8px] font-bold text-[#7a7a7a]">HP</span>
+                          <span className="font-poppins text-[8px] font-bold text-[#7a7a7a]">HP</span>
                           <span className="font-poppins text-[20px] font-extrabold leading-none text-[#141414]">
                             {card.hp}
                           </span>
@@ -276,7 +276,7 @@ export default function Team() {
                       </div>
 
                       {/* Footer bar */}
-                      <div className="relative z-20 flex items-center justify-between border-t border-[#c9c9c9] bg-[#e4e4e8] px-2 py-[3px] font-mono text-[6.5px] uppercase tracking-[0.12em] text-[#6b6b6b]">
+                      <div className="relative z-20 flex items-center justify-between border-t border-[#c9c9c9] bg-[#e4e4e8] px-2 py-[3px] font-poppins text-[6.5px] uppercase tracking-[0.12em] text-[#6b6b6b]">
                         <span>Illus. Kinaryaloka</span>
                         <span>
                           {String(i + 1).padStart(3, '0')}/{String(cards.length).padStart(3, '0')} SAR
@@ -333,7 +333,7 @@ export default function Team() {
                         ))}
                       </ul>
 
-                      <div className="relative z-10 mt-auto flex items-center justify-between border-t border-white/10 bg-black/40 px-3 py-[5px] font-mono text-[6.5px] uppercase tracking-[0.14em] text-white/35">
+                      <div className="relative z-10 mt-auto flex items-center justify-between border-t border-white/10 bg-black/40 px-3 py-[5px] font-poppins text-[6.5px] uppercase tracking-[0.14em] text-white/35">
                         <span>Klik untuk kembali</span>
                         <span>
                           {String(i + 1).padStart(3, '0')}/{String(cards.length).padStart(3, '0')} SAR

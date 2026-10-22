@@ -1,595 +1,568 @@
-import { useState, useRef, useCallback, useMemo, lazy, Suspense } from 'react'
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ShoppingCartIcon as ShoppingCart, XMarkIcon as X, CheckIcon as Check } from '@heroicons/react/24/solid'
-import { PRODUCTS, Product as CtxProduct } from '../context/ProductsContext'
+import { useState, lazy, Suspense } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  PaintBrushIcon,
+  Squares2X2Icon,
+  PlusIcon,
+} from '@heroicons/react/24/solid'
+import type { RequestQuoteProduct } from './RequestQuoteModal'
 
 const RequestQuoteModal = lazy(() => import('./RequestQuoteModal'))
 
-// ─── Magic Card: 3D tilt + spotlight + glow border ──────────────────
-function MagicCard({
-  children,
-  accentColor,
-  fullHeight = false,
-}: {
-  children: React.ReactNode
-  accentColor: string
-  fullHeight?: boolean
-}) {
-  const cardRef = useRef<HTMLDivElement>(null)
-  const [isHovered, setIsHovered] = useState(false)
-  const [spotX, setSpotX] = useState(50)
-  const [spotY, setSpotY] = useState(50)
-
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-
-  const spring = { stiffness: 200, damping: 22, mass: 0.4 }
-  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [10, -10]), spring)
-  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-10, 10]), spring)
-  const scale = useSpring(isHovered ? 1.04 : 1, { stiffness: 300, damping: 25 })
-  const shadowY = useSpring(isHovered ? 40 : 8, { stiffness: 300, damping: 25 })
-  const shadowBlur = useSpring(isHovered ? 60 : 16, { stiffness: 300, damping: 25 })
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-    const relX = (e.clientX - rect.left) / rect.width - 0.5
-    const relY = (e.clientY - rect.top) / rect.height - 0.5
-    mouseX.set(relX)
-    mouseY.set(relY)
-    setSpotX(((e.clientX - rect.left) / rect.width) * 100)
-    setSpotY(((e.clientY - rect.top) / rect.height) * 100)
-  }, [mouseX, mouseY])
-
-  const handleLeave = useCallback(() => {
-    mouseX.set(0)
-    mouseY.set(0)
-    setIsHovered(false)
-  }, [mouseX, mouseY])
-
-  return (
-    <motion.div
-      ref={cardRef}
-      style={{
-        rotateX,
-        rotateY,
-        scale,
-        transformStyle: 'preserve-3d',
-        boxShadow: isHovered
-          ? `0 ${shadowY.get()}px ${shadowBlur.get()}px -12px ${accentColor}80, 0 20px 40px -8px rgba(0,0,0,0.3)`
-          : '0 4px 16px rgba(0,0,0,0.15)',
-      }}
-      className={`magic-card-3d relative rounded-2xl overflow-hidden bg-[#fefefe] cursor-pointer${fullHeight ? ' flex flex-col h-full' : ''}`}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleLeave}
-    >
-      {/* Gradient border glow */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl pointer-events-none z-30"
-        animate={isHovered ? {
-          boxShadow: `inset 0 0 0 1.5px ${accentColor}60`,
-          opacity: 1
-        } : { opacity: 0 }}
-        transition={{ duration: 0.3 }}
-      />
-
-      {/* Spotlight */}
-      <div
-        className="absolute inset-0 pointer-events-none z-20 rounded-2xl"
-        style={{
-          background: isHovered
-            ? `radial-gradient(circle 180px at ${spotX}% ${spotY}%, rgba(255,255,255,0.18) 0%, transparent 70%)`
-            : 'none',
-          transition: 'background 0.05s',
-        }}
-      />
-
-      {children}
-    </motion.div>
-  )
+// ─── Inventory Data ──────────────────────────────────────────────────────────
+const MAIN_ITEM = {
+  id: 'main',
+  name: 'Business Profile',
+  type: 'Main Item',
+  rarity: 'Core Service',
+  image: '/Assets/nara_coding.webp',
+  color: '#F5C542',
+  priceMin: 1500,
+  priceMax: 3000,
+  stats: [
+    { label: 'Kredibilitas', value: 92 },
+    { label: 'Jangkauan', value: 85 },
+    { label: 'Konversi', value: 80 },
+  ],
+  description:
+    'Website company profile profesional sebagai rumah digital bisnismu — identitas, layanan, dan kontak resmi dalam satu tempat.',
+  details: [
+    'Custom website multi-halaman',
+    'Profil bisnis, layanan & kontak resmi',
+    'Mobile responsive + fast loading',
+    'Revisi desain hingga puas',
+    'Konsultasi domain & hosting',
+  ],
 }
 
-const tabs = [
-  { id: 'ecommerce', label: 'E-Commerce', color: '#F5C542', glow: '#F5C54250' },
-  { id: 'webdesign', label: 'Web Design', color: '#E5A830', glow: '#E5A83050' },
-  { id: 'branding', label: 'Branding',   color: '#D4912A', glow: '#D4912A50' },
+const ADDONS = [
+  {
+    id: 'branding',
+    name: 'Branding',
+    type: 'Add-On',
+    image: '/Assets/brnd_oren.webp',
+    color: '#FF8C2E',
+    price: 1000,
+    icon: PaintBrushIcon,
+    /** Hotspot pada gambar utama (%) + posisi chip melayang (%) */
+    dot: [32, 62] as [number, number],
+    chipPos: [4, 66] as [number, number],
+    chipAlign: 'left' as const,
+    stats: [
+      { label: 'Visual Impact', value: 88 },
+      { label: 'Konsistensi Brand', value: 92 },
+    ],
+    description:
+      'Identitas visual lengkap supaya bisnismu mudah diingat — logo, warna, dan gaya yang konsisten di semua titik.',
+    details: [
+      'Desain logo (3 konsep)',
+      'Color palette & typography',
+      'Social media kit 5 template',
+      'Brand guidelines PDF',
+    ],
+  },
+  {
+    id: 'katalog',
+    name: 'Katalog Produk',
+    type: 'Add-On',
+    image: '/Assets/brnd_biru.webp',
+    color: '#0080FF',
+    price: 1000,
+    icon: Squares2X2Icon,
+    dot: [70, 30] as [number, number],
+    chipPos: [96, 26] as [number, number],
+    chipAlign: 'right' as const,
+    stats: [
+      { label: 'Konversi', value: 82 },
+      { label: 'Kemudahan Kelola', value: 78 },
+    ],
+    description:
+      'Katalog produk online di dalam website — pelanggan bisa jelajahi produk dan pesan langsung via WhatsApp.',
+    details: [
+      'Katalog produk (hingga 50 produk)',
+      'Halaman detail produk + galeri',
+      'Tombol pesan via WhatsApp',
+      'Manajemen produk & kategori',
+    ],
+  },
 ]
 
-interface UIProduct {
-  title: string
-  price: string
-  image: string
-  description: string
-  color: string
-  textColor: string
-  badge?: string
-  details: string[]
-}
+const CORNERS = [
+  { pos: 'top-1.5 left-1.5', tri: 'polygon(0 0, 100% 0, 0 100%)' },
+  { pos: 'top-1.5 right-1.5', tri: 'polygon(0 0, 100% 0, 100% 100%)' },
+  { pos: 'bottom-1.5 left-1.5', tri: 'polygon(0 0, 0 100%, 100% 100%)' },
+  { pos: 'bottom-1.5 right-1.5', tri: 'polygon(100% 0, 0 100%, 100% 100%)' },
+]
 
-interface TabData {
-  featured?: UIProduct
-  cards: UIProduct[]
-}
-
-function toUIProduct(p: CtxProduct): UIProduct {
-  return {
-    title: p.name,
-    price: p.price,
-    image: p.image,
-    description: p.description,
-    color: p.color,
-    textColor: p.textColor,
-    badge: p.badge,
-    details: p.details,
-  }
-}
-
-function groupProducts(ctxProducts: CtxProduct[]): Record<string, TabData> {
-  const result: Record<string, TabData> = {
-    ecommerce: { cards: [] },
-    webdesign: { cards: [] },
-    branding: { cards: [] },
-  }
-  for (const p of ctxProducts) {
-    const ui = toUIProduct(p)
-    if (p.isFeatured) {
-      result[p.category].featured = ui
-    } else {
-      result[p.category].cards.push(ui)
-    }
-  }
-  return result
-}
-
-function DetailModal({ product, onClose, onSelect }: { product: UIProduct | null; onClose: () => void; onSelect: (product: UIProduct) => void }) {
-  if (!product) return null
-  return (
-    <AnimatePresence>
-      {product && (
-        <motion.div
-          className="fixed inset-0 z-[999] flex items-center justify-center p-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          onClick={onClose}
-        >
-          {/* Backdrop */}
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-
-          {/* Modal */}
-          <motion.div
-            className="relative w-full max-w-lg max-h-[90vh] rounded-2xl overflow-hidden flex flex-col"
-            style={{ backgroundColor: '#fff' }}
-            initial={{ opacity: 0, scale: 0.88, y: 40 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.92, y: 20 }}
-            transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header image strip */}
-            <div className="relative h-32 overflow-hidden flex-shrink-0">
-              <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
-              <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, ${product.color}99, ${product.color}ee)` }} />
-              {/* Title overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-4">
-                {product.badge && (
-                  <span className="bg-[#e70000] text-white text-xs font-bold px-3 py-1 rounded-lg mr-2">{product.badge}</span>
-                )}
-                <h3 className="text-white font-bold text-2xl leading-tight">{product.title}</h3>
-                <p className="text-white/80 text-sm font-semibold mt-0.5">IDR {product.price}K</p>
-              </div>
-              {/* Close button */}
-              <button
-                onClick={onClose}
-                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Feature list */}
-            <div className="overflow-y-auto flex-1 p-5">
-              <p className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: product.color }}>Yang Kamu Dapatkan</p>
-              <ul className="space-y-2.5">
-                {product.details?.map((item, i) => (
-                  <motion.li
-                    key={i}
-                    className="flex items-start gap-3"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: i * 0.04, duration: 0.25 }}
-                  >
-                    <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: product.color + '20' }}>
-                      <Check className="w-3 h-3" style={{ color: product.color }} />
-                    </div>
-                    <span className="text-[#404040] text-sm leading-relaxed">{item}</span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-
-            {/* CTA */}
-            <div className="p-5 pt-0 flex-shrink-0">
-              <motion.button
-                onClick={() => { onSelect(product); onClose() }}
-                className="w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 text-base"
-                style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}dd)`, boxShadow: `0 4px 20px ${product.color}50` }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <ShoppingCart className="w-5 h-5" />
-                Pilih Paket Ini
-              </motion.button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  )
+/** Format harga dalam "K" menjadi teks juta: 1500 → "1,5" · 3000 → "3" */
+function fmtJt(k: number): string {
+  return (k / 1000).toLocaleString('id-ID')
 }
 
 export default function Products() {
-  const [activeTab, setActiveTab] = useState('ecommerce')
+  const [equipped, setEquipped] = useState<string[]>([])
+  const [infoId, setInfoId] = useState<string>('main')
   const [quoteOpen, setQuoteOpen] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<UIProduct | null>(null)
-  const [detailProduct, setDetailProduct] = useState<UIProduct | null>(null)
-  const isInView = true
+  const [selectedProduct, setSelectedProduct] = useState<RequestQuoteProduct | null>(null)
 
-  const products = useMemo(() => groupProducts(PRODUCTS), [])
+  const info = infoId === 'main' ? MAIN_ITEM : ADDONS.find((a) => a.id === infoId) ?? MAIN_ITEM
+  const equippedAddons = ADDONS.filter((a) => equipped.includes(a.id))
+  const totalMin = MAIN_ITEM.priceMin + equippedAddons.reduce((s, a) => s + a.price, 0)
+  const totalMax = MAIN_ITEM.priceMax + equippedAddons.reduce((s, a) => s + a.price, 0)
 
-  const handleSelectPackage = (product: UIProduct) => {
-    setSelectedProduct(product)
+  const toggleEquip = (id: string) => {
+    setEquipped((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+    setInfoId(id)
+  }
+
+  const handleCheckout = () => {
+    setSelectedProduct({
+      title: ['Business Profile', ...equippedAddons.map((a) => a.name)].join(' + '),
+      price: `${fmtJt(totalMin)} - ${fmtJt(totalMax)} Jt`,
+      color: MAIN_ITEM.color,
+      details: [...MAIN_ITEM.details, ...equippedAddons.flatMap((a) => a.details)],
+    })
     setQuoteOpen(true)
   }
 
-  const currentProducts = products[activeTab as keyof typeof products]
-
-  // Merge all products for mobile layout
-  const allMobileProducts: UIProduct[] = useMemo(() => {
-    const all: UIProduct[] = []
-    if (currentProducts.featured) all.push(currentProducts.featured)
-    all.push(...currentProducts.cards)
-    return all
-  }, [currentProducts])
-  const isOddCount = allMobileProducts.length % 2 !== 0
-
   return (
-    <section id="produk" className="bg-black py-12 md:py-20">
-      <div className="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-10">
-        {/* Section Title */}
+    <section id="produk" className="relative overflow-hidden bg-black py-12 md:py-20">
+      <div className="mx-auto max-w-[1000px] px-4 sm:px-6 lg:px-10">
+        {/* Header */}
         <motion.div
-          className="text-center mb-6 md:mb-8"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          className="mb-8 text-center md:mb-10"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-climate text-[26px] md:text-[34px] lg:text-[40px] text-white">Produk Kami</h2>
-          <p className="text-white/50 text-sm md:text-base mt-3">Harga tertera hanya estimasi, fleksibel dan bisa disesuaikan berdasarkan kebutuhan.</p>
+          <span className="font-poppins text-[9px] font-bold uppercase tracking-[0.3em] text-[#F5C542]">
+            ◄&nbsp; Inventory System &nbsp;►
+          </span>
+          <h2 className="mt-2 font-climate text-[26px] text-white md:text-[34px] lg:text-[40px]">
+            Produk Kami
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/50 md:text-base">
+            Susun loadout digital bisnismu — mulai dari item utama, lalu pasang add-on sesuai kebutuhan.
+          </p>
         </motion.div>
 
-        {/* Tabs */}
+        {/* Inventory panel */}
         <motion.div
-          className="flex justify-center mb-6 md:mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <div className="bg-[#1a1a1a] p-1.5 rounded-2xl flex gap-1 border border-[#2a2a2a]">
-            {tabs.map((tab) => {
-              const isActive = activeTab === tab.id
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className="relative px-5 md:px-7 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base whitespace-nowrap transition-colors duration-200 outline-none cursor-pointer"
-                  style={{ color: isActive ? '#fff' : '#666' }}
-                >
-                  {/* Sliding pill background */}
-                  {isActive && (
-                    <motion.span
-                      layoutId="tab-pill"
-                      className="absolute inset-0 rounded-xl z-0"
-                      style={{ backgroundColor: tab.color }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 34 }}
-                    />
-                  )}
-                  {/* Glow when active */}
-                  {isActive && (
-                    <motion.span
-                      layoutId="tab-glow"
-                      className="absolute inset-0 rounded-xl z-0 blur-md"
-                      style={{ backgroundColor: tab.glow }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 34 }}
-                    />
-                  )}
-                  {/* Label */}
-                  <span className="relative z-10">
-                    {tab.label}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-        </motion.div>
-
-        {/* Cards — crossfade on tab change */}
-        <AnimatePresence mode="wait">
-        <motion.div
-          key={activeTab}
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
-          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-        >
-
-        {/* ═══ MOBILE LAYOUT ═══ */}
-        <div className="md:hidden">
-          {/* If odd: first product is standalone large card */}
-          {isOddCount && allMobileProducts.length > 0 && (
-            <motion.div
-              className="mb-3 rounded-xl overflow-hidden"
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <MagicCard accentColor={allMobileProducts[0].color}>
-                <div className="relative h-[160px] overflow-hidden">
-                  <img src={allMobileProducts[0].image} alt={allMobileProducts[0].title} className="w-full h-full object-cover" loading="eager" />
-                </div>
-                <div className="p-3 relative">
-                  {allMobileProducts[0].badge && (
-                    <div className="bg-[#e70000] text-white px-2.5 py-1 rounded-lg font-bold text-[10px] inline-block mb-2">{allMobileProducts[0].badge}</div>
-                  )}
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-[16px] text-[#404040] leading-tight">{allMobileProducts[0].title}</h3>
-                    <button onClick={() => setDetailProduct(allMobileProducts[0])} className="text-[11px] font-semibold flex items-center gap-0.5 whitespace-nowrap" style={{ color: allMobileProducts[0].textColor }}>
-                      Detail
-                    </button>
-                  </div>
-                  <p className="text-[#9f9f9f] text-[11px] leading-relaxed mb-2">{allMobileProducts[0].description}</p>
-                  <div className="flex items-baseline gap-1.5 mb-2.5">
-                    <span className="text-[18px] font-semibold" style={{ color: allMobileProducts[0].textColor }}>IDR</span>
-                    <span className="text-[18px] font-semibold text-[#454545]">{allMobileProducts[0].price}K</span>
-                  </div>
-                  <motion.button
-                    onClick={() => handleSelectPackage(allMobileProducts[0])}
-                    className="w-full py-2.5 rounded-lg text-white font-semibold flex items-center justify-center gap-1.5 text-[12px]"
-                    style={{ background: `linear-gradient(135deg, ${allMobileProducts[0].color}, ${allMobileProducts[0].color}cc)`, boxShadow: `0 4px 16px ${allMobileProducts[0].color}50` }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    <ShoppingCart className="w-4 h-4" />
-                    Pilih Paket Ini
-                  </motion.button>
-                </div>
-              </MagicCard>
-            </motion.div>
-          )}
-
-          {/* 2x2 grid for remaining (or all if even) */}
-          <div className="grid grid-cols-2 gap-2.5">
-            {(isOddCount ? allMobileProducts.slice(1) : allMobileProducts).map((product, index) => (
-              <motion.div
-                key={product.title}
-                className="h-full"
-                initial={{ opacity: 0, y: 40 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.35 + index * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              >
-                <MagicCard accentColor={product.color} fullHeight>
-                  <div className="relative h-[110px] overflow-hidden">
-                    <img src={product.image} alt={product.title} className="w-full h-full object-cover" loading="eager" />
-                  </div>
-                  <div className="p-2.5 flex flex-col flex-1">
-                    <div className="flex justify-between items-start mb-1.5">
-                      <h3 className="font-bold text-[13px] text-[#404040] leading-tight">
-                        {product.title}
-                      </h3>
-                      <button onClick={() => setDetailProduct(product)} className="text-[10px] font-semibold flex items-center gap-0.5 whitespace-nowrap shrink-0 ml-1" style={{ color: product.textColor }}>
-                        Detail
-                      </button>
-                    </div>
-                    <p className="text-[#9f9f9f] text-[10px] leading-relaxed mb-1.5">{product.description}</p>
-                    <div className="flex items-baseline gap-1 mb-2 mt-auto">
-                      <span className="text-[14px] font-semibold" style={{ color: product.textColor }}>IDR</span>
-                      <span className="text-[14px] font-semibold text-[#454545]">{product.price}K</span>
-                    </div>
-                    <motion.button
-                      onClick={() => handleSelectPackage(product)}
-                      className="w-full py-2 rounded-lg text-white font-semibold flex items-center justify-center gap-1.5 text-[11px]"
-                      style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}cc)`, boxShadow: `0 4px 16px ${product.color}50` }}
-                      whileTap={{ scale: 0.97 }}
-                    >
-                      <ShoppingCart className="w-3.5 h-3.5" />
-                      Pilih Paket Ini
-                    </motion.button>
-                  </div>
-                </MagicCard>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* ═══ DESKTOP LAYOUT ═══ */}
-        <div className="hidden md:block">
-
-        {/* Featured Product Card (Large) — with spotlight */}
-        {currentProducts.featured && (
-        <motion.div
-          className="mb-6 rounded-2xl overflow-hidden"
+          className="relative overflow-hidden rounded-3xl p-4 sm:p-6"
+          style={{
+            background: 'linear-gradient(160deg, #15151d 0%, #0a0a0f 100%)',
+            border: '1px solid rgba(245,197,66,0.18)',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.45), inset 0 0 60px rgba(245,197,66,0.03)',
+          }}
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
         >
-          <MagicCard accentColor={currentProducts.featured.color}>
-          <div className="grid md:grid-cols-[300px_1fr] lg:grid-cols-[400px_1fr]">
-            {/* Left - Image */}
-            <div className="relative h-[300px] overflow-hidden group">
-              <motion.img
-                src={currentProducts.featured.image}
-                alt={currentProducts.featured.title}
-                className="w-full h-full object-cover"
-                loading="eager"
-                whileHover={{ scale: 1.08 }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              />
-              <motion.div
-                className="absolute inset-0 pointer-events-none"
-                style={{ backgroundColor: currentProducts.featured.color + '20' }}
-                initial={{ opacity: 0 }}
-                whileHover={{ opacity: 1 }}
-                transition={{ duration: 0.4 }}
-              />
-            </div>
+          {/* Scanline + grid texture */}
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage:
+                'repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px)',
+            }}
+          />
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage:
+                'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+              backgroundSize: '26px 26px',
+            }}
+          />
 
-            {/* Right - Content */}
-            <div className="p-6 relative">
-              {currentProducts.featured.badge && (
-                <div className="bg-[#e70000] text-white px-3 py-1.5 rounded-lg font-bold text-xs inline-block mb-3">
-                  {currentProducts.featured.badge}
-                </div>
-              )}
-              <h3 className="font-bold text-[24px] lg:text-[30px] text-[#404040] leading-tight mb-3">
-                {currentProducts.featured.title}
-              </h3>
-              <p className="text-[#9f9f9f] text-sm lg:text-base leading-relaxed text-justify max-w-[671px] mb-4">
-                {currentProducts.featured.description}
-              </p>
-              <div className="flex items-baseline gap-2 mb-4">
-                <span className="text-xl lg:text-2xl font-semibold" style={{ color: currentProducts.featured.textColor }}>IDR</span>
-                <span className="text-xl lg:text-2xl font-semibold text-[#454545]">{currentProducts.featured.price}K</span>
-              </div>
-              <motion.button
-                onClick={() => handleSelectPackage(currentProducts.featured!)}
-                className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2 text-base"
-                style={{ background: `linear-gradient(135deg, ${currentProducts.featured.color}, ${currentProducts.featured.color}cc)`, boxShadow: `0 4px 16px ${currentProducts.featured.color}50` }}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.99 }}
+          {/* HUD top strip */}
+          <div className="relative -mx-4 -mt-4 mb-4 flex items-center justify-between border-b border-white/10 px-4 py-3 sm:-mx-6 sm:-mt-6 sm:px-6">
+            <span className="font-poppins text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
+              ◤ Loadout // Produk
+            </span>
+            <div className="flex items-center gap-2.5">
+              <span className="font-poppins text-[8px] font-bold uppercase tracking-[0.2em] text-white/30">
+                Slots
+              </span>
+              <span
+                className="px-2 py-0.5 font-poppins text-[10px] font-bold"
+                style={{
+                  color: '#F5C542',
+                  border: '1px solid rgba(245,197,66,0.3)',
+                  clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
+                  background: 'rgba(245,197,66,0.08)',
+                }}
               >
-                <ShoppingCart className="w-6 h-6" />
-                Pilih Paket Ini
-              </motion.button>
-              <button
-                onClick={() => setDetailProduct(currentProducts.featured!)}
-                className="absolute top-6 right-6 text-sm font-semibold flex items-center gap-1.5 hover:underline cursor-pointer transition-colors duration-200"
-                style={{ color: currentProducts.featured.textColor }}
-              >
-                Detail
-              </button>
+                {equippedAddons.length}/2
+              </span>
             </div>
           </div>
-          </MagicCard>
-        </motion.div>
-        )}
 
-        {/* 3 Smaller Product Cards */}
-        <div className="grid md:grid-cols-3 gap-6 items-stretch">
-          {currentProducts.cards.map((product: UIProduct, index: number) => (
-            <motion.div
-              key={product.title}
-              className="h-full"
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 + index * 0.12, ease: [0.16, 1, 0.3, 1] }}
-            >
-              <MagicCard accentColor={product.color} fullHeight>
-                <div className="relative h-[160px] overflow-hidden">
-                  <motion.img
-                    src={product.image}
-                    alt={product.title}
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  />
-                  <motion.div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ backgroundColor: product.color + '25' }}
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
-                    transition={{ duration: 0.35 }}
-                  />
-                  <motion.div
-                    className="absolute bottom-3 right-3 px-3 py-1 rounded-lg text-white font-bold text-sm"
-                    style={{ backgroundColor: product.color }}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileHover={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
+          <div className="relative grid gap-5 lg:grid-cols-[230px_1fr_220px]">
+            {/* ── Left: selected item detail ── */}
+            <div className="order-2 lg:order-1">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={infoId}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <span
+                    className="font-poppins text-[9px] font-bold uppercase tracking-[0.28em]"
+                    style={{ color: info.color }}
                   >
-                    IDR {product.price}K
-                  </motion.div>
-                </div>
-                <div className="p-4 flex flex-col flex-1">
-                  <div className="flex justify-between items-start mb-3">
-                    <motion.h3
-                      className="font-bold text-[20px] md:text-[22px] text-[#404040] leading-tight"
-                      whileHover={{ x: 4 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {product.title.split(' ').map((word, i) => (
-                        <span key={i} className="block">{word}</span>
-                      ))}
-                    </motion.h3>
-                    <motion.button
-                      onClick={() => setDetailProduct(product)}
-                      className="text-sm font-semibold flex items-center gap-1 whitespace-nowrap mt-1"
-                      style={{ color: product.textColor }}
-                      whileHover={{ x: 4 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      Detail
-                    </motion.button>
+                    {info.type}
+                  </span>
+                  <h3 className="mt-1 font-fredoka text-[24px] font-semibold leading-tight text-white sm:text-[28px]">
+                    {info.name}
+                  </h3>
+                  <p className="mt-2 text-[11.5px] leading-relaxed text-white/50">{info.description}</p>
+
+                  {/* Stat bars */}
+                  <div className="mt-4 space-y-2.5">
+                    {info.stats.map((s) => (
+                      <div key={s.label} className="flex items-center gap-2">
+                        <span className="w-[92px] shrink-0 font-poppins text-[8px] font-bold uppercase tracking-[0.14em] text-white/40">
+                          {s.label}
+                        </span>
+                        <div className="h-[3px] flex-1 bg-white/10">
+                          <motion.div
+                            className="h-full"
+                            style={{ background: info.color }}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${s.value}%` }}
+                            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
+                          />
+                        </div>
+                        <span
+                          className="w-6 shrink-0 text-right font-poppins text-[9px] font-bold"
+                          style={{ color: info.color }}
+                        >
+                          {s.value}
+                        </span>
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-[#9f9f9f] text-xs leading-relaxed text-justify mb-3 flex-1">
-                    {product.description}
-                  </p>
-                  <motion.div
-                    className="flex items-baseline gap-2 mb-4"
-                    whileHover={{ scale: 1.04 }}
-                    transition={{ duration: 0.2 }}
+
+                  {/* Details */}
+                  <ul className="mt-3.5 space-y-1.5 border-t border-white/10 pt-3">
+                    {info.details.map((d) => (
+                      <li key={d} className="flex items-start gap-1.5">
+                        <span
+                          className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full"
+                          style={{ background: info.color }}
+                        />
+                        <span className="text-[10.5px] leading-relaxed text-white/55">{d}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Price + equip control */}
+                  <div className="mt-4 flex items-center justify-between gap-2">
+                    <span className="font-poppins text-[15px] font-bold" style={{ color: info.color }}>
+                      {'priceMin' in info
+                        ? `Rp ${fmtJt(info.priceMin)} – ${fmtJt(info.priceMax)} Jt`
+                        : `+Rp ${fmtJt(info.price)} Jt`}
+                    </span>
+                    {infoId === 'main' ? (
+                      <span className="font-poppins text-[8px] font-bold uppercase tracking-[0.18em] text-white/30">
+                        Always Equipped
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => toggleEquip(infoId)}
+                        className="cursor-pointer px-4 py-2 font-poppins text-[10px] font-bold uppercase tracking-[0.18em] transition-all duration-200 hover:brightness-110 active:translate-y-[1px]"
+                        style={{
+                          clipPath:
+                            'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
+                          background: equipped.includes(infoId)
+                            ? 'rgba(255,255,255,0.08)'
+                            : `linear-gradient(135deg, ${info.color}, ${info.color}cc)`,
+                          color: equipped.includes(infoId) ? 'rgba(255,255,255,0.55)' : '#141414',
+                        }}
+                      >
+                        {equipped.includes(infoId) ? 'Unequip' : 'Equip'}
+                      </button>
+                    )}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+            {/* ── Center: hero-style annotated visual ── */}
+            <div className="order-1 lg:order-2">
+              <div
+                className="relative aspect-[5/4]"
+                onPointerEnter={() => setInfoId('main')}
+              >
+                {/* Dashed blueprint frame + vertex dots + leader lines */}
+                <svg
+                  className="pointer-events-none absolute inset-0 h-full w-full"
+                  viewBox="0 0 100 80"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <rect
+                    x="2" y="3" width="96" height="74" rx="8"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.16)"
+                    strokeDasharray="3 4"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                  {[
+                    [2, 3], [50, 3], [98, 3],
+                    [2, 40], [98, 40],
+                    [2, 77], [50, 77], [98, 77],
+                  ].map(([x, y]) => (
+                    <circle key={`${x}-${y}`} cx={x} cy={y} r={0.9} fill="rgba(255,255,255,0.3)" />
+                  ))}
+
+                  {/* Leader lines chip → hotspot saat add-on terpasang */}
+                  {ADDONS.filter((a) => equipped.includes(a.id)).map((a) => (
+                    <g key={a.id} stroke={a.color} strokeWidth="1" vectorEffect="non-scaling-stroke">
+                      <line
+                        x1={a.chipPos[0]} y1={a.chipPos[1] * 0.8}
+                        x2={a.dot[0]} y2={a.dot[1] * 0.8}
+                        strokeDasharray="2 2.5"
+                        opacity={0.75}
+                      />
+                      <circle cx={a.dot[0]} cy={a.dot[1] * 0.8} r={1.1} fill={a.color} stroke="none" />
+                    </g>
+                  ))}
+
+                  {/* Hotspot ring marker — selalu terlihat, redup saat kosong */}
+                  {ADDONS.map((a) => (
+                    <circle
+                      key={`ring-${a.id}`}
+                      cx={a.dot[0]} cy={a.dot[1] * 0.8} r={2.4}
+                      fill="none"
+                      stroke={equipped.includes(a.id) ? a.color : 'rgba(255,255,255,0.25)'}
+                      strokeDasharray="1.5 2"
+                      vectorEffect="non-scaling-stroke"
+                    />
+                  ))}
+                </svg>
+
+                {/* Floating image */}
+                <motion.div
+                  className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                  style={{ willChange: 'transform' }}
+                >
+                  <img
+                    src={MAIN_ITEM.image}
+                    alt={MAIN_ITEM.name}
+                    className="w-[76%] object-contain"
+                    loading="eager"
+                    decoding="async"
+                    draggable={false}
+                  />
+                </motion.div>
+
+                {/* Add-on chips — ghost slot saat kosong, chip putih saat equipped */}
+                {ADDONS.map((a) => {
+                  const isEq = equipped.includes(a.id)
+                  const Icon = a.icon
+                  return (
+                    <button
+                      key={a.id}
+                      type="button"
+                      onClick={() => toggleEquip(a.id)}
+                      onPointerEnter={() => setInfoId(a.id)}
+                      className="absolute z-20 cursor-pointer outline-none"
+                      style={{
+                        left: `${a.chipPos[0]}%`,
+                        top: `${a.chipPos[1]}%`,
+                        transform: `translate(${a.chipAlign === 'right' ? '-100%' : '0'}, -50%)`,
+                      }}
+                      aria-pressed={isEq}
+                      aria-label={`${isEq ? 'Lepas' : 'Pasang'} add-on ${a.name}`}
+                    >
+                      <motion.span
+                        animate={{ y: [0, -5, 0] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: a.id === 'katalog' ? 1.2 : 0 }}
+                        className="flex items-center gap-2 rounded-xl px-2.5 py-2 sm:px-3.5 sm:py-2.5"
+                        style={
+                          isEq
+                            ? {
+                                background: '#fff',
+                                border: `1.5px solid ${a.color}`,
+                                boxShadow: `0 6px 18px ${a.color}40`,
+                              }
+                            : {
+                                  background: 'rgba(255,255,255,0.04)',
+                                  border: '1.5px dashed rgba(255,255,255,0.25)',
+                                }
+                        }
+                      >
+                        {isEq ? (
+                          <>
+                            <Icon className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: a.color }} />
+                            <span className="font-poppins text-[10px] font-bold text-[#2a2a2a] sm:text-[11px]">
+                              {a.name}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <PlusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: 'rgba(255,255,255,0.35)' }} />
+                            <span className="font-poppins text-[9px] font-semibold text-white/35 sm:text-[10px]">
+                              {a.name}
+                            </span>
+                          </>
+                        )}
+                      </motion.span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Name plate */}
+              <div
+                className="mt-2 flex items-center justify-between gap-2 rounded-xl px-4 py-3"
+                style={{
+                  border: '1px solid rgba(245,197,66,0.25)',
+                  background: 'rgba(245,197,66,0.06)',
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span
+                    className="rounded-md px-2 py-0.5 font-poppins text-[8px] font-bold uppercase tracking-[0.18em] text-[#141414]"
+                    style={{ background: MAIN_ITEM.color }}
                   >
-                    <span className="text-lg md:text-xl font-semibold" style={{ color: product.textColor }}>IDR</span>
-                    <span className="text-lg md:text-xl font-semibold text-[#454545]">{product.price}K</span>
-                  </motion.div>
-                  <motion.button
-                    onClick={() => handleSelectPackage(product)}
-                    className="w-full py-3 rounded-xl text-white font-semibold flex items-center justify-center gap-2"
-                    style={{ background: `linear-gradient(135deg, ${product.color}, ${product.color}cc)`, boxShadow: `0 4px 16px ${product.color}50` }}
-                    whileHover={{ scale: 1.03, boxShadow: `0 8px 24px ${product.color}60` }}
-                    whileTap={{ scale: 0.97 }}
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    Pilih Paket Ini
-                  </motion.button>
+                    Equipped
+                  </span>
+                  <span className="font-fredoka text-[14px] text-white sm:text-[16px]">
+                    {MAIN_ITEM.name}
+                  </span>
                 </div>
-              </MagicCard>
-            </motion.div>
-          ))}
-        </div>
+                <span className="font-poppins text-[12px] font-bold sm:text-[14px]" style={{ color: MAIN_ITEM.color }}>
+                  Rp {fmtJt(MAIN_ITEM.priceMin)} – {fmtJt(MAIN_ITEM.priceMax)} Jt
+                </span>
+              </div>
+            </div>
 
-        </div>{/* end desktop layout */}
+            {/* ── Right: equipment slots ── */}
+            <div className="order-3">
+              <span className="mb-2 block font-poppins text-[9px] font-bold uppercase tracking-[0.25em] text-white/35">
+                Equipment
+              </span>
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-1 lg:content-start">
+                {ADDONS.map((a) => {
+                  const isEq = equipped.includes(a.id)
+                  return (
+                    <motion.button
+                      key={a.id}
+                      type="button"
+                      onPointerEnter={() => setInfoId(a.id)}
+                      onClick={() => toggleEquip(a.id)}
+                      whileTap={{ scale: 0.95 }}
+                      className="relative cursor-pointer overflow-hidden rounded-xl text-left transition-all duration-300"
+                      style={{
+                        background: isEq ? `${a.color}1a` : 'rgba(255,255,255,0.03)',
+                        border: `1.5px solid ${isEq ? a.color : 'rgba(255,255,255,0.08)'}`,
+                        boxShadow: isEq ? `0 0 20px ${a.color}38, inset 0 0 16px ${a.color}12` : 'none',
+                      }}
+                      aria-pressed={isEq}
+                      aria-label={`${isEq ? 'Lepas' : 'Pasang'} add-on ${a.name}`}
+                    >
+                      {CORNERS.map((c) => (
+                        <span
+                          key={c.pos}
+                          className={`pointer-events-none absolute z-10 h-2.5 w-2.5 ${c.pos} transition-opacity duration-300`}
+                          style={{ background: a.color, clipPath: c.tri, opacity: isEq ? 1 : 0 }}
+                        />
+                      ))}
 
+                      <div className="relative h-24 overflow-hidden sm:h-28">
+                        <img
+                          src={a.image}
+                          alt={a.name}
+                          className={`h-full w-full object-cover transition-all duration-300 ${
+                            isEq ? 'scale-105' : 'opacity-40 grayscale'
+                          }`}
+                          loading="lazy"
+                          decoding="async"
+                          draggable={false}
+                        />
+                      </div>
+
+                      <div className="px-3 py-2.5">
+                        <div className="flex items-baseline justify-between gap-1">
+                          <span
+                            className="font-poppins text-[12px] font-bold leading-tight transition-colors duration-300"
+                            style={{ color: isEq ? '#fff' : 'rgba(255,255,255,0.5)' }}
+                          >
+                            {a.name}
+                          </span>
+                          <span
+                            className="font-poppins text-[10px] font-bold transition-colors duration-300"
+                            style={{ color: isEq ? a.color : 'rgba(255,255,255,0.3)' }}
+                          >
+                            +1 Jt
+                          </span>
+                        </div>
+                        <span
+                          className="mt-1 block font-poppins text-[8px] font-bold uppercase tracking-[0.2em] transition-colors duration-300"
+                          style={{ color: isEq ? a.color : 'rgba(255,255,255,0.3)' }}
+                        >
+                          {isEq ? '● Equipped' : '○ Tap to equip'}
+                        </span>
+                      </div>
+                    </motion.button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* ── Total bar + CTA ── */}
+          <div
+            className="relative mt-4 flex flex-col items-center justify-between gap-3 rounded-xl px-4 py-4 sm:flex-row"
+            style={{ border: '1px solid rgba(245,197,66,0.22)', background: 'rgba(245,197,66,0.05)' }}
+          >
+            <div className="text-center sm:text-left">
+              <span className="block font-poppins text-[9px] font-bold uppercase tracking-[0.25em] text-white/40">
+                Estimasi Total
+              </span>
+              <span className="font-poppins text-[20px] font-bold text-[#F5C542] sm:text-[24px]">
+                Rp {fmtJt(totalMin)} – {fmtJt(totalMax)} Jt
+              </span>
+              <span className="block text-[10px] text-white/40">
+                {equippedAddons.length > 0
+                  ? `${equippedAddons.length} add-on terpasang: ${equippedAddons.map((a) => a.name).join(' + ')}`
+                  : 'Belum ada add-on terpasang'}
+              </span>
+            </div>
+
+            <button
+              onClick={handleCheckout}
+              className="w-full shrink-0 cursor-pointer rounded-2xl px-8 py-3 font-poppins text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-lg sm:w-auto"
+              style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}
+            >
+              Ambil Paket Ini
+            </button>
+          </div>
         </motion.div>
-        </AnimatePresence>
 
-        {/* Request Quote Modal */}
-        {quoteOpen && (
-          <Suspense fallback={null}>
-            <RequestQuoteModal
-              isOpen={quoteOpen}
-              onClose={() => setQuoteOpen(false)}
-              product={selectedProduct}
-            />
-          </Suspense>
-        )}
-
-        {/* Detail Modal */}
-        <DetailModal
-          product={detailProduct}
-          onClose={() => setDetailProduct(null)}
-          onSelect={handleSelectPackage}
-        />
+        <p className="mt-4 text-center text-[10px] leading-relaxed text-white/35 sm:text-xs">
+          Harga tertera hanya estimasi, fleksibel dan bisa disesuaikan berdasarkan kebutuhan.
+        </p>
       </div>
+
+      <Suspense fallback={null}>
+        {quoteOpen && (
+          <RequestQuoteModal
+            isOpen={quoteOpen}
+            onClose={() => setQuoteOpen(false)}
+            product={selectedProduct}
+          />
+        )}
+      </Suspense>
     </section>
   )
 }

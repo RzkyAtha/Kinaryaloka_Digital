@@ -20,7 +20,7 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom'],
           'motion': ['framer-motion'],
-          'auth-vendor': ['@react-oauth/google', 'jwt-decode', 'canvas-confetti'],
+          'auth-vendor': ['@react-oauth/google'],
         },
       },
     },

@@ -17,7 +17,7 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     id: 'proj-flk',
     name: 'Fullink Travel',
     url: 'https://fullink-travel-sg-a3vs.vercel.app/',
-    thumbnail: '/Assets/flk_thumbnail.png',
+    thumbnail: '/Assets/flk_thumbnail.webp',
     description:
       'Website company profile dari salah satu travel agent di singapore, dilengkapi dengan pengembangan fitur reservasi online dan tools pengelola dokumen.',
     badge: 'Overseas Client',

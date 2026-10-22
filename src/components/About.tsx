@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useCallback } from 'react'
 import { ChevronRightIcon as ChevronRight, XMarkIcon as X } from '@heroicons/react/24/solid'
+import NaraIntro from './NaraIntro'
 
 type ValueCard = {
   title: string
@@ -76,15 +77,6 @@ const GLITCH_SLICES = [
   'inset(0% 0% 100% 0%)',
 ]
 
-const BRAND_ACCENT = '#F5C542'
-const BRAND_GRADIENT = 'linear-gradient(135deg, #F5C542, #E5A830, #D4912A)'
-
-const processSteps = [
-  { code: 'Pertama', label: 'Dengar & Riset', note: 'Pahami cara bisnis berjalan di lapangan.' },
-  { code: 'Lalu kita', label: 'Rancang Blueprint', note: 'Susun alur, identitas, dan prioritas.' },
-  { code: 'Dilanjutkan dengan', label: 'Bangun Bertahap', note: 'Eksekusi rapi, bisa dipantau tiap langkah.' },
-  { code: 'Tidak lupa juga', label: 'Dampingi Jalan', note: 'Support setelah rilis, bukan ditinggal.' },
-]
 
 function BlueprintFrame({ accent, active }: { accent: string; active: boolean }) {
   return (
@@ -114,10 +106,10 @@ function BlueprintFrame({ accent, active }: { accent: string; active: boolean })
         vectorEffect="non-scaling-stroke"
         style={{ opacity: active ? 0.45 : 0.16, transition: 'opacity 400ms ease' }}
       >
-        <path d="M3,10 L3,3 L10,3" />
-        <path d="M90,3 L97,3 L97,10" />
-        <path d="M97,90 L97,97 L90,97" />
-        <path d="M10,97 L3,97 L3,90" />
+        <path d="M3,10 L10,3 L3,3 Z" fill={accent} stroke="none" />
+        <path d="M90,3 L97,3 L97,10 Z" fill={accent} stroke="none" />
+        <path d="M97,90 L97,97 L90,97 Z" fill={accent} stroke="none" />
+        <path d="M10,97 L3,97 L3,90 Z" fill={accent} stroke="none" />
       </g>
     </svg>
   )
@@ -138,7 +130,7 @@ function ValueTile({
 }) {
   const meta = (
     <div className="relative flex items-center gap-3">
-      <span className="font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: card.color }}>
+      <span className="font-poppins text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: card.color }}>
         {card.code}
       </span>
     </div>
@@ -369,75 +361,25 @@ export default function About() {
       <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-10">
         {/* Bento grid */}
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-5">
-          {/* Identity tile */}
-          <motion.div
-            className="relative overflow-hidden rounded-3xl bg-white p-6 sm:p-8"
-            style={{ border: '1px solid rgba(42,42,42,0.08)', boxShadow: '0 2px 12px rgba(42,42,42,0.05)' }}
-            initial={{ opacity: 0, y: 26 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.15 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div
-              className="pointer-events-none absolute inset-0"
-              aria-hidden="true"
-              style={{
-                backgroundImage: 'url(/Assets/doodle_tech_art.webp)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                opacity: 0.05,
-              }}
-            />
-            <BlueprintFrame accent={BRAND_ACCENT} active={false} />
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{ background: `radial-gradient(110% 80% at 12% 0%, ${BRAND_ACCENT}0d, transparent 62%)` }}
-            />
-
-            <div className="relative flex h-full flex-col">
-              <h2 className="mt-5 font-climate text-[21px] leading-[1.25] sm:text-[27px] md:text-[31px]">
-                <span className="block text-[#2a2a2a]">Bukan Agency Biasa.</span>
-                <span
-                  className="block"
-                  style={{
-                    background: BRAND_GRADIENT,
-                    WebkitBackgroundClip: 'text',
-                    backgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  Partner yang Ngerti
-                </span>
-                <span className="block text-[#2a2a2a]">Bisnis Kamu.</span>
-              </h2>
-
-              <p className="mt-4 text-justify text-[13px] leading-[1.75] text-[#5a5a5a] sm:text-[14px]">
-                KINARYALOKA Digital Studio lahir dari satu pemahaman: kebanyakan UMKM bukan tidak mau digital, tetapi
-                tidak tahu mulai dari mana atau sudah coba tapi hasilnya tidak kepakai. Kami duduk bareng kamu,
-                pelajari cara bisnismu berjalan, lalu terjemahkan ke sistem digital yang rapi dan bisa dikontrol.
-              </p>
-
-              {/* Process spec sheet */}
-              <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-[#2a2a2a]/[0.10]">
-                {processSteps.map((step, i) => (
-                  <div key={step.code} className="group/step bg-white p-3.5 transition-colors duration-300 hover:bg-[#fafafa]">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="font-mono text-[10px] font-bold tracking-[0.14em]"
-                        style={{ color: valueCards[i % valueCards.length].color }}
-                      >
-                        {step.code}
-                      </span>
-                      <span className="h-px flex-1" style={{ background: 'rgba(42,42,42,0.12)' }} />
-                    </div>
-                    <p className="mt-1.5 text-[12px] font-bold text-[#2a2a2a] sm:text-[13px]">{step.label}</p>
-                    <p className="text-[10.5px] leading-relaxed text-[#8f8f8f] sm:text-[11px]">{step.note}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+          {/* Identity column — rocket illustration + Nara intro trigger */}
+          <div className="flex flex-col gap-4">
+            <motion.div
+              className="relative flex-1 overflow-hidden rounded-3xl"
+              initial={{ opacity: 0, y: 26 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.15 }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <img
+                src="/Assets/roket_illust.webp"
+                alt="Kami Bantu Perkuat Identitas Brandmu."
+                loading="lazy"
+                decoding="async"
+                className="block h-full w-full object-cover"
+              />
+            </motion.div>
+            <NaraIntro />
+          </div>
 
           {/* Value tiles 2x2 */}
           <div className="grid h-full auto-rows-fr grid-cols-2 gap-3 sm:gap-5" onPointerLeave={clearHover}>
@@ -501,12 +443,12 @@ export default function About() {
               <div className="relative">
                 <div className="flex items-center gap-3 pr-10">
                   <span
-                    className="font-mono text-[10px] font-bold uppercase tracking-[0.18em]"
+                    className="font-poppins text-[10px] font-bold uppercase tracking-[0.18em]"
                     style={{ color: popupCard.color }}
                   >
                     {popupCard.code}
                   </span>
-                  <span className="font-mono text-[10px] tracking-[0.18em] text-[#bdbdbd]">
+                  <span className="font-poppins text-[10px] tracking-[0.18em] text-[#bdbdbd]">
                     {String(valueCards.indexOf(popupCard) + 1).padStart(2, '0')}/
                     {String(valueCards.length).padStart(2, '0')}
                   </span>

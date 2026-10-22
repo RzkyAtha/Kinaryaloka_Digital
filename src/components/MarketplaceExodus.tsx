@@ -70,24 +70,24 @@ export default function MarketplaceExodus() {
         <div className="grid grid-cols-2 gap-3.5 md:grid-cols-2 md:gap-4 lg:grid-cols-4 lg:auto-rows-[minmax(200px,auto)]">
 
           {/* HERO — Properti Digital Milikmu (2×2) */}
-          <ImgCard src="/Assets/properti_aset.webp" alt="Properti Digital Milikmu — website adalah aset yang kamu miliki" spanClass="col-span-2 md:col-span-2 lg:row-span-2" />
+          <ImgCard src="/Assets/PDM.webp" alt="Properti Digital Milikmu — website adalah aset yang kamu miliki" spanClass="col-span-2 md:col-span-2 lg:row-span-2" />
 
-          {/* STAT — Nilai transaksi e-commerce (wide) */}
-          <ImgCard src="/Assets/nilai_transaksi.webp" alt="Rp 487 T — nilai transaksi e-commerce Indonesia" spanClass="col-span-2 md:col-span-2" />
+          {/* STAT — 7 Detik untuk menilai kredibilitas (wide) */}
+          <ImgCard src="/Assets/7D.webp" alt="7 Detik — hanya butuh 7 detik untuk menilai kredibilitas brand" spanClass="col-span-2 md:col-span-2" />
 
-          {/* Harga & SEO */}
-          <ImgCard src="/Assets/harga.webp" alt="Harga dan margin terkontrol" />
-          <ImgCard src="/Assets/seo.webp" alt="SEO: aset jangka panjang" />
+          {/* Tools Praktis & Aset Jangka Panjang */}
+          <ImgCard src="/Assets/TPC.webp" alt="Tools praktis custom untuk bisnismu" />
+          <ImgCard src="/Assets/AJP.webp" alt="Aset jangka panjang — muncul di Google bertahun-tahun" />
 
-          {/* SHOWCASE — Manajemen stok & pesanan (wide) — moved below harga/seo/kampanye/brand on mobile & tablet */}
-          <ImgCard src="/Assets/manajemen.webp" alt="Manajemen stok & pesanan" spanClass="order-1 lg:order-none col-span-2 md:col-span-2" />
+          {/* SHOWCASE — Beda Brand Beda Gaya (wide) */}
+          <ImgCard src="/Assets/BBBG.webp" alt="Beda brand beda gaya — color palette, logo, typography" spanClass="order-1 lg:order-none col-span-2 md:col-span-2" />
 
-          {/* Kampanye & Brand */}
-          <ImgCard src="/Assets/kampanye.webp" alt="Kampanye bebas tanpa izin" />
-          <ImgCard src="/Assets/brand.webp" alt="Brand identity penuh" />
+          {/* Suara Bebas & Brand Identity */}
+          <ImgCard src="/Assets/SBB.webp" alt="Suara bebas bisnismu — kampanyekan sendiri kelebihannya" />
+          <ImgCard src="/Assets/BIP.webp" alt="Brand identity penuh — warna, tone, cerita utuh" />
 
           {/* COMPANY PROFILE — full width */}
-          <ImgCard src="/Assets/compro.webp" alt="Website company profile = identitas profesional perusahaanmu" spanClass="order-2 lg:order-none col-span-2 md:col-span-2 lg:col-span-4" />
+          <ImgCard src="/Assets/WCP.webp" alt="Website company profile adalah identitas profesional bisnismu" spanClass="order-2 lg:order-none col-span-2 md:col-span-2 lg:col-span-4" />
 
         </div>
 

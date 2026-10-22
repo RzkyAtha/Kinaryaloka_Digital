@@ -7,7 +7,6 @@ import Products from './components/Products'
 import Team from './components/Team'
 import Process from './components/Process'
 import Footer from './components/Footer'
-import PainPoints from './components/PainPoints'
 import MarketplaceExodus from './components/MarketplaceExodus'
 import { LanguageProvider } from './context/LanguageContext'
 
@@ -79,7 +78,6 @@ function MainSite() {
           <>
             <Hero />
             <About />
-            <PainPoints />
             <MarketplaceExodus />
             <Products />
             <Team />
