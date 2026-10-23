@@ -87,7 +87,7 @@ export default function Hero() {
   const [showWhatsApp, setShowWhatsApp] = useState(false)
 
   return (
-    <section ref={sectionRef} className="min-h-screen bg-white pt-24 md:pt-16 lg:pt-16 pb-6 md:pb-10 relative overflow-hidden w-full">
+    <section ref={sectionRef} className="bg-white pt-24 md:pt-16 lg:pt-16 pb-6 md:pb-10 lg:min-h-screen relative overflow-hidden w-full">
       <div className="relative max-w-[1600px] mx-auto px-4 sm:px-8 lg:px-16 py-2 md:py-8">
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-2 sm:gap-4 lg:gap-16 items-center w-full min-w-0">
 

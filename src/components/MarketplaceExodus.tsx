@@ -53,8 +53,6 @@ function ImgCard({
 export default function MarketplaceExodus() {
   return (
     <section id="marketplace-vs-website" className="relative overflow-hidden py-14 md:py-24 lg:py-28" style={{ background: C.bg }}>
-      <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${C.orange}30, transparent)` }} />
-
       <div className="relative z-10 mx-auto max-w-[1220px] px-4 sm:px-6 lg:px-8">
         {/* -- Header -- */}
         <div className="mx-auto mb-9 max-w-2xl text-center md:mb-14">
@@ -70,16 +68,16 @@ export default function MarketplaceExodus() {
         <div className="grid grid-cols-2 gap-3.5 md:grid-cols-2 md:gap-4 lg:grid-cols-4 lg:auto-rows-[minmax(200px,auto)]">
 
           {/* HERO - erti Digital Milikmu (2×2) */}
-          <ImgCard src="/Assets/PDM.webp" alt="Properti Digital Milikmu - website adalah aset yang kamu miliki" spanClass="col-span-2 md:col-span-2 lg:row-span-2" />
+          <ImgCard src="/Assets/PDM.webp" alt="Properti Digital Milikmu - website adalah aset yang kamu miliki" spanClass="col-span-2 md:col-span-2 lg:row-span-2" contain />
 
           {/* STAT - 7 Detik untuk menilai kredibilitas (wide) */}
-          <ImgCard src="/Assets/7D.webp" alt="7 Detik - hanya butuh 7 detik untuk menilai kredibilitas brand" spanClass="col-span-2 md:col-span-2" />
+          <ImgCard src="/Assets/7D.webp" alt="7 Detik - hanya butuh 7 detik untuk menilai kredibilitas brand" spanClass="col-span-2 md:col-span-2" contain />
 
           {/* SHOWCASE - Beda Brand Beda Gaya (wide) */}
-          <ImgCard src="/Assets/BBBG.webp" alt="Beda brand beda gaya - color palette, logo, typography" spanClass="order-1 lg:order-none col-span-2 md:col-span-2" />
+          <ImgCard src="/Assets/BBBG.webp" alt="Beda brand beda gaya - color palette, logo, typography" spanClass="order-1 lg:order-none col-span-2 md:col-span-2" contain />
 
           {/* COMPANY PROFILE - full width */}
-          <ImgCard src="/Assets/WCP.webp" alt="Website company profile adalah identitas profesional bisnismu" spanClass="order-2 lg:order-none col-span-2 md:col-span-2 lg:col-span-4" />
+          <ImgCard src="/Assets/WCP.webp" alt="Website company profile adalah identitas profesional bisnismu" spanClass="order-2 lg:order-none col-span-2 md:col-span-2 lg:col-span-4" contain />
 
         </div>
 
@@ -91,8 +89,6 @@ export default function MarketplaceExodus() {
           <ImgCard src="/Assets/kredibilitas.webp" alt="Kredibilitas Instan" contain radiusClass="rounded-lg md:rounded-xl" />
         </div>
       </div>
-
-      <div className="absolute inset-x-0 bottom-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${C.orange}30, transparent)` }} />
     </section>
   );
 }

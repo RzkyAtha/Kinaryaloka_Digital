@@ -41,38 +41,30 @@ export default function NaraIntro() {
     <>
       <motion.button
         onClick={() => setShowNara(true)}
-        animate={{ y: [0, -4, 0], rotate: -4 }}
+        animate={{ y: [0, -4, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        whileHover={{ scale: 1.05, rotate: -2 }}
-        whileTap={{ scale: 0.95, rotate: -4 }}
-        className="absolute left-3 top-[30%] z-10 flex cursor-pointer items-center gap-3 rounded-2xl rounded-bl-md bg-[#141414] py-2.5 pl-2 pr-5 font-poppins text-[13px] font-semibold text-white sm:left-4 sm:text-sm"
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.92 }}
+        className="absolute left-3 top-[30%] z-10 h-16 w-16 cursor-pointer rounded-2xl bg-[#141414] p-2 sm:left-4 sm:h-[72px] sm:w-[72px]"
         style={{ boxShadow: '0 10px 24px rgba(10,10,12,0.4), 0 2px 6px rgba(0,0,0,0.2)' }}
         aria-label="Kenalan sama Nara"
       >
         {/* Bubble tail */}
         <span
           aria-hidden="true"
-          className="absolute -bottom-[7px] left-4 h-3.5 w-4 bg-[#141414]"
-          style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
+          className="absolute -bottom-[9px] right-3.5 h-4 w-5 bg-[#141414]"
+          style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%)' }}
         />
-        <span className="flex -space-x-2.5">
-          {naras.map((n) => (
-            <span
-              key={n.name}
-              className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white/10 ring-2 ring-[#141414]"
-            >
-              <img
-                src={n.image}
-                alt={n.name}
-                className="h-8 w-8 object-contain"
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-              />
-            </span>
-          ))}
+        <span className="block h-full w-full overflow-hidden rounded-full bg-white">
+          <img
+            src={naras[2].image}
+            alt="Nara"
+            className="h-full w-full scale-[1.6] object-cover object-top"
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
         </span>
-        Siapa mereka?
       </motion.button>
 
       {/* Nara Popup Modal - character select */}
@@ -218,7 +210,7 @@ export default function NaraIntro() {
                       ))}
                     </div>
 
-                    <p className="mt-3 border-t border-black/10 pt-3 text-[11.5px] leading-relaxed text-[#6b6b70]">
+                    <p className="mt-3 pt-3 text-[11.5px] leading-relaxed text-[#6b6b70]">
                       {current.blurb}
                     </p>
                   </motion.div>

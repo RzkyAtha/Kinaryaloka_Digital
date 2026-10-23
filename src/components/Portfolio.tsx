@@ -257,9 +257,9 @@ export default function Portfolio() {
       <div className="relative mx-auto max-w-[1120px] px-5 sm:px-8 lg:px-10">
         {/* -- Editorial header -- */}
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <h2 className="font-poppins text-[38px] font-extrabold uppercase leading-[0.95] tracking-tight sm:text-[48px] md:text-[56px]">
-            <span className="block text-[#141414]">Karya</span>
-            <span className="block text-[#c6c7ca]">Terpilih</span>
+          <h2 className="text-[38px] uppercase leading-[0.95] tracking-tight sm:text-[48px] md:text-[56px]">
+            <span className="block font-prompt font-extrabold text-[#141414]">Tampilan</span>
+            <span className="block font-prompt font-extrabold text-[#757575]">Portfolio</span>
           </h2>
           <p className="max-w-xs text-[13px] leading-relaxed text-[#6b6b70] md:text-right">
             Lihat langsung website yang sudah kami bangun, pilih projek di panel showcase, lalu
@@ -293,7 +293,7 @@ export default function Portfolio() {
               </p>
 
               {/* Details */}
-              <ul className="mt-5 space-y-1.5 border-t border-black/10 pt-4">
+              <ul className="mt-4 space-y-1.5">
                 {selected.details.map((d) => (
                   <li key={d} className="flex items-start gap-2">
                     <span
@@ -318,29 +318,24 @@ export default function Portfolio() {
           {/* -- Left: floating browser mockup -- */}
           <div className="order-1">
             <div className="relative mx-auto w-full max-w-[560px]">
-              {/* Floating browser window */}
-              <motion.div
-                className="relative z-10 flex justify-center"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ willChange: 'transform' }}
-              >
+              {/* Browser window */}
+              <div className="relative z-10 flex justify-center">
                 <div
-                  className="w-[86%] overflow-hidden rounded-xl bg-white"
+                  className="w-[86%] overflow-hidden rounded-xl bg-[#141414]"
                   style={{
                     boxShadow: `0 24px 48px ${selected.color}26, 0 12px 24px rgba(0,0,0,0.12)`,
                     transition: 'box-shadow 400ms ease',
                   }}
                 >
                   {/* Chrome bar */}
-                  <div className="flex items-center gap-2 border-b border-black/10 bg-[#f3f3f1] px-3 py-2">
+                  <div className="flex items-center gap-2 px-3 py-2">
                     <span className="flex gap-1.5">
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#3a3a3e]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#55555c]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#F5C542]" />
                     </span>
-                    <span className="mx-auto flex min-w-0 items-center gap-1.5 rounded-md bg-white px-3 py-1 font-poppins text-[9px] font-medium tracking-wide text-[#6b6b70]">
-                      <Lock className="h-2.5 w-2.5 shrink-0 text-[#28c840]" />
+                    <span className="mx-auto flex min-w-0 items-center gap-1.5 rounded-md bg-[#26262b] px-3 py-1 font-poppins text-[9px] font-medium tracking-wide text-white/60">
+                      <Lock className="h-2.5 w-2.5 shrink-0 text-[#F5C542]" />
                       <span className="truncate">{hostname || selected.name}</span>
                     </span>
                     <span className="w-[46px] shrink-0" aria-hidden="true" />
@@ -355,14 +350,15 @@ export default function Portfolio() {
                     <SiteShot key={selected.id} project={selected} w={880} h={550} fit="contain" />
                   </button>
                 </div>
-              </motion.div>
+              </div>
 
               {/* Floating status chip */}
               <motion.span
                 animate={{ y: [0, -4, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute right-[2%] top-0 z-20 flex items-center gap-1.5 rounded-lg bg-[#141414] px-3 py-2 font-poppins text-[10px] font-semibold text-white shadow-sm"
+                className="absolute right-[2%] top-0 z-20 flex items-center gap-1.5 rounded-lg px-3 py-2 font-poppins text-[10px] font-semibold text-white shadow-sm"
                 style={{
+                  background: hasGallery ? selected.color : STATUS_GLOW[selected.status],
                   boxShadow: `0 6px 16px ${hasGallery ? selected.color : STATUS_GLOW[selected.status]}66, 0 2px 6px rgba(0,0,0,0.15)`,
                 }}
               >
@@ -461,7 +457,7 @@ export default function Portfolio() {
         </div>
 
         {/* -- Bottom bar -- */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-black/10 pt-8 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 pt-8 sm:flex-row">
           <div className="text-center sm:text-left">
             <span className="block font-poppins text-[9px] font-semibold uppercase tracking-[0.25em] text-[#8a8a90]">
               Projek Terkirim

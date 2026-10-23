@@ -12,6 +12,7 @@ export default {
         audiowide: ['Audiowide', 'cursive'],
         rocksalt: ['"Rock Salt"', 'cursive'],
         climate: ['"Climate Crisis"', 'cursive'],
+        gasoek: ['"Gasoek One"', 'sans-serif'],
         prompt: ['Prompt', 'sans-serif'],
       },
       colors: {

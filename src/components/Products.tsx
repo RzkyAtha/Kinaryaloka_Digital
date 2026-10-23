@@ -128,9 +128,9 @@ export default function Products() {
       <div className="relative mx-auto max-w-[1120px] px-5 sm:px-8 lg:px-10">
         {/* -- Editorial header -- */}
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <h2 className="font-poppins text-[38px] font-extrabold uppercase leading-[0.95] tracking-tight sm:text-[48px] md:text-[56px]">
-            <span className="block text-[#141414]">Susun</span>
-            <span className="block text-[#c6c7ca]">Loadout</span>
+          <h2 className="text-[38px] uppercase leading-[0.95] tracking-tight sm:text-[48px] md:text-[56px]">
+            <span className="block font-prompt font-extrabold text-[#141414]">Susun</span>
+            <span className="block font-prompt font-extrabold text-[#757575]">Loadout</span>
           </h2>
           <p className="max-w-xs text-[13px] leading-relaxed text-[#6b6b70] md:text-right">
             Mulai dari item utama, lalu pasang add-on sesuai kebutuhan bisnismu.
@@ -178,7 +178,7 @@ export default function Products() {
                 </div>
 
                 {/* Details */}
-                <ul className="mt-5 space-y-1.5 border-t border-black/10 pt-4">
+                <ul className="mt-4 space-y-1.5">
                   {MAIN_ITEM.details.map((d) => (
                     <li key={d} className="flex items-start gap-2">
                       <span
@@ -301,7 +301,7 @@ export default function Products() {
             </div>
 
             {/* Name plate - clean strip */}
-            <div className="mx-auto mt-2 flex max-w-[520px] items-center justify-between border-b border-black/10 px-1 pb-3">
+            <div className="mx-auto mt-2 flex max-w-[520px] items-center justify-between px-1 pb-3">
               <div className="flex items-center gap-2.5">
                 <span className="rounded-md bg-[#141414] px-2.5 py-0.5 font-poppins text-[8px] font-semibold uppercase tracking-[0.18em] text-white">
                   Equipped
@@ -382,7 +382,7 @@ export default function Products() {
         </div>
 
         {/* -- Total bar + CTA -- */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-black/10 pt-8 sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 pt-8 sm:flex-row">
           <div className="text-center sm:text-left">
             <span className="block font-poppins text-[9px] font-semibold uppercase tracking-[0.25em] text-[#8a8a90]">
               Estimasi Total

@@ -177,7 +177,7 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
               onClick={() => setMobileMenuOpen(false)}
             />
             <motion.div
-              className="fixed top-[64px] left-0 right-0 z-40 lg:hidden bg-white/95 backdrop-blur-xl border-b border-gray-100 shadow-xl"
+              className="fixed top-[64px] left-0 right-0 z-40 lg:hidden bg-white/95 backdrop-blur-xl shadow-xl"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
@@ -204,7 +204,6 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
                 {/* Section links - only on home */}
                 {activePage === 'home' && (
                   <>
-                    <div className="h-px bg-gray-200" />
                     <div className="space-y-1">
                       {navItems.map((item) => (
                         <button
@@ -224,7 +223,6 @@ export default function Navbar({ activeSection, activePage, onPageChange }: Navb
                 )}
 
                 {/* Language Badge - mobile */}
-                <div className="h-px bg-gray-200" />
                 <div className="flex justify-center py-1">
                   <LanguageBadge />
                 </div>

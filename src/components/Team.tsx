@@ -373,7 +373,7 @@ export default function Team() {
                         {card.points.map((point) => (
                           <li
                             key={point}
-                            className="flex items-start gap-2 border-t border-black/[0.08] pt-2 text-[11px] font-medium leading-snug text-[#3a3a3e] first:border-t-0 first:pt-0"
+                            className="flex items-start gap-2 pt-2 text-[11px] font-medium leading-snug text-[#3a3a3e] first:pt-0"
                           >
                             <SuitGlyph suit={card.suit} ink={card.ink} className="mt-[1px] h-[11px] w-[10px] shrink-0" />
                             {point}
@@ -381,7 +381,7 @@ export default function Team() {
                         ))}
                       </ul>
 
-                      <div className="mt-auto flex items-center justify-between border-t border-black/[0.08] pt-2 font-poppins text-[6.5px] font-semibold uppercase tracking-[0.16em] text-[#9a9a9e]">
+                      <div className="mt-auto flex items-center justify-between pt-2 font-poppins text-[6.5px] font-semibold uppercase tracking-[0.16em] text-[#9a9a9e]">
                         <span>Klik untuk kembali</span>
                         <span>
                           {String(i + 1).padStart(3, '0')}/{String(cards.length).padStart(3, '0')} KNR

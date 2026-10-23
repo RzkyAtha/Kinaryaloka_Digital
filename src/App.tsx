@@ -10,7 +10,6 @@ import MarketplaceExodus from './components/MarketplaceExodus'
 import { LanguageProvider } from './context/LanguageContext'
 
 // Code-split heavy, non-critical components (interactive / off-route)
-const Chatbot = lazy(() => import('./components/Nara'))
 const Portfolio = lazy(() => import('./components/Portfolio'))
 
 function ScrollProgressBar() {
@@ -63,9 +62,6 @@ function MainSite() {
   return (
     <div className="min-h-screen bg-[#f5f5f5] overflow-x-hidden">
       <ScrollProgressBar />
-      <Suspense fallback={null}>
-        <Chatbot activePage={activePage} />
-      </Suspense>
       <Navbar activeSection={activeSection} activePage={activePage} onPageChange={setActivePage} />
       <motion.main
         key={activePage}

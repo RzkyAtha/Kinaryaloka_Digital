@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState, useCallback } from 'react'
-import { XMarkIcon as X } from '@heroicons/react/24/solid'
+import { useState, useCallback, useRef } from 'react'
 import NaraIntro from './NaraIntro'
 
 type ValueCard = {
@@ -17,42 +16,42 @@ type ValueCard = {
 
 const valueCards: ValueCard[] = [
   {
-    title: 'Partner, Bukan Vendor.',
+    title: 'PARTNER HANDAL',
     subtitle: 'Hubungan Jangka Panjang',
     badge: 'Support Berkelanjutan',
     description: 'Kami tidak pergi setelah project selesai. Support dan komunikasi tetap berjalan.',
     color: '#CA6029',
-    image: '/Assets/partner_vendor.webp',
+    image: '/Assets/hand.webp',
     art: '/Assets/PH.webp',
     code: 'Selalu Ada',
   },
   {
-    title: 'Tepat Sasaran.',
+    title: 'TEPAT SASARAN',
     subtitle: 'Solusi yang Relevan',
     badge: 'Riset Dulu, Baru Bangun',
     description: 'Kami tidak akan jual fitur sebanyak-banyaknya. Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
     color: '#A42D25',
-    image: '/Assets/tepatsasaran.webp',
+    image: '/Assets/checklist.webp',
     art: '/Assets/ST.webp',
     code: 'Selalu Sesuai',
   },
   {
-    title: 'Langsung Kepakai.',
+    title: 'SIAP PAKAI',
     subtitle: 'Praktis & Fungsional',
     badge: 'Tanpa Ribet Teknis',
     description: 'Semua yang kami bangun dirancang agar bisa dipakai sehari-hari, tanpa perlu teknikal tinggi.',
     color: '#26537E',
-    image: '/Assets/langsungkepakai.webp',
+    image: '/Assets/comp.webp',
     art: '/Assets/LT.webp',
     code: 'Selalu Efisien',
   },
   {
-    title: 'Transparan & Jelas.',
+    title: 'RINICAN AKURAT',
     subtitle: 'Tanpa Biaya Tersembunyi',
     badge: 'Harga & Progress Jelas',
     description: 'Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi ataupun janji kosong.',
     color: '#1AA5AA',
-    image: '/Assets/harga_jelas.webp',
+    image: '/Assets/invoice.webp',
     art: '/Assets/RA.webp',
     code: 'Selalu Terbuka',
   },
@@ -61,20 +60,27 @@ const valueCards: ValueCard[] = [
 function ValueTile({
   card,
   active,
-  onHover,
-  onOpen,
+  onHoverStart,
+  onHoverEnd,
+  onToggle,
 }: {
   card: ValueCard
   active: boolean
-  onHover: () => void
-  onOpen: () => void
+  onHoverStart: () => void
+  onHoverEnd: () => void
+  onToggle: () => void
 }) {
+  // Track pointer type: mouse uses hover, touch/pen uses tap-to-toggle
+  const lastPointer = useRef('mouse')
   return (
     <motion.button
       type="button"
-      onPointerEnter={onHover}
-      onFocus={onHover}
-      onClick={onOpen}
+      onPointerDown={(e) => { lastPointer.current = e.pointerType }}
+      onPointerEnter={(e) => { if (e.pointerType === 'mouse') onHoverStart() }}
+      onPointerLeave={(e) => { if (e.pointerType === 'mouse') onHoverEnd() }}
+      onFocus={onHoverStart}
+      onBlur={onHoverEnd}
+      onClick={() => { if (lastPointer.current !== 'mouse') onToggle() }}
       whileHover={{ y: -4 }}
       transition={{ duration: 0.3 }}
       className="group relative block w-full overflow-hidden rounded-xl bg-white text-left outline-none aspect-[2488/2468]"
@@ -84,6 +90,7 @@ function ValueTile({
         transition: 'border-color 300ms ease, box-shadow 300ms ease',
       }}
       aria-label={`${card.title} - ${card.badge}`}
+      aria-pressed={active}
     >
       {/* Card = poster penuh (tipografi + ilustrasi baked-in) */}
       <img
@@ -93,20 +100,65 @@ function ValueTile({
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
+
+      {/* Active state - sticker + detail overlay */}
+      <AnimatePresence>
+        {active && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            className="absolute inset-0 flex flex-col items-center justify-center bg-[#f7f7f5] px-3 py-4 text-center sm:px-4"
+          >
+            {/* Blueprint paper grid - same texture as the section */}
+            <div
+              className="pointer-events-none absolute inset-0"
+              aria-hidden="true"
+              style={{
+                backgroundImage:
+                  'linear-gradient(rgba(42,42,42,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(42,42,42,0.035) 1px, transparent 1px)',
+                backgroundSize: '36px 36px',
+              }}
+            />
+            <motion.img
+              src={card.image}
+              alt=""
+              initial={{ scale: 0.6, y: 12 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 8 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 20 }}
+              className="relative w-32 object-contain sm:w-40"
+              style={{ filter: `drop-shadow(0 10px 16px ${card.color}40)` }}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+            />
+            <h4
+              className="relative mt-2 font-gasoek text-xl leading-tight sm:text-2xl"
+              style={{ color: card.color }}
+            >
+              {card.title}
+            </h4>
+            <p className="relative mt-1.5 line-clamp-2 text-[9px] leading-snug text-[#6b6b70] sm:line-clamp-3 sm:text-[10px]">
+              {card.description}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.button>
   )
 }
 
 export default function About() {
   const [activeIndex, setActiveIndex] = useState(-1)
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
-
-  const popupCard = openIndex === null ? null : valueCards[openIndex]
 
   const handleHover = useCallback((index: number) => setActiveIndex(index), [])
   const clearHover = useCallback(() => setActiveIndex(-1), [])
-  const handleOpen = useCallback((index: number) => setOpenIndex(index), [])
-  const closePopup = useCallback(() => setOpenIndex(null), [])
+  const handleToggle = useCallback(
+    (index: number) => setActiveIndex((prev) => (prev === index ? -1 : index)),
+    []
+  )
 
   return (
     <section id="tentang" className="relative overflow-hidden bg-white py-12 md:py-20">
@@ -147,92 +199,18 @@ export default function About() {
                 key={card.code}
                 card={card}
                 active={activeIndex === i}
-                onHover={() => handleHover(i)}
-                onOpen={() => handleOpen(i)}
+                onHoverStart={() => handleHover(i)}
+                onHoverEnd={clearHover}
+                onToggle={() => handleToggle(i)}
               />
             ))}
           </div>
         </div>
 
         <p className="mx-auto mt-5 max-w-[640px] text-center text-[11px] leading-relaxed text-[#9a9a9a] sm:text-xs">
-          Interaktif: arahkan kursor ke tiap kartu untuk melihat detailnya, lalu klik kartu untuk membaca
-          detail dari setiap upaya kami.
+          Interaktif: arahkan kursor atau sentuh tiap kartu untuk melihat detail dari setiap upaya kami.
         </p>
       </div>
-
-      {/* Detail sheet */}
-      <AnimatePresence>
-        {popupCard && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-50 flex items-center justify-center px-4"
-            style={{ backgroundColor: 'rgba(10,10,12,0.82)', backdropFilter: 'blur(4px)' }}
-            onClick={closePopup}
-          >
-            <motion.div
-              initial={{ scale: 0.94, opacity: 0, y: 18 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.94, opacity: 0, y: 18 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-sm overflow-hidden rounded-xl bg-white p-5 sm:p-6"
-              style={{
-                border: `1.5px solid ${popupCard.color}`,
-                boxShadow: `0 24px 60px rgba(10,10,12,0.35), 0 10px 28px ${popupCard.color}2e`,
-              }}
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            >
-              <button
-                onClick={closePopup}
-                className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg bg-black/[0.05] text-[#8a8a90] transition-all hover:bg-black/10 hover:text-[#141414]"
-                aria-label="Tutup"
-              >
-                <X className="h-4 w-4" />
-              </button>
-
-              <div className="relative">
-                <div className="flex items-center gap-2 pr-10">
-                  <span
-                    className="font-poppins text-[10px] font-semibold uppercase tracking-[0.24em]"
-                    style={{ color: popupCard.color }}
-                  >
-                    {popupCard.code}
-                  </span>
-                </div>
-
-                <div className="relative flex items-center justify-center py-6">
-                  <img
-                    src={popupCard.image}
-                    alt={popupCard.title}
-                    className="relative w-28 object-contain sm:w-32"
-                    loading="eager"
-                    decoding="async"
-                  />
-                </div>
-
-                <span
-                  className="block font-poppins text-[10px] font-semibold uppercase tracking-[0.16em]"
-                  style={{ color: popupCard.color }}
-                >
-                  {popupCard.badge}
-                </span>
-                <h3 className="mt-1.5 font-poppins text-[19px] font-bold leading-snug text-[#141414] sm:text-[21px]">
-                  {popupCard.title}
-                </h3>
-                <p className="mt-1 text-[12px] leading-relaxed text-[#6b6b70]">{popupCard.subtitle}</p>
-
-                <div className="mt-4 border-t border-black/10 pt-3">
-                  <p className="text-[13px] leading-relaxed text-[#3a3a3e] sm:text-[14px]">
-                    {popupCard.description}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   )
 }

@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom'
 import { useLanguage, Language } from '../context/LanguageContext'
 import { XMarkIcon as X, LanguageIcon as Languages } from '@heroicons/react/24/solid'
 
-function FlagID({ className = 'w-5 h-4' }: { className?: string }) {
+export function FlagID({ className = 'w-5 h-4' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
       <path fill="#e70011" d="M0 0h640v240H0z" />
@@ -13,7 +13,7 @@ function FlagID({ className = 'w-5 h-4' }: { className?: string }) {
   )
 }
 
-function FlagGB({ className = 'w-5 h-4' }: { className?: string }) {
+export function FlagGB({ className = 'w-5 h-4' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
       <path fill="#012169" d="M0 0h640v480H0z" />
@@ -25,7 +25,7 @@ function FlagGB({ className = 'w-5 h-4' }: { className?: string }) {
   )
 }
 
-function FlagCN({ className = 'w-5 h-4' }: { className?: string }) {
+export function FlagCN({ className = 'w-5 h-4' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
       <path fill="#de2910" d="M0 0h640v480H0z" />
@@ -35,7 +35,7 @@ function FlagCN({ className = 'w-5 h-4' }: { className?: string }) {
   )
 }
 
-const LANG_OPTIONS: { id: Language; label: string; fullLabel: string; Flag: React.FC<{ className?: string }> }[] = [
+export const LANG_OPTIONS: { id: Language; label: string; fullLabel: string; Flag: React.FC<{ className?: string }> }[] = [
   { id: 'id', label: 'ID', fullLabel: 'Bahasa Indonesia', Flag: FlagID },
   { id: 'en', label: 'EN', fullLabel: 'English', Flag: FlagGB },
   { id: 'zh', label: 'ZH', fullLabel: '中文 (Mandarin)', Flag: FlagCN },
