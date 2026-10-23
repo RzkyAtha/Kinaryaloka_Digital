@@ -64,7 +64,7 @@ export function LanguageBadge() {
         </span>
       </motion.button>
 
-      {/* Popup modal — portaled to body to escape navbar stacking context */}
+      {/* Popup modal - portaled to body to escape navbar stacking context */}
       {createPortal(
         <AnimatePresence>
           {showPopup && (

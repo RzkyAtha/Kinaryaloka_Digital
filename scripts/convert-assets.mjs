@@ -35,7 +35,7 @@ for (const name of sources) {
   const src = await stat(from)
   before += src.size
 
-  // A hand-optimized WebP already exists — keep it and drop the raster original.
+  // A hand-optimized WebP already exists - keep it and drop the raster original.
   if (existing.has(target.toLowerCase())) {
     const kept = await stat(to)
     after += kept.size

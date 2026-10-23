@@ -1,73 +1,75 @@
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowTopRightOnSquareIcon as ExternalLink, GlobeAltIcon as Globe, XMarkIcon as X, ChevronLeftIcon as ChevronLeft, ChevronRightIcon as ChevronRight, PhotoIcon as Image } from '@heroicons/react/24/solid'
+import {
+  GlobeAltIcon as Globe,
+  XMarkIcon as X,
+  ChevronLeftIcon as ChevronLeft,
+  ChevronRightIcon as ChevronRight,
+  LockClosedIcon as Lock,
+} from '@heroicons/react/24/solid'
 import { useState, useMemo, useCallback, useEffect } from 'react'
-import { PORTFOLIO_PROJECTS, PortfolioProject, PortfolioCategory } from '../context/PortfolioContext'
+import { PORTFOLIO_PROJECTS, PortfolioProject } from '../context/PortfolioContext'
 
-/** Tab colors are cycled, so any number of categories stays on-brand. */
-const TAB_COLORS = ['#E5A830', '#D4912A', '#C8752E', '#E8651A']
+const mshot = (url: string, w: number, h: number) =>
+  `https://s.wordpress.com/mshots/v1/${encodeURIComponent(url)}?w=${w}&h=${h}`
 
-function buildTabs(projects: PortfolioProject[]) {
-  const seen: PortfolioCategory[] = []
-  for (const p of projects) {
-    if (!seen.includes(p.category)) seen.push(p.category)
-  }
-  return seen.map((category, i) => {
-    const color = TAB_COLORS[i % TAB_COLORS.length]
-    return { id: category, label: category, color, glow: `${color}50` }
-  })
+const STATUS_GLOW: Record<PortfolioProject['status'], string> = {
+  Deployed: '#22C55E',
+  'Under Development': '#F5C542',
 }
 
-function ThumbnailImage({ src, alt, hasUrl, url, isDesign }: { src?: string; alt: string; hasUrl: boolean; url?: string; isDesign?: boolean }) {
+// --- Site preview - live screenshot via mshots, fallback ke gambar project ----
+function SiteShot({
+  project,
+  w,
+  h,
+  fit = 'cover',
+  className = '',
+}: {
+  project: PortfolioProject
+  w: number
+  h: number
+  fit?: 'cover' | 'contain'
+  className?: string
+}) {
   const [status, setStatus] = useState<'loading' | 'loaded' | 'error'>('loading')
-  const imgSrc = src || (hasUrl && url ? `https://s.wordpress.com/mshots/v1/${encodeURIComponent(url)}?w=800&h=500` : '')
+  const src =
+    project.showcase ||
+    (project.url ? mshot(project.url, w, h) : project.thumbnail || project.images?.[0] || '')
 
   return (
-    <>
+    <div className={`relative h-full w-full overflow-hidden bg-[#efefec] ${className}`}>
       {status === 'loading' && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse flex items-center justify-center">
-          <div className="w-10 h-10 rounded-full border-3 border-gray-300 border-t-[#D4912A] animate-spin" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-black/10 border-t-[#141414]" />
         </div>
       )}
       {status === 'error' && (
-        <div className="absolute inset-0 bg-gray-100 flex flex-col items-center justify-center gap-2">
-          <Globe className="w-8 h-8 text-gray-300" />
-          <span className="text-xs text-gray-400">Gagal memuat gambar</span>
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+          <Globe className="h-7 w-7 text-black/20" />
+          <span className="font-poppins text-[9px] font-semibold uppercase tracking-[0.18em] text-black/30">
+            Preview unavailable
+          </span>
         </div>
       )}
-      {imgSrc && (
+      {src && (
         <img
-          src={imgSrc}
-          alt={alt}
-          loading="eager"
+          src={src}
+          alt={project.name}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
           onLoad={() => setStatus('loaded')}
           onError={() => setStatus('error')}
-          className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${
-            status === 'loaded' ? 'opacity-100' : 'opacity-0'
-          } ${isDesign ? 'scale-[1.05]' : ''}`}
+          className={`h-full w-full transition-opacity duration-500 ${
+            fit === 'contain' ? 'object-contain' : 'object-cover object-top'
+          } ${status === 'loaded' ? 'opacity-100' : 'opacity-0'}`}
         />
       )}
-    </>
+    </div>
   )
 }
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 },
-  },
-}
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
-  },
-}
-
-// ─── Lightbox Slideshow ──────────────────────────────────────────────────────
+// --- Lightbox Slideshow ------------------------------------------------------
 function Lightbox({
   project,
   onClose,
@@ -88,16 +90,15 @@ function Lightbox({
   const goNext = useCallback(() => {
     if (images.length <= 1) return
     setDirection(1)
-    setCurrent(prev => (prev + 1) % images.length)
+    setCurrent((prev) => (prev + 1) % images.length)
   }, [images.length])
 
   const goPrev = useCallback(() => {
     if (images.length <= 1) return
     setDirection(-1)
-    setCurrent(prev => (prev - 1 + images.length) % images.length)
+    setCurrent((prev) => (prev - 1 + images.length) % images.length)
   }, [images.length])
 
-  // Keyboard navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
@@ -108,7 +109,6 @@ function Lightbox({
     return () => window.removeEventListener('keydown', handler)
   }, [onClose, goNext, goPrev])
 
-  // Swipe support
   const [touchStart, setTouchStart] = useState<number | null>(null)
   const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.touches[0].clientX)
   const handleTouchEnd = (e: React.TouchEvent) => {
@@ -121,10 +121,11 @@ function Lightbox({
     setTouchStart(null)
   }
 
-  // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    return () => {
+      document.body.style.overflow = ''
+    }
   }, [])
 
   if (images.length === 0) return null
@@ -143,26 +144,25 @@ function Lightbox({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/90 backdrop-blur-md" onClick={onClose} />
 
-      {/* Header */}
-      <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-4 sm:px-6 py-4">
+      <div className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-4 py-4 sm:px-6">
         <div className="text-white">
-          <h3 className="font-bold text-base sm:text-lg truncate max-w-[60vw]">{project.name}</h3>
-          <p className="text-white/50 text-xs">{current + 1} / {images.length}</p>
+          <h3 className="max-w-[60vw] truncate text-base font-bold sm:text-lg">{project.name}</h3>
+          <p className="text-xs text-white/50">
+            {current + 1} / {images.length}
+          </p>
         </div>
         <button
           onClick={onClose}
-          className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
         >
-          <X className="w-5 h-5" />
+          <X className="h-5 w-5" />
         </button>
       </div>
 
-      {/* Image area */}
       <div
-        className="relative z-10 w-full h-full flex items-center justify-center px-4 sm:px-16 py-20"
+        className="relative z-10 flex h-full w-full items-center justify-center px-4 py-20 sm:px-16"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
@@ -171,7 +171,7 @@ function Lightbox({
             key={current}
             src={images[current]}
             alt={`${project.name} - ${current + 1}`}
-            className="max-w-full max-h-full object-contain rounded-xl select-none"
+            className="max-h-full max-w-full select-none rounded-xl object-contain"
             draggable={false}
             custom={direction}
             variants={slideVariants}
@@ -183,35 +183,34 @@ function Lightbox({
         </AnimatePresence>
       </div>
 
-      {/* Navigation arrows */}
       {images.length > 1 && (
         <>
           <button
             onClick={goPrev}
-            className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-colors"
+            className="absolute left-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 sm:left-4 sm:h-12 sm:w-12"
           >
-            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
           <button
             onClick={goNext}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/10 hover:bg-white/25 flex items-center justify-center text-white transition-colors"
+            className="absolute right-2 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/25 sm:right-4 sm:h-12 sm:w-12"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+            <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
           </button>
         </>
       )}
 
-      {/* Dot indicators */}
       {images.length > 1 && (
-        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
+        <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 sm:bottom-6">
           {images.map((_, i) => (
             <button
               key={i}
-              onClick={() => { setDirection(i > current ? 1 : -1); setCurrent(i) }}
+              onClick={() => {
+                setDirection(i > current ? 1 : -1)
+                setCurrent(i)
+              }}
               className={`rounded-full transition-all duration-200 ${
-                i === current
-                  ? 'w-6 h-2 bg-[#F5C542]'
-                  : 'w-2 h-2 bg-white/30 hover:bg-white/50'
+                i === current ? 'h-2 w-6 bg-[#F5C542]' : 'h-2 w-2 bg-white/30 hover:bg-white/50'
               }`}
             />
           ))}
@@ -221,190 +220,274 @@ function Lightbox({
   )
 }
 
-// ─── Main Portfolio Component ────────────────────────────────────────────────
+// --- Main Portfolio Component ------------------------------------------------
 export default function Portfolio() {
   const projects = PORTFOLIO_PROJECTS
-  const mainTabs = useMemo(() => buildTabs(projects), [projects])
-  const [mainCategory, setMainCategory] = useState<PortfolioCategory>(() => mainTabs[0]?.id ?? '')
+  const [selectedId, setSelectedId] = useState(projects[0]?.id ?? '')
   const [lightboxProject, setLightboxProject] = useState<PortfolioProject | null>(null)
 
-  const filteredProjects = useMemo(
-    () => projects.filter((p) => p.category === mainCategory),
-    [projects, mainCategory]
+  const selected = useMemo(
+    () => projects.find((p) => p.id === selectedId) ?? projects[0],
+    [projects, selectedId]
   )
+  const hasGallery = !!selected?.images && selected.images.length > 0
+  const hostname = useMemo(() => {
+    try {
+      return selected?.url ? new URL(selected.url).hostname : ''
+    } catch {
+      return ''
+    }
+  }, [selected])
+
+  const handleOpen = () => {
+    if (hasGallery) setLightboxProject(selected)
+    else if (selected?.url) window.open(selected.url, '_blank', 'noopener,noreferrer')
+  }
 
   return (
-    <section className="min-h-screen bg-[#f5f5f5] pt-32 pb-20 px-4 sm:px-8 lg:px-12">
-      <div className="max-w-[1600px] mx-auto">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center mb-6"
-        >
-          <span className="inline-block px-5 py-2 rounded-lg text-white font-bold text-sm mb-4 tracking-wide" style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}>
-            PORTFOLIO
-          </span>
-          <h2 className="font-climate text-[24px] sm:text-[30px] lg:text-[38px] text-[#2a2a2a] mb-4 leading-[1.2]">
-            Projek yang Telah <span className="bg-clip-text text-transparent" style={{ backgroundImage: 'linear-gradient(135deg, #F5C542, #D4912A)' }}>Kami</span> Kerjakan
-          </h2>
-        </motion.div>
+    <section className="relative overflow-hidden bg-[#f7f7f5] pb-16 pt-32 md:pb-24">
+      {/* -- Giant backdrop word -- */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-24 -translate-x-1/2 select-none whitespace-nowrap font-poppins text-[16vw] font-extrabold uppercase leading-none tracking-tight text-[#e9eaec]"
+      >
+        Showcase
+      </span>
 
-        {/* Main Category Tabs */}
-        <motion.div
-          className="flex flex-col items-center gap-4 mb-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <div className="bg-[#1a1a1a] p-1.5 rounded-2xl flex gap-1 border border-[#2a2a2a]">
-            {mainTabs.map((tab) => {
-              const isActive = mainCategory === tab.id
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setMainCategory(tab.id)}
-                  className="relative px-6 md:px-10 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base whitespace-nowrap transition-colors duration-200 outline-none cursor-pointer"
-                  style={{ color: isActive ? '#fff' : '#666' }}
-                >
-                  {isActive && (
-                    <motion.span
-                      layoutId="portfolio-tab-pill"
-                      className="absolute inset-0 rounded-xl z-0"
-                      style={{ backgroundColor: tab.color }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 34 }}
+      <div className="relative mx-auto max-w-[1120px] px-5 sm:px-8 lg:px-10">
+        {/* -- Editorial header -- */}
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <h2 className="font-poppins text-[38px] font-extrabold uppercase leading-[0.95] tracking-tight sm:text-[48px] md:text-[56px]">
+            <span className="block text-[#141414]">Karya</span>
+            <span className="block text-[#c6c7ca]">Terpilih</span>
+          </h2>
+          <p className="max-w-xs text-[13px] leading-relaxed text-[#6b6b70] md:text-right">
+            Lihat langsung website yang sudah kami bangun, pilih projek di panel showcase, lalu
+            kunjungi versi live-nya.
+          </p>
+        </div>
+
+        {/* -- Asymmetric editorial grid -- */}
+        <div className="mt-10 grid gap-10 md:mt-14 lg:grid-cols-[1fr_minmax(0,300px)] lg:gap-10">
+          {/* -- Right: selected project detail -- */}
+          <div className="order-2">
+            <div key={selected.id}>
+              <div className="flex items-center gap-2.5">
+                <span className="block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
+                  {selected.category}
+                </span>
+                {selected.badge && (
+                  <span
+                    className="rounded-md px-2 py-0.5 font-poppins text-[8px] font-semibold uppercase tracking-[0.16em] text-white"
+                    style={{ background: selected.color }}
+                  >
+                    {selected.badge}
+                  </span>
+                )}
+              </div>
+              <h3 className="mt-2 font-poppins text-[26px] font-bold leading-tight text-[#141414] sm:text-[30px]">
+                {selected.name}
+              </h3>
+              <p className="mt-2.5 text-justify text-[12.5px] leading-relaxed text-[#6b6b70]">
+                {selected.description}
+              </p>
+
+              {/* Details */}
+              <ul className="mt-5 space-y-1.5 border-t border-black/10 pt-4">
+                {selected.details.map((d) => (
+                  <li key={d} className="flex items-start gap-2">
+                    <span
+                      className="mt-[6px] h-1 w-1 shrink-0 rounded-full"
+                      style={{ background: selected.color }}
                     />
-                  )}
-                  {isActive && (
-                    <motion.span
-                      layoutId="portfolio-tab-glow"
-                      className="absolute inset-0 rounded-xl z-0 blur-md"
-                      style={{ backgroundColor: tab.glow }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 34 }}
-                    />
-                  )}
-                  <span className="relative z-10">{tab.label}</span>
-                </button>
-              )
-            })}
+                    <span className="text-[11px] leading-relaxed text-[#6b6b70]">{d}</span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* CTA */}
+              <button
+                onClick={handleOpen}
+                className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#141414] px-6 py-3 font-poppins text-[12px] font-semibold text-white transition-all duration-300 hover:bg-black hover:shadow-lg"
+              >
+                {hasGallery ? 'Lihat Gallery' : 'Kunjungi Website'}
+              </button>
+            </div>
           </div>
 
-          {/* Subtitle */}
-          <p className="text-gray-500 text-xs sm:text-sm max-w-2xl mx-auto inline-flex items-center justify-center flex-wrap gap-1 mt-2">
-            <span>Produk kami dapat dikenali dengan adanya</span>
-            <span className="inline-flex items-center gap-1.5 bg-[#2a2a2a] rounded-md px-2.5 py-1">
-              <span className="text-gray-300 text-xs font-medium">Powered by</span>
-              <img src="/Assets/logo_kinarya.webp" alt="Kinaryaloka" className="h-4 w-4 object-contain" />
-            </span>
-            <span>di tiap footer websitenya, hak cipta dilindungi.</span>
-          </p>
-        </motion.div>
-
-        {/* Project Cards Grid */}
-        <AnimatePresence mode="popLayout">
-        <motion.div
-          key={mainCategory}
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          exit={{ opacity: 0, y: -12 }}
-          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
-        >
-          {filteredProjects.map((project) => {
-            const hasUrl = !!project.url
-            const hasGallery = !!project.images && project.images.length > 0
-            return (
-            <motion.div
-              key={project.id}
-              variants={cardVariants}
-              whileHover={{ y: -8 }}
-              className={`group bg-white rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_48px_rgba(0,0,0,0.12)] transition-shadow duration-300 ${hasGallery ? 'cursor-pointer' : ''}`}
-              onClick={hasGallery ? () => setLightboxProject(project) : undefined}
-            >
-              {/* Thumbnail */}
-              <div className="relative w-full aspect-[16/10] overflow-hidden bg-gray-100">
-                <ThumbnailImage src={project.thumbnail} alt={project.name} hasUrl={hasUrl} url={project.url} isDesign={hasGallery} />
-                {/* Overlay on hover - website projects */}
-                {hasUrl && (
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                    <motion.a
-                      href={project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="px-5 py-2.5 bg-white text-[#2a2a2a] rounded-full font-semibold text-sm flex items-center gap-2 shadow-lg"
-                      onClick={e => e.stopPropagation()}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      Kunjungi Website
-                    </motion.a>
+          {/* -- Left: floating browser mockup -- */}
+          <div className="order-1">
+            <div className="relative mx-auto w-full max-w-[560px]">
+              {/* Floating browser window */}
+              <motion.div
+                className="relative z-10 flex justify-center"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ willChange: 'transform' }}
+              >
+                <div
+                  className="w-[86%] overflow-hidden rounded-xl bg-white"
+                  style={{
+                    boxShadow: `0 24px 48px ${selected.color}26, 0 12px 24px rgba(0,0,0,0.12)`,
+                    transition: 'box-shadow 400ms ease',
+                  }}
+                >
+                  {/* Chrome bar */}
+                  <div className="flex items-center gap-2 border-b border-black/10 bg-[#f3f3f1] px-3 py-2">
+                    <span className="flex gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#ff5f57]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#febc2e]" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-[#28c840]" />
+                    </span>
+                    <span className="mx-auto flex min-w-0 items-center gap-1.5 rounded-md bg-white px-3 py-1 font-poppins text-[9px] font-medium tracking-wide text-[#6b6b70]">
+                      <Lock className="h-2.5 w-2.5 shrink-0 text-[#28c840]" />
+                      <span className="truncate">{hostname || selected.name}</span>
+                    </span>
+                    <span className="w-[46px] shrink-0" aria-hidden="true" />
                   </div>
-                )}
-                {/* Gallery overlay - design projects */}
-                {hasGallery && (
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center gap-1.5 text-white">
-                      <Image className="w-6 h-6" />
-                      <span className="text-sm font-semibold">{project.images!.length + (project.thumbnail ? 1 : 0)} gambar</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Info */}
-              <div className="p-6">
-                {project.badge && (
-                  <span className="inline-block px-3 py-1 rounded-lg text-white font-bold text-xs mb-3" style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}>
-                    {project.badge}
-                  </span>
-                )}
-                <h3 className="text-2xl font-bold text-[#2a2a2a] mb-1">{project.name}</h3>
-                <p className="text-xs font-semibold text-[#D4912A] mb-3">{project.category}</p>
-                <p className="text-gray-500 text-sm leading-relaxed mb-4">
-                  {project.description}
-                </p>
-                {hasUrl ? (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-[#D4912A] font-semibold text-sm hover:underline"
-                    onClick={e => e.stopPropagation()}
+                  {/* Viewport */}
+                  <button
+                    type="button"
+                    onClick={handleOpen}
+                    className="relative block aspect-[7588/6296] w-full cursor-pointer outline-none"
+                    aria-label={`Buka ${selected.name}`}
                   >
-                    <span>{new URL(project.url).hostname}</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                ) : hasGallery ? (
-                  <span className="inline-flex items-center gap-1.5 text-[#D4912A] font-semibold text-sm">
-                    <Image className="w-3.5 h-3.5" />
-                    Lihat Gallery
-                  </span>
-                ) : (
-                  <span className="inline-flex items-center gap-1.5 text-[#D4912A] font-semibold text-sm">
-                    {project.category}
-                  </span>
-                )}
-              </div>
-            </motion.div>
-            )
-          })}
+                    <SiteShot key={selected.id} project={selected} w={880} h={550} fit="contain" />
+                  </button>
+                </div>
+              </motion.div>
 
-          {/* Coming Soon placeholder */}
-          <motion.div
-            variants={cardVariants}
-            className="bg-white/50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center min-h-[320px] text-center p-8"
-          >
-            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mb-4">
-              <Globe className="w-8 h-8 text-gray-300" />
+              {/* Floating status chip */}
+              <motion.span
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                className="absolute right-[2%] top-0 z-20 flex items-center gap-1.5 rounded-lg bg-[#141414] px-3 py-2 font-poppins text-[10px] font-semibold text-white shadow-sm"
+                style={{
+                  boxShadow: `0 6px 16px ${hasGallery ? selected.color : STATUS_GLOW[selected.status]}66, 0 2px 6px rgba(0,0,0,0.15)`,
+                }}
+              >
+                {hasGallery ? 'Gallery' : selected.status}
+              </motion.span>
             </div>
-            <h3 className="text-lg font-bold text-gray-400 mb-2">Projek Selanjutnya</h3>
-            <p className="text-gray-400 text-sm">Segera hadir...</p>
-          </motion.div>
-        </motion.div>
-        </AnimatePresence>
 
+          </div>
+
+        </div>
+
+        {/* -- Showcase strip - horizontal list -- */}
+        <div className="mt-10 md:mt-14">
+          <span className="mb-3 block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
+            Showcase
+          </span>
+          <div className="flex gap-3 overflow-x-auto pb-2 sm:gap-4">
+            {projects.map((p) => {
+              const isSel = p.id === selected.id
+              return (
+                <motion.button
+                  key={p.id}
+                  type="button"
+                  onClick={() => setSelectedId(p.id)}
+                  whileTap={{ scale: 0.97 }}
+                  className="relative w-[220px] shrink-0 cursor-pointer overflow-hidden rounded-xl bg-white text-left transition-all duration-300"
+                  style={{
+                    border: `1.5px solid ${isSel ? p.color : 'rgba(0,0,0,0.08)'}`,
+                    boxShadow: isSel
+                      ? `0 10px 28px ${p.color}30, 0 2px 8px rgba(0,0,0,0.08)`
+                      : '0 2px 8px rgba(0,0,0,0.04)',
+                  }}
+                  aria-pressed={isSel}
+                  aria-label={`Lihat projek ${p.name}`}
+                >
+                  <div
+                    className={`relative aspect-[2592/1608] overflow-hidden bg-white transition-all duration-300 ${
+                      isSel ? '' : 'opacity-50 grayscale'
+                    }`}
+                  >
+                    {p.select ? (
+                      <img
+                        src={p.select}
+                        alt={p.name}
+                        loading="lazy"
+                        decoding="async"
+                        draggable={false}
+                        className="h-full w-full object-contain"
+                      />
+                    ) : p.showcase ? (
+                      <SiteShot project={p} w={400} h={250} fit="contain" />
+                    ) : p.url ? (
+                      <SiteShot project={p} w={400} h={250} />
+                    ) : (
+                      <img
+                        src={p.thumbnail || p.images?.[0]}
+                        alt={p.name}
+                        loading="lazy"
+                        decoding="async"
+                        draggable={false}
+                        className="h-full w-full object-cover"
+                      />
+                    )}
+                  </div>
+                  <div className="px-3.5 py-3">
+                    <div className="flex items-baseline justify-between gap-1">
+                      <span
+                        className="font-poppins text-[12px] font-semibold leading-tight transition-colors duration-300"
+                        style={{ color: isSel ? '#141414' : '#8a8a90' }}
+                      >
+                        {p.name}
+                      </span>
+                    </div>
+                    <span
+                      className="mt-1 block font-poppins text-[8px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300"
+                      style={{ color: isSel ? p.color : '#b0b0b5' }}
+                    >
+                      {isSel ? 'Selected' : 'Tap to view'}
+                    </span>
+                  </div>
+                </motion.button>
+              )
+            })}
+
+            {/* Coming-soon slot */}
+            <div className="flex min-h-[120px] w-[220px] shrink-0 flex-col items-center justify-center self-stretch rounded-xl border-[1.5px] border-dashed border-black/15 bg-white/40 p-4 text-center">
+              <Globe className="mb-2 h-6 w-6 text-black/15" />
+              <span className="font-poppins text-[10px] font-semibold text-black/30">
+                Projek Selanjutnya
+              </span>
+              <span className="font-poppins text-[8px] uppercase tracking-[0.18em] text-black/25">
+                Segera hadir
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* -- Bottom bar -- */}
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-black/10 pt-8 sm:flex-row">
+          <div className="text-center sm:text-left">
+            <span className="block font-poppins text-[9px] font-semibold uppercase tracking-[0.25em] text-[#8a8a90]">
+              Projek Terkirim
+            </span>
+            <span className="font-poppins text-[28px] font-extrabold tracking-tight text-[#141414] sm:text-[34px]">
+              {String(projects.length).padStart(2, '0')}
+            </span>
+            <span className="block text-[10px] text-[#9a9aa0]">
+              Sedang ditampilkan: {selected.name}
+            </span>
+          </div>
+        </div>
+
+        <p className="mt-6 text-center text-[10px] leading-relaxed text-[#9a9aa0] sm:text-xs">
+          Preview di atas adalah live screenshot dari situs aslinya - klik untuk membukanya. Produk
+          kami dapat dikenali dengan adanya{' '}
+          <span className="inline-flex translate-y-[2px] items-center gap-1 rounded-md bg-[#2a2a2a] px-2 py-0.5 align-baseline">
+            <span className="text-[9px] font-medium text-gray-300">Powered by</span>
+            <img
+              src="/Assets/logo_kinarya.webp"
+              alt="Kinaryaloka"
+              className="h-3 w-3 object-contain"
+            />
+          </span>{' '}
+          di tiap footer websitenya, hak cipta dilindungi.
+        </p>
       </div>
 
       {/* Lightbox */}

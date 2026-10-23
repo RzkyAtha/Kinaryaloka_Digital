@@ -1,4 +1,4 @@
-# About Section — Swiss Modular Grid Redesign
+# About Section - Swiss Modular Grid Redesign
 
 Date: 2026-09-20
 Scope: `src/components/About.tsx` only. No new assets, no new dependencies.
@@ -9,7 +9,7 @@ Redesign the `#tentang` section in Swiss (International Typographic) style while
 
 ## Decisions
 
-- Layout: **C — Modular Grid**. Entire section is one bordered table (`1px solid #2a2a2a`), sharp corners, no shadow, no gradient, no rounded corners.
+- Layout: **C - Modular Grid**. Entire section is one bordered table (`1px solid #2a2a2a`), sharp corners, no shadow, no gradient, no rounded corners.
 - Value module state: **Solid color block**. Idle = white with police-text image; hover/focus = full fill with the value color, white text, illustration replaces police-text.
 - Motion: **Medium**. Keep illustration float + chromatic glitch on hover. Remove marquee, scanline, `BlueprintFrame`, radial glow, blur circle, and `whileHover` lift.
 
@@ -17,20 +17,20 @@ Redesign the `#tentang` section in Swiss (International Typographic) style while
 
 Rows inside a single `max-w-[1400px]` bordered container:
 
-1. **Meta bar** — `01 / TENTANG` left, `KINARYALOKA DIGITAL STUDIO` right. Mono, 10px, uppercase, `tracking-[0.14em]`. 3px rule below.
-2. **Header** — `lg:grid-cols-12`: headline spans 7 cols, intro paragraph spans 5 cols (left-aligned, bottom-aligned). Vertical rule between. `doodle_tech_art.webp` as background texture at opacity 0.04 inside the headline cell only.
-3. **Values** — `grid-cols-2 lg:grid-cols-4`, each cell `aspect-square`, separated by 1px rules.
-4. **Process** — `grid-cols-2 lg:grid-cols-4`, each cell: mono step index (`01`–`04`) colored with `valueCards[i].color`, label bold, note muted. Existing `processSteps[].code` text ("Pertama", "Lalu kita", …) is shown as the small mono caption above the label; numeric index is added.
-5. **Footer meta bar** — the interactive hint text ("Interaktif: arahkan kursor…") in mono 10px, left-aligned.
+1. **Meta bar** - `01 / TENTANG` left, `KINARYALOKA DIGITAL STUDIO` right. Mono, 10px, uppercase, `tracking-[0.14em]`. 3px rule below.
+2. **Header** - `lg:grid-cols-12`: headline spans 7 cols, intro paragraph spans 5 cols (left-aligned, bottom-aligned). Vertical rule between. `doodle_tech_art.webp` as background texture at opacity 0.04 inside the headline cell only.
+3. **Values** - `grid-cols-2 lg:grid-cols-4`, each cell `aspect-square`, separated by 1px rules.
+4. **Process** - `grid-cols-2 lg:grid-cols-4`, each cell: mono step index (`01`-`04`) colored with `valueCards[i].color`, label bold, note muted. Existing `processSteps[].code` text ("Pertama", "Lalu kita", …) is shown as the small mono caption above the label; numeric index is added.
+5. **Footer meta bar** - the interactive hint text ("Interaktif: arahkan kursor…") in mono 10px, left-aligned.
 
 Section background: white with the existing faint grid-paper pattern (kept, unchanged).
 
 ## Typography
 
 - Headline: `font-poppins font-extrabold tracking-[-0.03em] leading-[0.95]`, size `clamp(32px, 5vw, 64px)`. Line 2 ("Partner yang Ngerti") in solid `#F5C542`; lines 1 and 3 in `#2a2a2a`. No gradient text. `font-climate` is not used in this section.
-- Labels/numbers: `font-mono`, 10–11px, uppercase, `tracking-[0.14em]`.
-- Body: Poppins 400, 13–14px, `#5a5a5a`, `text-left` (no justify).
-- Module title: Poppins 700, 15–18px, `tracking-[-0.01em]`.
+- Labels/numbers: `font-mono`, 10-11px, uppercase, `tracking-[0.14em]`.
+- Body: Poppins 400, 13-14px, `#5a5a5a`, `text-left` (no justify).
+- Module title: Poppins 700, 15-18px, `tracking-[-0.01em]`.
 
 ## Value module
 
@@ -64,7 +64,7 @@ State switch uses `AnimatePresence` with 200ms opacity crossfade, same fixed-sta
 
 ## Accessibility
 
-- Buttons keep `aria-label="{title} — {badge}"`.
+- Buttons keep `aria-label="{title} - {badge}"`.
 - `focus-visible` sets active state (existing `onFocus`) and shows a 2px inset ring.
 - Popup: `role="dialog"`, `aria-modal="true"`, Escape closes (add `keydown` listener like `WhatsAppPopup`).
 - Images keep existing `alt`, `loading="lazy"`, `decoding="async"`; popup image `loading="eager"`.

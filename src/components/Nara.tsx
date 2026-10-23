@@ -5,22 +5,22 @@ import { sendMessage as geminiSend, resetChat as geminiReset, isGeminiAvailable 
 
 const naraImg = '/Assets/nara_mask.webp'
 
-// ─── Knowledge Base ─────────────────────────────────────────────────────────
+// --- Knowledge Base ---------------------------------------------------------
 const KB = {
   company: {
     name: 'KINARYALOKA Digital Studio',
     tagline: 'Partner digital untuk UMKM yang mau serius tapi tidak tahu mulai dari mana.',
     description: 'KINARYALOKA Digital Studio lahir untuk membantu UMKM menerjemahkan cara bisnis mereka ke sistem digital yang rapi, jelas, dan bisa dipakai sehari-hari.',
     values: [
-      'Tepat Sasaran — Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
-      'Partner bukan Vendor — Support dan komunikasi tetap berjalan setelah project selesai.',
-      'Langsung Kepakai — Semua yang kami bangun dirancang agar bisa dipakai sehari-hari.',
-      'Transparan & Jelas — Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi.',
+      'Tepat Sasaran - Kami pelajari bisnis kamu dulu, baru bikin sistemnya.',
+      'Partner bukan Vendor - Support dan komunikasi tetap berjalan setelah project selesai.',
+      'Langsung Kepakai - Semua yang kami bangun dirancang agar bisa dipakai sehari-hari.',
+      'Transparan & Jelas - Harga jelas, progress jelas, hasil jelas. Tidak ada biaya tersembunyi.',
     ],
     whatsapp: '6281219579683',
     whatsappMessage: 'Halo KINARYALOKA! Saya mau konsultasi gratis 30 menit untuk bisnis saya.',
     founded: '29 April 2026',
-    sharia: 'KINARYALOKA berprinsip syariah — kami tidak menerima project yang bertentangan dengan hukum syariat Islam.',
+    sharia: 'KINARYALOKA berprinsip syariah - kami tidak menerima project yang bertentangan dengan hukum syariat Islam.',
     commitment: ['90% akurasi produk akhir sesuai design Figma', '24/7 komunikasi aktif dan support tanpa batas waktu', '100% integrasi sistem yang dapat diandalkan'],
   },
   process: [
@@ -151,7 +151,7 @@ const KB = {
 
 const allProducts = [...KB.products.ecommerce, ...KB.products.webdesign, ...KB.products.branding]
 
-// ─── Navigation Shortcuts ───────────────────────────────────────────────────
+// --- Navigation Shortcuts ---------------------------------------------------
 function scrollTo(sectionId: string) {
   document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
 }
@@ -161,7 +161,7 @@ function openWA(custom?: string) {
   window.open(`https://wa.me/${KB.company.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank')
 }
 
-// ─── Consultation State ──────────────────────────────────────────────────────
+// --- Consultation State ------------------------------------------------------
 type ConsultStep = 'idle' | 'bisnis_type' | 'bisnis_need' | 'budget' | 'done'
 
 interface ConsultState {
@@ -171,7 +171,7 @@ interface ConsultState {
   budget: number
 }
 
-// ─── Conversation Context ─────────────────────────────────────────────────────
+// --- Conversation Context -----------------------------------------------------
 interface ConvContext {
   userName: string
   lastIntent: Intent
@@ -181,7 +181,7 @@ interface ConvContext {
   awaitingCustomContext: string | null
 }
 
-// ─── Message Type ────────────────────────────────────────────────────────────
+// --- Message Type ------------------------------------------------------------
 interface ChatMessage {
   id: number
   role: 'bot' | 'user'
@@ -192,7 +192,7 @@ interface ChatMessage {
   waLink?: string
 }
 
-// ─── Intent Matching ─────────────────────────────────────────────────────────
+// --- Intent Matching ---------------------------------------------------------
 function matchKeywords(text: string, keywords: string[]): boolean {
   const lower = text.toLowerCase()
   return keywords.some((k) => lower.includes(k))
@@ -202,14 +202,14 @@ function normalize(text: string): string {
   return text.toLowerCase().replace(/[^\w\s]/g, ' ').replace(/\s+/g, ' ').trim()
 }
 
-// ─── Stopwords ────────────────────────────────────────────────────────────────
+// --- Stopwords ----------------------------------------------------------------
 const STOPWORDS = new Set([
   'yang', 'dan', 'di', 'ke', 'dari', 'ini', 'itu', 'untuk', 'dengan', 'pada',
   'adalah', 'atau', 'juga', 'kamu', 'anda', 'akan', 'kalian', 'mereka',
   'dong', 'sih', 'deh', 'nih', 'lah', 'ya', 'yah', 'kak', 'bang', 'mas', 'mbak',
 ])
 
-// ─── Naive Bayes Classifier ───────────────────────────────────────────────────
+// --- Naive Bayes Classifier ---------------------------------------------------
 class NaiveBayesClassifier {
   private wordCounts: Map<string, Map<string, number>> = new Map()
   private classCounts: Map<string, number> = new Map()
@@ -273,7 +273,7 @@ type Intent =
   | 'nav_tentang' | 'nav_produk' | 'nav_komitmen' | 'nav_digital'
   | 'whatsapp' | 'thanks' | 'history' | 'unknown' | 'custom'
 
-// ─── Dynamic Keyword Learning ────────────────────────────────────────────────────
+// --- Dynamic Keyword Learning ----------------------------------------------------
 const dynamicKeywords: Map<string, Intent> = new Map()
 const customIntentResponses: Map<string, string> = new Map()
 
@@ -290,7 +290,7 @@ function clearDynamicKeywords() {
   customIntentResponses.clear()
 }
 
-// ─── Training Data & Classifier Init ─────────────────────────────────────────
+// --- Training Data & Classifier Init -----------------------------------------
 const TRAINING_DATA: Array<[string, string[]]> = [
   ['greeting', [
     'halo', 'hai', 'hi', 'hello', 'selamat pagi', 'selamat siang', 'selamat malam',
@@ -440,7 +440,7 @@ const TRAINING_DATA: Array<[string, string[]]> = [
 const classifier = new NaiveBayesClassifier()
 TRAINING_DATA.forEach(([intent, examples]) => classifier.train(intent, examples))
 
-// ─── Entity Extractor ─────────────────────────────────────────────────────────
+// --- Entity Extractor ---------------------------------------------------------
 interface ExtractedEntities {
   budget?: number                              // dalam ribuan IDR (5000 = 5 juta)
   bizCategory?: string                         // kategori bisnis user
@@ -486,7 +486,7 @@ function extractEntities(text: string): ExtractedEntities {
   return result
 }
 
-// ─── Sentiment Detector ───────────────────────────────────────────────────────
+// --- Sentiment Detector -------------------------------------------------------
 type SentimentLabel = 'positive' | 'negative' | 'frustrated' | 'neutral'
 
 interface Sentiment {
@@ -515,7 +515,7 @@ function detectSentiment(text: string): Sentiment {
   return { label: 'neutral', score: 0 }
 }
 
-// ─── TF-IDF FAQ Retriever ─────────────────────────────────────────────────────
+// --- TF-IDF FAQ Retriever -----------------------------------------------------
 interface FAQDoc { id: string; question: string; intent: Intent; tfidf?: Map<string, number> }
 
 class TFIDFRetriever {
@@ -596,7 +596,7 @@ const faqRetriever = new TFIDFRetriever()
 faqRetriever.addDocs(FAQ_DOCS)
 faqRetriever.build()
 
-// ─── Clarification Suggestion Options ──────────────────────────────────────────
+// --- Clarification Suggestion Options ------------------------------------------
 const CLARIFICATION_OPTIONS: { intent: Intent; chip: string }[] = [
   { intent: 'about',            chip: 'Profil KINARYALOKA' },
   { intent: 'product_ecommerce', chip: 'Toko Online & E-Commerce' },
@@ -621,7 +621,7 @@ const CLARIFICATION_OPTIONS: { intent: Intent; chip: string }[] = [
 function detectIntent(text: string): Intent {
   const t = normalize(text)
 
-  // 1. Dynamic learned keywords — highest priority
+  // 1. Dynamic learned keywords - highest priority
   for (const [word, intent] of dynamicKeywords) {
     if (t.includes(word)) return intent
   }
@@ -636,18 +636,18 @@ function detectIntent(text: string): Intent {
   if (matchKeywords(t, ['komitmen kami', 'ke komitmen'])) return 'nav_komitmen'
   if (matchKeywords(t, ['mengapa digital', 'kenapa digital', 'why digital'])) return 'nav_digital'
 
-  // 4. Naive Bayes — primary intent engine
+  // 4. Naive Bayes - primary intent engine
   const { intent: nbIntent, confidence } = classifier.predict(text)
   if (confidence >= 0.15) return nbIntent as Intent
 
-  // 5. TF-IDF FAQ retrieval — last resort before unknown
+  // 5. TF-IDF FAQ retrieval - last resort before unknown
   const { doc, score } = faqRetriever.query(text)
   if (score >= 0.2) return doc.intent
 
   return 'unknown'
 }
 
-// ─── Response Generator ──────────────────────────────────────────────────────
+// --- Response Generator ------------------------------------------------------
 let msgId = 100
 
 function makeBot(text: string, extra?: Partial<ChatMessage>): ChatMessage {
@@ -669,7 +669,7 @@ function getResponse(
 ): ChatMessage[] {
   const intent = detectIntent(userText)
 
-  // ── Custom context teaching mode: user provides label for an unrecognized text ──
+  // -- Custom context teaching mode: user provides label for an unrecognized text --
   if (ctx.awaitingCustomContext && intent === 'unknown') {
     const originalText = ctx.awaitingCustomContext
     const contextLabel = userText.trim()
@@ -708,7 +708,7 @@ function getResponse(
     awaitingCustomContext: intent !== 'unknown' ? null : ctx.awaitingCustomContext,
   }
 
-  // ── Clarification resolution: user picked a relevant option ──
+  // -- Clarification resolution: user picked a relevant option --
   if (ctx.pendingClarification && intent !== 'unknown') {
     addDynamicKeyword(ctx.pendingClarification.originalText, intent)
     setCtx({ ...updatedCtx, pendingClarification: null, clarifyLoopCount: 0, awaitingCustomContext: null })
@@ -716,7 +716,7 @@ function getResponse(
     setCtx(updatedCtx)
   }
 
-  // ── Consultation flow overrides intent ──
+  // -- Consultation flow overrides intent --
   if (consult.step === 'bisnis_type') {
     const bisnisList = ['umkm', 'kuliner', 'fashion', 'kecantikan', 'jasa', 'manufaktur', 'retail', 'pendidikan', 'kesehatan', 'properti', 'cafe', 'restoran', 'salon']
     const detected = bisnisList.find((b) => userText.toLowerCase().includes(b)) || userText.trim()
@@ -734,8 +734,8 @@ function getResponse(
     setConsult({ ...consult, step: 'budget', need })
     return [
       makeBot(
-        `Mantap! **${need}** — pilihan yang tepat untuk berkembang secara digital. 💡\n\nTerakhir, kira-kira budget yang kamu siapkan berapa?`,
-        { chips: ['Di bawah 2 juta', '2–5 juta', '5–10 juta', '10 juta ke atas'] },
+        `Mantap! **${need}** - pilihan yang tepat untuk berkembang secara digital. 💡\n\nTerakhir, kira-kira budget yang kamu siapkan berapa?`,
+        { chips: ['Di bawah 2 juta', '2-5 juta', '5-10 juta', '10 juta ke atas'] },
       ),
     ]
   }
@@ -743,8 +743,8 @@ function getResponse(
   if (consult.step === 'budget') {
     const budgetMap: Record<string, number> = {
       'di bawah 2 juta': 2000,
-      '2–5 juta': 5000,
-      '5–10 juta': 10000,
+      '2-5 juta': 5000,
+      '5-10 juta': 10000,
       '10 juta ke atas': 99000,
     }
     const budget = budgetMap[userText.toLowerCase()] ?? 99000
@@ -779,7 +779,7 @@ function getResponse(
     const allCovered = perCat.every(c => c.withinBudget.length > 0)
 
     if (allCovered) {
-      // Budget OK for all categories — show best pick per category
+      // Budget OK for all categories - show best pick per category
       const final = perCat.map(c => c.withinBudget[0])
       return [
         makeBot(
@@ -789,7 +789,7 @@ function getResponse(
       ]
     }
 
-    // Budget belum cukup — tampilkan 1 opsi termurah per kategori
+    // Budget belum cukup - tampilkan 1 opsi termurah per kategori
     const uncovered = perCat.filter(c => c.withinBudget.length === 0).map(c => c.label).join(', ')
     const cheapestFinal = perCat.map(c => c.cheapest)
     return [
@@ -804,7 +804,7 @@ function getResponse(
     ]
   }
 
-  // ── Fast-track: direct product request outside consultation flow ──
+  // -- Fast-track: direct product request outside consultation flow --
   if (
     consult.step === 'idle' &&
     (intent === 'product_ecommerce' || intent === 'product_webdesign' || intent === 'product_branding' || intent === 'consult') &&
@@ -854,12 +854,12 @@ function getResponse(
     // Multiple needs but no budget → fast-track to budget question
     setConsult({ step: 'budget', bisnisType: biznisType, need: detectedNeed, budget: 0 })
     return [makeBot(
-      `Sip${name}! Kamu butuh **${detectedNeed}** untuk bisnismu. 💡\n\nSatu lagi — kira-kira budget yang kamu siapkan berapa?`,
-      { chips: ['Di bawah 2 juta', '2–5 juta', '5–10 juta', '10 juta ke atas'] },
+      `Sip${name}! Kamu butuh **${detectedNeed}** untuk bisnismu. 💡\n\nSatu lagi - kira-kira budget yang kamu siapkan berapa?`,
+      { chips: ['Di bawah 2 juta', '2-5 juta', '5-10 juta', '10 juta ke atas'] },
     )]
   }
 
-  // ── Normal intents ──
+  // -- Normal intents --
   switch (intent) {
     case 'name_intro': {
       const match = userText.match(/(?:nama saya|nama ku|panggil saya|saya adalah)\s+([A-Za-z]+)/i)
@@ -877,10 +877,10 @@ function getResponse(
 
     case 'followup': {
       const elaborateMap: Partial<Record<Intent, string>> = {
-        about: `**Lebih dalam tentang KINARYALOKA:**\n\nKami berdiri dengan satu misi — bantu UMKM yang mau serius go digital tapi tidak tahu harus mulai dari mana.\n\nKami tidak sekadar membangun website. Kami duduk bareng kamu, pelajari alur bisnis kamu, lalu rancang sistem yang benar-benar bisa dipakai sehari-hari — bukan cuma kelihatan bagus di portofolio.`,
-        process: `**Detail alur kerja kami:**\n\n1. **Hubungi via WA** — Tim kami merespons dalam jam kerja\n2. **Discovery session** — Kami dengarkan cerita bisnis kamu, gratis tanpa komitmen\n3. **Proposal & brief** — Rekomendasi paket + timeline yang jelas\n4. **Kickoff** — Pengerjaan dimulai setelah DP dan brief disetujui\n5. **Progress update** — Kamu selalu tahu perkembangan project\n6. **Delivery & handover** — Produk selesai, kami pastikan kamu bisa pakainya`,
-        commitment: `**Detail komitmen kami:**\n\n✓ **90% akurasi** — Hasil akhir sesuai brief & design yang disepakati bersama\n✓ **24/7 komunikasi** — Kamu bisa tanya kapan saja via WhatsApp, kami aktif merespons\n✓ **100% integrasi** — Sistem yang kami bangun berjalan mulus, tidak ada yang setengah jadi`,
-        values: `**Nilai-nilai kami lebih dalam:**\n\n• **Tepat Sasaran** — Kami pelajari bisnis kamu dulu sebelum mulai desain atau coding\n• **Partner bukan Vendor** — Setelah project selesai, kami tetap ada dan bisa dihubungi\n• **Langsung Kepakai** — Tidak ada sistem yang rumit atau butuh training panjang\n• **Transparan & Jelas** — Harga, progress, dan hasil selalu terbuka, tidak ada kejutan`,
+        about: `**Lebih dalam tentang KINARYALOKA:**\n\nKami berdiri dengan satu misi - bantu UMKM yang mau serius go digital tapi tidak tahu harus mulai dari mana.\n\nKami tidak sekadar membangun website. Kami duduk bareng kamu, pelajari alur bisnis kamu, lalu rancang sistem yang benar-benar bisa dipakai sehari-hari - bukan cuma kelihatan bagus di portofolio.`,
+        process: `**Detail alur kerja kami:**\n\n1. **Hubungi via WA** - Tim kami merespons dalam jam kerja\n2. **Discovery session** - Kami dengarkan cerita bisnis kamu, gratis tanpa komitmen\n3. **Proposal & brief** - Rekomendasi paket + timeline yang jelas\n4. **Kickoff** - Pengerjaan dimulai setelah DP dan brief disetujui\n5. **Progress update** - Kamu selalu tahu perkembangan project\n6. **Delivery & handover** - Produk selesai, kami pastikan kamu bisa pakainya`,
+        commitment: `**Detail komitmen kami:**\n\n✓ **90% akurasi** - Hasil akhir sesuai brief & design yang disepakati bersama\n✓ **24/7 komunikasi** - Kamu bisa tanya kapan saja via WhatsApp, kami aktif merespons\n✓ **100% integrasi** - Sistem yang kami bangun berjalan mulus, tidak ada yang setengah jadi`,
+        values: `**Nilai-nilai kami lebih dalam:**\n\n• **Tepat Sasaran** - Kami pelajari bisnis kamu dulu sebelum mulai desain atau coding\n• **Partner bukan Vendor** - Setelah project selesai, kami tetap ada dan bisa dihubungi\n• **Langsung Kepakai** - Tidak ada sistem yang rumit atau butuh training panjang\n• **Transparan & Jelas** - Harga, progress, dan hasil selalu terbuka, tidak ada kejutan`,
         timeline: `**Faktor yang mempengaruhi timeline:**\n\n• Kompleksitas fitur yang diminta\n• Kecepatan feedback & approval dari kamu\n• Jumlah revisi desain\n• Ketersediaan konten (foto produk, teks, dll)\n\nKami selalu komunikasikan estimasi yang realistis di awal, bukan janji kosong.`,
       }
       const elaboration = elaborateMap[ctx.lastIntent]
@@ -893,7 +893,7 @@ function getResponse(
         makeBot(
           pick([
             `Halo${name}! 👋 Selamat datang di **KINARYALOKA Digital Studio**.\n\nSaya Nara, asisten virtual yang siap bantu kamu. Mau tahu lebih tentang kami, lihat produk, atau langsung mulai konsultasi?`,
-            `Hai${name}! 😊 Saya Nara dari **KINARYALOKA Digital Studio**.\n\nAda yang bisa saya bantu hari ini? Info produk, harga, sampai konsultasi paket — saya siap!`,
+            `Hai${name}! 😊 Saya Nara dari **KINARYALOKA Digital Studio**.\n\nAda yang bisa saya bantu hari ini? Info produk, harga, sampai konsultasi paket - saya siap!`,
             `Halo${name}! ✨ Selamat datang di KINARYALOKA!\n\nSaya Nara, asisten virtual di sini. Yuk, saya bantu cari solusi digital terbaik untuk bisnis kamu!`,
           ]),
           { chips: MAIN_CHIPS },
@@ -903,7 +903,7 @@ function getResponse(
     case 'about':
       return [
         makeBot(
-          `**KINARYALOKA Digital Studio** adalah studio digital yang lahir untuk membantu UMKM menerjemahkan bisnis mereka ke sistem digital yang rapi dan fungsional.\n\nKami tidak cuma bikin yang kelihatan bagus — kami benar-benar duduk bareng kamu, pelajari bisnis kamu, lalu bangun sistem yang beneran kepakai sehari-hari.\n\n*"Website bukan tujuan akhir, tapi alat agar bisnis jadi lebih rapi dan bisa berkembang."*`,
+          `**KINARYALOKA Digital Studio** adalah studio digital yang lahir untuk membantu UMKM menerjemahkan bisnis mereka ke sistem digital yang rapi dan fungsional.\n\nKami tidak cuma bikin yang kelihatan bagus - kami benar-benar duduk bareng kamu, pelajari bisnis kamu, lalu bangun sistem yang beneran kepakai sehari-hari.\n\n*"Website bukan tujuan akhir, tapi alat agar bisnis jadi lebih rapi dan bisa berkembang."*`,
           { chips: ['Nilai-nilai kami', 'Proses kerja', 'Lihat produk', 'Detail lebih lanjut'], nav: [{ label: 'Baca selengkapnya', sectionId: 'tentang' }] },
         ),
       ]
@@ -919,7 +919,7 @@ function getResponse(
     case 'process':
       return [
         makeBot(
-          `Proses kerja kami simpel dan transparan:\n\n${KB.process.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\nKami tidak langsung nawarin paket di awal — kami dengerin bisnis kamu dulu, baru rekomendasiin yang paling masuk akal.`,
+          `Proses kerja kami simpel dan transparan:\n\n${KB.process.map((s, i) => `${i + 1}. ${s}`).join('\n')}\n\nKami tidak langsung nawarin paket di awal - kami dengerin bisnis kamu dulu, baru rekomendasiin yang paling masuk akal.`,
           { chips: ['Detail lebih lanjut', 'Mulai konsultasi', 'Hubungi via WA'] },
         ),
       ]
@@ -943,7 +943,7 @@ function getResponse(
     case 'payment':
       return [
         makeBot(
-          `**Metode & Sistem Pembayaran KINARYALOKA:**\n\n💳 **Transfer Bank** — BCA, Mandiri, BNI, BRI\n📱 **E-Wallet** — GoPay, OVO, Dana, QRIS\n\n📋 **Sistem Pembayaran:**\n• **DP 50%** di awal sebelum pengerjaan dimulai\n• **50% pelunasan** setelah project selesai & disetujui\n\nSemua transaksi terdokumentasi rapi dengan invoice resmi. Tidak ada biaya tersembunyi.`,
+          `**Metode & Sistem Pembayaran KINARYALOKA:**\n\n💳 **Transfer Bank** - BCA, Mandiri, BNI, BRI\n📱 **E-Wallet** - GoPay, OVO, Dana, QRIS\n\n📋 **Sistem Pembayaran:**\n• **DP 50%** di awal sebelum pengerjaan dimulai\n• **50% pelunasan** setelah project selesai & disetujui\n\nSemua transaksi terdokumentasi rapi dengan invoice resmi. Tidak ada biaya tersembunyi.`,
           { chips: ['Lihat harga paket', 'Mulai konsultasi', 'Hubungi via WA'] },
         ),
       ]
@@ -951,7 +951,7 @@ function getResponse(
     case 'timeline':
       return [
         makeBot(
-          `**Estimasi Waktu Pengerjaan:**\n\n🛒 **E-Commerce**\n• Katalog Digital — 5–7 hari kerja\n• Toko Online — 10–14 hari kerja\n• Olshop Full — 14–21 hari kerja\n• E-Commerce Full Brand — 21–30 hari kerja\n\n🌐 **Web Design**\n• Paket Reservasi — 3–5 hari kerja\n• Website & Reservasi — 7–10 hari kerja\n• Website Pro — 14–21 hari kerja\n\n🎨 **Branding**\n• Paket Branding — 5–7 hari kerja\n• Branding + Copywriting — 7–10 hari kerja\n\nWaktu bisa bervariasi tergantung kompleksitas & kecepatan feedback kamu.`,
+          `**Estimasi Waktu Pengerjaan:**\n\n🛒 **E-Commerce**\n• Katalog Digital - 5-7 hari kerja\n• Toko Online - 10-14 hari kerja\n• Olshop Full - 14-21 hari kerja\n• E-Commerce Full Brand - 21-30 hari kerja\n\n🌐 **Web Design**\n• Paket Reservasi - 3-5 hari kerja\n• Website & Reservasi - 7-10 hari kerja\n• Website Pro - 14-21 hari kerja\n\n🎨 **Branding**\n• Paket Branding - 5-7 hari kerja\n• Branding + Copywriting - 7-10 hari kerja\n\nWaktu bisa bervariasi tergantung kompleksitas & kecepatan feedback kamu.`,
           { chips: ['Detail lebih lanjut', 'Lihat harga paket', 'Mulai konsultasi'] },
         ),
       ]
@@ -959,7 +959,7 @@ function getResponse(
     case 'revision':
       return [
         makeBot(
-          `**Kebijakan Revisi KINARYALOKA:**\n\n✏️ Kami percaya hasil akhir harus benar-benar sesuai harapan kamu.\n\n• **Revisi desain** — Hingga puas (sesuai brief awal yang disepakati)\n• **Revisi konten** — 2–3 putaran revisi tergantung paket\n• **Major changes** — Di luar scope awal, didiskusikan bersama secara transparan\n\nKami tidak pergi setelah selesai — komunikasi tetap terbuka.`,
+          `**Kebijakan Revisi KINARYALOKA:**\n\n✏️ Kami percaya hasil akhir harus benar-benar sesuai harapan kamu.\n\n• **Revisi desain** - Hingga puas (sesuai brief awal yang disepakati)\n• **Revisi konten** - 2-3 putaran revisi tergantung paket\n• **Major changes** - Di luar scope awal, didiskusikan bersama secara transparan\n\nKami tidak pergi setelah selesai - komunikasi tetap terbuka.`,
           { chips: ['Lihat paket', 'Mulai konsultasi', 'Hubungi via WA'] },
         ),
       ]
@@ -975,7 +975,7 @@ function getResponse(
     case 'team':
       return [
         makeBot(
-          `**Tim KINARYALOKA Digital Studio:**\n\n👨‍💻 **Web Developer** — Spesialis React, Next.js & backend systems\n🎨 **UI/UX Designer** — Berpengalaman di Figma, desain brand & visual identity\n✍️ **Copywriter** — Penulis konten marketing & website copy\n📊 **Project Manager** — Koordinasi project & komunikasi klien\n\nKami tim kecil yang solid — setiap project ditangani langsung, tidak di-outsource ke pihak lain.`,
+          `**Tim KINARYALOKA Digital Studio:**\n\n👨‍💻 **Web Developer** - Spesialis React, Next.js & backend systems\n🎨 **UI/UX Designer** - Berpengalaman di Figma, desain brand & visual identity\n✍️ **Copywriter** - Penulis konten marketing & website copy\n📊 **Project Manager** - Koordinasi project & komunikasi klien\n\nKami tim kecil yang solid - setiap project ditangani langsung, tidak di-outsource ke pihak lain.`,
           { chips: ['Tentang Kinaryaloka', 'Proses kerja', 'Hubungi via WA'] },
         ),
       ]
@@ -983,7 +983,7 @@ function getResponse(
     case 'location':
       return [
         makeBot(
-          `KINARYALOKA beroperasi secara **remote-first** 🌐\n\nKami melayani klien dari seluruh Indonesia tanpa batasan lokasi.\n\n📞 **Komunikasi via:**\n• WhatsApp (utama & paling cepat)\n• Video call — Zoom / Google Meet\n• Email\n\nMeski tidak ketemu langsung, kami pastikan komunikasi selalu lancar dan transparan sepanjang project.`,
+          `KINARYALOKA beroperasi secara **remote-first** 🌐\n\nKami melayani klien dari seluruh Indonesia tanpa batasan lokasi.\n\n📞 **Komunikasi via:**\n• WhatsApp (utama & paling cepat)\n• Video call - Zoom / Google Meet\n• Email\n\nMeski tidak ketemu langsung, kami pastikan komunikasi selalu lancar dan transparan sepanjang project.`,
           { chips: ['Hubungi via WA', 'Proses kerja', 'Mulai konsultasi'] },
         ),
       ]
@@ -991,7 +991,7 @@ function getResponse(
     case 'after_project':
       return [
         makeBot(
-          `**Support Setelah Project Selesai:**\n\nKami tidak menghilang setelah delivery! 💪\n\n• **Bug fixing gratis** — Selama masa support aktif\n• **Support teknis** — Durasi sesuai paket (1–6 bulan)\n• **Konsultasi lanjutan** — Tetap bisa tanya via WhatsApp kapan saja\n• **Update & maintenance** — Bisa didiskusikan untuk kebutuhan jangka panjang\n\nPrinsip kami: partner jangka panjang, bukan vendor satu kali pakai.`,
+          `**Support Setelah Project Selesai:**\n\nKami tidak menghilang setelah delivery! 💪\n\n• **Bug fixing gratis** - Selama masa support aktif\n• **Support teknis** - Durasi sesuai paket (1-6 bulan)\n• **Konsultasi lanjutan** - Tetap bisa tanya via WhatsApp kapan saja\n• **Update & maintenance** - Bisa didiskusikan untuk kebutuhan jangka panjang\n\nPrinsip kami: partner jangka panjang, bukan vendor satu kali pakai.`,
           { chips: ['Lihat paket', 'Mulai konsultasi', 'Hubungi via WA'] },
         ),
       ]
@@ -1007,7 +1007,7 @@ function getResponse(
     case 'product_webdesign':
       return [
         makeBot(
-          `Kami punya **4 paket Web Design & Reservasi** — dari booking simpel hingga website multi-halaman profesional:`,
+          `Kami punya **4 paket Web Design & Reservasi** - dari booking simpel hingga website multi-halaman profesional:`,
           { products: KB.products.webdesign, chips: ['Mulai konsultasi', 'Lihat E-Commerce', 'Lihat Branding'], nav: [{ label: 'Lihat di halaman produk', sectionId: 'produk' }] },
         ),
       ]
@@ -1026,13 +1026,13 @@ function getResponse(
           `KINARYALOKA memiliki **${allProducts.length} paket layanan** dalam **3 kategori**${name}:
 
 🛒 **E-Commerce (${KB.products.ecommerce.length} paket)**
-${KB.products.ecommerce.map((p, i) => `${i + 1}. ${p.name}${p.badge ? ' ⭐' : ''} — IDR ${p.price.toLocaleString('id-ID')}K`).join('\n')}
+${KB.products.ecommerce.map((p, i) => `${i + 1}. ${p.name}${p.badge ? ' ⭐' : ''} - IDR ${p.price.toLocaleString('id-ID')}K`).join('\n')}
 
 🌐 **Web Design & Reservasi (${KB.products.webdesign.length} paket)**
-${KB.products.webdesign.map((p, i) => `${KB.products.ecommerce.length + i + 1}. ${p.name}${p.badge ? ' ⭐' : ''} — IDR ${p.price.toLocaleString('id-ID')}K`).join('\n')}
+${KB.products.webdesign.map((p, i) => `${KB.products.ecommerce.length + i + 1}. ${p.name}${p.badge ? ' ⭐' : ''} - IDR ${p.price.toLocaleString('id-ID')}K`).join('\n')}
 
 🎨 **Branding (${KB.products.branding.length} paket)**
-${KB.products.branding.map((p, i) => `${KB.products.ecommerce.length + KB.products.webdesign.length + i + 1}. ${p.name}${p.badge ? ' ⭐' : ''} — IDR ${p.price.toLocaleString('id-ID')}K`).join('\n')}
+${KB.products.branding.map((p, i) => `${KB.products.ecommerce.length + KB.products.webdesign.length + i + 1}. ${p.name}${p.badge ? ' ⭐' : ''} - IDR ${p.price.toLocaleString('id-ID')}K`).join('\n')}
 
 ⭐ = Paket Flagship
 
@@ -1052,19 +1052,19 @@ Mau tahu lebih detail salah satu kategori?`,
         const nearMatch = allPkgs.filter(p => p.price > entities.budget! && p.price <= entities.budget! * 1.4)
         const budgetStr = entities.budget >= 1000 ? `${entities.budget / 1000} juta` : `${entities.budget}K`
         if (matching.length > 0) {
-          const listText = matching.map(p => `${p.icon} **${p.name}** (${p.cat}) — IDR ${p.price.toLocaleString('id-ID')}K${p.badge ? ' ⭐' : ''}`).join('\n')
+          const listText = matching.map(p => `${p.icon} **${p.name}** (${p.cat}) - IDR ${p.price.toLocaleString('id-ID')}K${p.badge ? ' ⭐' : ''}`).join('\n')
           const nearText = nearMatch.length > 0
-            ? `\n\nSedikit di atas budget kamu:\n${nearMatch.map(p => `${p.icon} **${p.name}** — IDR ${p.price.toLocaleString('id-ID')}K`).join('\n')}`
+            ? `\n\nSedikit di atas budget kamu:\n${nearMatch.map(p => `${p.icon} **${p.name}** - IDR ${p.price.toLocaleString('id-ID')}K`).join('\n')}`
             : ''
           return [makeBot(`Dengan budget **${budgetStr}**${name}, paket yang sesuai:\n\n${listText}${nearText}`, { chips: ['Mulai konsultasi', 'Metode pembayaran', 'Hubungi via WA'], nav: [{ label: 'Lihat detail produk', sectionId: 'produk' }] })]
         } else {
           const cheapest = [...allPkgs].sort((a, b) => a.price - b.price)[0]
-          return [makeBot(`Budget **${budgetStr}** saat ini di bawah paket termurah kami (IDR ${cheapest.price.toLocaleString('id-ID')}K).\n\nKami tetap bisa diskusi solusi terbaik — hubungi kami untuk konsultasi gratis!`, { chips: ['Hubungi via WA', 'Mulai konsultasi'], waLink: `https://wa.me/${KB.company.whatsapp}` })]
+          return [makeBot(`Budget **${budgetStr}** saat ini di bawah paket termurah kami (IDR ${cheapest.price.toLocaleString('id-ID')}K).\n\nKami tetap bisa diskusi solusi terbaik - hubungi kami untuk konsultasi gratis!`, { chips: ['Hubungi via WA', 'Mulai konsultasi'], waLink: `https://wa.me/${KB.company.whatsapp}` })]
         }
       }
       return [
         makeBot(
-          `**Ringkasan Harga KINARYALOKA:**\n\n🛒 **E-Commerce**\n• Katalog Digital — IDR 2.500K\n• Toko Online — IDR 5.000K\n• Olshop Full — IDR 8.000K\n• E-Commerce Full Brand — IDR 15.000K\n\n🌐 **Web Design**\n• Paket Reservasi — IDR 2.500K\n• Website & Reservasi — IDR 5.000K\n• Website Pro — IDR 8.000K\n• Full Digital Package — IDR 12.000K\n\n🎨 **Branding**\n• Paket Branding — IDR 1.500K\n• Branding + Copywriting — IDR 2.500K\n• Complete Branding — IDR 4.000K\n\nSemua harga transparan — tidak ada biaya tersembunyi.`,
+          `**Ringkasan Harga KINARYALOKA:**\n\n🛒 **E-Commerce**\n• Katalog Digital - IDR 2.500K\n• Toko Online - IDR 5.000K\n• Olshop Full - IDR 8.000K\n• E-Commerce Full Brand - IDR 15.000K\n\n🌐 **Web Design**\n• Paket Reservasi - IDR 2.500K\n• Website & Reservasi - IDR 5.000K\n• Website Pro - IDR 8.000K\n• Full Digital Package - IDR 12.000K\n\n🎨 **Branding**\n• Paket Branding - IDR 1.500K\n• Branding + Copywriting - IDR 2.500K\n• Complete Branding - IDR 4.000K\n\nSemua harga transparan - tidak ada biaya tersembunyi.`,
           { chips: ['Mulai konsultasi', 'Metode pembayaran', 'Hubungi via WA'], nav: [{ label: 'Lihat detail produk', sectionId: 'produk' }] },
         ),
       ]
@@ -1073,12 +1073,12 @@ Mau tahu lebih detail salah satu kategori?`,
     case 'consult': {
       if (entities.bizCategory) {
         setConsult({ step: 'bisnis_need', bisnisType: entities.bizCategory, need: '', budget: 0 })
-        return [makeBot(`Bisnis di bidang **${entities.bizCategory}** ya${name}! 🎯\n\nLangsung ke pertanyaan kedua — apa kebutuhan utama kamu saat ini?`, { chips: ['Butuh toko online / e-commerce', 'Butuh website profil / booking', 'Butuh branding & logo', 'Butuh semuanya (paket lengkap)'] })]
+        return [makeBot(`Bisnis di bidang **${entities.bizCategory}** ya${name}! 🎯\n\nLangsung ke pertanyaan kedua - apa kebutuhan utama kamu saat ini?`, { chips: ['Butuh toko online / e-commerce', 'Butuh website profil / booking', 'Butuh branding & logo', 'Butuh semuanya (paket lengkap)'] })]
       }
       setConsult({ step: 'bisnis_type', bisnisType: '', need: '', budget: 0 })
       return [
         makeBot(
-          `Senang bisa bantu${name}! Mari mulai konsultasi singkat — hanya 3 pertanyaan. 🎯\n\n**Pertama, bisnis kamu bergerak di bidang apa?**`,
+          `Senang bisa bantu${name}! Mari mulai konsultasi singkat - hanya 3 pertanyaan. 🎯\n\n**Pertama, bisnis kamu bergerak di bidang apa?**`,
           { chips: ['Kuliner / F&B', 'Fashion & Pakaian', 'Kecantikan & Salon', 'Jasa & Layanan', 'Retail / Toko Fisik', 'Lainnya'] },
         ),
       ]
@@ -1091,7 +1091,7 @@ Mau tahu lebih detail salah satu kategori?`,
 
 Meski terbilang baru, kami hadir dengan tim berpengalaman dan tekad kuat untuk membantu UMKM Indonesia bertransformasi digital.
 
-Sejak hari pertama, fokus kami satu: membangun sistem digital yang benar-benar bisa dipakai sehari-hari — bukan sekadar tampil bagus di layar.`,
+Sejak hari pertama, fokus kami satu: membangun sistem digital yang benar-benar bisa dipakai sehari-hari - bukan sekadar tampil bagus di layar.`,
           { chips: ['Tentang Kinaryaloka', 'Lihat Produk', 'Tim Kami', 'Mulai Konsultasi'], nav: [{ label: 'Kenali Kami', sectionId: 'tentang' }] },
         ),
       ]
@@ -1104,7 +1104,7 @@ Sejak hari pertama, fokus kami satu: membangun sistem digital yang benar-benar b
     case 'whatsapp':
       return [
         makeBot(
-          `Langsung chat tim kami via WhatsApp — konsultasi gratis 30 menit, tanpa komitmen, tanpa dipaksa beli. 😊`,
+          `Langsung chat tim kami via WhatsApp - konsultasi gratis 30 menit, tanpa komitmen, tanpa dipaksa beli. 😊`,
           { waLink: `https://wa.me/${KB.company.whatsapp}?text=${encodeURIComponent(KB.company.whatsappMessage)}`, chips: ['Mulai konsultasi', 'Lihat produk'] },
         ),
       ]
@@ -1129,7 +1129,7 @@ Sejak hari pertama, fokus kami satu: membangun sistem digital yang benar-benar b
       }
       return [
         makeBot(
-          `Ah, kamu bertanya tentang **${customLabel || 'topik ini'}**! 💡\n\nUntuk pertanyaan ini, tim KINARYALOKA siap bantu kamu secara langsung — hubungi kami dan ceritakan kebutuhanmu!`,
+          `Ah, kamu bertanya tentang **${customLabel || 'topik ini'}**! 💡\n\nUntuk pertanyaan ini, tim KINARYALOKA siap bantu kamu secara langsung - hubungi kami dan ceritakan kebutuhanmu!`,
           {
             chips: ['Hubungi via WA', 'Mulai Konsultasi', 'Lihat Semua Produk'],
             waLink: `https://wa.me/${KB.company.whatsapp}?text=${encodeURIComponent(`Halo KINARYALOKA! Saya ingin bertanya tentang ${customLabel || 'layanan kalian'}.`)}`,
@@ -1150,13 +1150,13 @@ Sejak hari pertama, fokus kami satu: membangun sistem digital yang benar-benar b
 
       const newLoopCount = updatedCtx.clarifyLoopCount + 1
 
-      // ── After 2 clarification loops, ask user to teach Nara ──
+      // -- After 2 clarification loops, ask user to teach Nara --
       if (newLoopCount > 2) {
         setCtx({ ...updatedCtx, clarifyLoopCount: newLoopCount, awaitingCustomContext: originalText, pendingClarification: null })
         const frustPrefix = sentiment.label === 'frustrated' ? `Maaf kalau jawaban saya terus kurang tepat! 🙏\n\n` : ''
         return [
           makeBot(
-            `${frustPrefix}Saya sudah coba bantu 2 kali tapi belum menemukan yang tepat untuk **\u201c${originalText}\u201d** 😅\n\nBoleh bantu saya belajar? **Ceritain dalam 1–2 kalimat, apa yang kamu maksud dengan itu?** Saya akan simpan dan gunakan untuk menjawab lebih baik ke depannya!`,
+            `${frustPrefix}Saya sudah coba bantu 2 kali tapi belum menemukan yang tepat untuk **\u201c${originalText}\u201d** 😅\n\nBoleh bantu saya belajar? **Ceritain dalam 1-2 kalimat, apa yang kamu maksud dengan itu?** Saya akan simpan dan gunakan untuk menjawab lebih baik ke depannya!`,
             { chips: ['Hubungi via WA', 'Mulai Konsultasi'] },
           ),
         ]
@@ -1193,7 +1193,7 @@ Sejak hari pertama, fokus kami satu: membangun sistem digital yang benar-benar b
   }
 }
 
-// ─── ProductCard mini ─────────────────────────────────────────────────────
+// --- ProductCard mini -----------------------------------------------------
 function ProductCard({ p }: { p: (typeof allProducts)[0] }) {
   const tagColor = p.tag === 'ecommerce' ? '#F5C542' : p.tag === 'webdesign' ? '#0080FF' : '#00E639'
   const tagLabel = p.tag === 'ecommerce' ? 'E-Commerce' : p.tag === 'webdesign' ? 'Web Design' : 'Branding'
@@ -1240,7 +1240,7 @@ function ProductCard({ p }: { p: (typeof allProducts)[0] }) {
   )
 }
 
-// ─── Format bot text (markdown-lite) ─────────────────────────────────────────
+// --- Format bot text (markdown-lite) -----------------------------------------
 function BotText({ text }: { text: string }) {
   const lines = text.split('\n')
   return (
@@ -1259,7 +1259,7 @@ function BotText({ text }: { text: string }) {
   )
 }
 
-// ─── Main Chatbot Component ───────────────────────────────────────────────────
+// --- Main Chatbot Component ---------------------------------------------------
 export default function Chatbot({ activePage }: { activePage: string }) {
   const [open, setOpen] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -1390,7 +1390,7 @@ export default function Chatbot({ activePage }: { activePage: string }) {
 
   return (
     <div className="notranslate" translate="no" style={{ visibility: isVisible ? 'visible' : 'hidden', pointerEvents: isVisible ? 'auto' : 'none' }}>
-      {/* Hidden preload image — always in DOM to keep browser cache warm */}
+      {/* Hidden preload image - always in DOM to keep browser cache warm */}
       <img src={naraImg} alt="" aria-hidden="true" className="absolute w-0 h-0 opacity-0 pointer-events-none" onLoad={() => setNaraImgOk(true)} onError={() => setNaraImgOk(false)} />
       {/* FAB */}
       <div className="fixed bottom-6 left-5 z-[9990]">
@@ -1544,7 +1544,7 @@ export default function Chatbot({ activePage }: { activePage: string }) {
                         </div>
                       )}
 
-                      {/* Chips — only on last bot message */}
+                      {/* Chips - only on last bot message */}
                       {msg.chips && msg.id === lastMsg.id && (
                         <div className="ml-8 flex flex-wrap gap-1.5 mt-1">
                           {msg.chips.map((chip) => (

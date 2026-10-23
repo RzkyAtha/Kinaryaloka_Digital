@@ -49,7 +49,7 @@ export async function generateQuotePdf(
   const margin = 48
   const [r, g, b] = hexToRgb(product.color)
 
-  // ── Header berwarna aksen paket ──
+  // -- Header berwarna aksen paket --
   const headerH = 96
   doc.setFillColor(r, g, b)
   doc.rect(0, 0, pageW, headerH, 'F')
@@ -79,7 +79,7 @@ export async function generateQuotePdf(
     { align: 'right' },
   )
 
-  // ── Body ──
+  // -- Body --
   let y = headerH + 34
   const lineH = 16
 
@@ -140,7 +140,7 @@ export async function generateQuotePdf(
   row('Referensi', form.referenceLinks || '-')
   row('Catatan', form.notes || '-')
 
-  // ── Footer ──
+  // -- Footer --
   const footerY = 812
   doc.setDrawColor(220, 220, 220)
   doc.line(margin, footerY, pageW - margin, footerY)

@@ -112,7 +112,7 @@ const BlueprintScaffold = memo(function BlueprintScaffold({
         vectorEffect="non-scaling-stroke"
         style={{ opacity: hovered ? 0.5 : 0.26, transition: 'opacity 400ms ease' }}
       >
-        {/* Isometric silhouette — breathes slowly */}
+        {/* Isometric silhouette - breathes slowly */}
         <motion.g
           style={ORIGIN}
           animate={loop ? { scale: [1, 1.025, 1] } : undefined}
@@ -127,7 +127,7 @@ const BlueprintScaffold = memo(function BlueprintScaffold({
           />
         </motion.g>
 
-        {/* Outer dashed ring — dash flow travels around the shape */}
+        {/* Outer dashed ring - dash flow travels around the shape */}
         <motion.polygon
           points={hexPoints(1.12)}
           strokeDasharray="3 4"
@@ -147,7 +147,7 @@ const BlueprintScaffold = memo(function BlueprintScaffold({
           transition={{ duration: 5, repeat: Infinity, ease: 'linear' }}
         />
 
-        {/* Isometric spokes from the room corner — light travels outward */}
+        {/* Isometric spokes from the room corner - light travels outward */}
         {SPOKES.map((s, i) => (
           <motion.g
             key={`spoke${i}`}
@@ -311,7 +311,7 @@ export default function HeroBrandVisual() {
           </g>
         </motion.svg>
 
-        {/* Hero image — tilts with the pointer */}
+        {/* Hero image - tilts with the pointer */}
         <motion.div
           className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
           style={
@@ -326,7 +326,7 @@ export default function HeroBrandVisual() {
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
             style={{ willChange: 'transform' }}
           >
-            {/* Static ground shadow — cheaper than an animated drop-shadow filter */}
+            {/* Static ground shadow - cheaper than an animated drop-shadow filter */}
             <div
               className="absolute left-1/2 bottom-[6%] h-[12%] w-[62%] -translate-x-1/2 rounded-[50%] blur-xl"
               style={{ background: 'rgba(0,0,0,0.32)' }}
@@ -385,7 +385,7 @@ export default function HeroBrandVisual() {
               }}
             >
               <div className="relative inline-block max-w-full align-top">
-                {/* Idle card — fixed size, never resizes (only fades) */}
+                {/* Idle card - fixed size, never resizes (only fades) */}
                 <button
                   type="button"
                   onPointerEnter={() => focus(p.id)}
@@ -408,7 +408,7 @@ export default function HeroBrandVisual() {
                   <span className="sr-only">{copy[p.id].label}</span>
                 </button>
 
-                {/* Active card — a separate card that pops in above the idle one */}
+                {/* Active card - a separate card that pops in above the idle one */}
                 <AnimatePresence>
                   {isActive(p.id) && (
                     <motion.button

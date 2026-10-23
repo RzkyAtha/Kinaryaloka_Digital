@@ -12,15 +12,15 @@
 
 ## File Structure
 
-- Create: `src/config/quote.ts` — konstanta (alamat Xero, WhatsApp, scope Gmail).
-- Create: `src/lib/quoteText.ts` — fungsi murni: ref, filename, subject, body email.
-- Create: `src/lib/sendViaGmail.ts` — `base64UrlEncode`, `base64Utf8`, `encodeMimeHeader`, `buildMimeMessage`, `sendViaGmail`.
-- Create: `src/lib/generateQuotePdf.ts` — `generateQuotePdf(form, product)` → `{ blob, base64 }`.
-- Create: `src/components/RequestQuoteModal.tsx` — modal form 3 langkah + login Gmail + kirim + sukses + fallback.
-- Create: `src/lib/__tests__/quoteText.test.ts`, `src/lib/__tests__/sendViaGmail.test.ts` — unit test fungsi murni.
-- Create: `vitest.config.ts` — konfigurasi test (environment node).
-- Modify: `package.json` — tambah dependency `jspdf`, devDependency `vitest`, script `test`.
-- Modify: `src/components/Products.tsx` — ganti alur select ke `RequestQuoteModal`, hapus pemakaian `AuthModal` di file ini.
+- Create: `src/config/quote.ts` - konstanta (alamat Xero, WhatsApp, scope Gmail).
+- Create: `src/lib/quoteText.ts` - fungsi murni: ref, filename, subject, body email.
+- Create: `src/lib/sendViaGmail.ts` - `base64UrlEncode`, `base64Utf8`, `encodeMimeHeader`, `buildMimeMessage`, `sendViaGmail`.
+- Create: `src/lib/generateQuotePdf.ts` - `generateQuotePdf(form, product)` → `{ blob, base64 }`.
+- Create: `src/components/RequestQuoteModal.tsx` - modal form 3 langkah + login Gmail + kirim + sukses + fallback.
+- Create: `src/lib/__tests__/quoteText.test.ts`, `src/lib/__tests__/sendViaGmail.test.ts` - unit test fungsi murni.
+- Create: `vitest.config.ts` - konfigurasi test (environment node).
+- Modify: `package.json` - tambah dependency `jspdf`, devDependency `vitest`, script `test`.
+- Modify: `src/components/Products.tsx` - ganti alur select ke `RequestQuoteModal`, hapus pemakaian `AuthModal` di file ini.
 
 ---
 
@@ -82,7 +82,7 @@ git commit -m "chore: add jspdf, vitest and test script for quote-request featur
 
 Create `src/config/quote.ts`:
 ```ts
-// Alamat Xero File Inbox (bersifat sensitif; ikut ter-bundle di client — konsekuensi
+// Alamat Xero File Inbox (bersifat sensitif; ikut ter-bundle di client - konsekuensi
 // pendekatan tanpa backend. Reset dari Xero jika disalahgunakan).
 export const XERO_INBOX_EMAIL =
   'xero.inbox.o22gnn.7tmvam86sg6dos97@xerofiles.com'
@@ -104,7 +104,7 @@ git commit -m "feat: add quote config constants (Xero inbox, WhatsApp, Gmail sco
 
 ---
 
-### Task 3: Fungsi teks murni (ref, filename, subject, body) — TDD
+### Task 3: Fungsi teks murni (ref, filename, subject, body) - TDD
 
 **Files:**
 - Create: `src/lib/quoteText.ts`
@@ -162,7 +162,7 @@ describe('quoteText', () => {
 
   it('buildEmailSubject includes business and product', () => {
     expect(buildEmailSubject(form, product)).toBe(
-      '[Quote Request] Toko Budi — Company Catalog',
+      '[Quote Request] Toko Budi - Company Catalog',
     )
   })
 
@@ -228,7 +228,7 @@ export function buildQuoteFileName(ref: string): string {
 }
 
 export function buildEmailSubject(form: QuoteForm, product: QuoteProduct): string {
-  return `[Quote Request] ${form.businessName} — ${product.title}`
+  return `[Quote Request] ${form.businessName} - ${product.title}`
 }
 
 export function buildEmailBody(
@@ -241,30 +241,30 @@ export function buildEmailBody(
     ``,
     `Ada permintaan quote baru (${ref}).`,
     ``,
-    `— Data Customer —`,
+    `- Data Customer -`,
     `Nama       : ${form.fullName}`,
     `Email      : ${form.email}`,
     `WhatsApp   : ${form.whatsapp}`,
     `Kontak pref: ${form.contactPreference}`,
     ``,
-    `— Detail Bisnis —`,
+    `- Detail Bisnis -`,
     `Bisnis     : ${form.businessName}`,
     `Industri   : ${form.industry}`,
     `Kota       : ${form.city}`,
     `Web/Sosmed : ${form.existingWebOrSocial || '-'}`,
     ``,
-    `— Paket —`,
+    `- Paket -`,
     `Produk     : ${product.title}`,
     `Harga est. : IDR ${product.price}`,
     ``,
-    `— Requirement —`,
+    `- Requirement -`,
     `Kebutuhan  : ${form.needsDescription}`,
     `Fitur      : ${form.selectedFeatures.join(', ') || '-'}`,
     `Fitur lain : ${form.customFeatures || '-'}`,
     `Deadline   : ${form.deadline || '-'}`,
     `Budget     : ${form.budgetEstimate || '-'}`,
     ``,
-    `— Referensi & Catatan —`,
+    `- Referensi & Catatan -`,
     `Referensi  : ${form.referenceLinks || '-'}`,
     `Catatan    : ${form.notes || '-'}`,
     ``,
@@ -287,7 +287,7 @@ git commit -m "feat: add pure quote text helpers with tests"
 
 ---
 
-### Task 4: MIME builder & Gmail sender — TDD (fungsi murni)
+### Task 4: MIME builder & Gmail sender - TDD (fungsi murni)
 
 **Files:**
 - Create: `src/lib/sendViaGmail.ts`
@@ -312,9 +312,9 @@ describe('sendViaGmail helpers', () => {
   })
 
   it('base64Utf8 round-trips unicode', () => {
-    const b64 = base64Utf8('Toko Büdi — 日本')
+    const b64 = base64Utf8('Toko Büdi - 日本')
     const decoded = Buffer.from(b64, 'base64').toString('utf8')
-    expect(decoded).toBe('Toko Büdi — 日本')
+    expect(decoded).toBe('Toko Büdi - 日本')
   })
 
   it('encodeMimeHeader wraps as RFC2047 base64', () => {
@@ -527,7 +527,7 @@ export async function generateQuotePdf(
   const margin = 48
   const [r, g, b] = hexToRgb(product.color)
 
-  // ── Header berwarna aksen paket ──
+  // -- Header berwarna aksen paket --
   const headerH = 96
   doc.setFillColor(r, g, b)
   doc.rect(0, 0, pageW, headerH, 'F')
@@ -557,7 +557,7 @@ export async function generateQuotePdf(
     { align: 'right' },
   )
 
-  // ── Body ──
+  // -- Body --
   let y = headerH + 34
   const lineH = 16
 
@@ -618,7 +618,7 @@ export async function generateQuotePdf(
   row('Referensi', form.referenceLinks || '-')
   row('Catatan', form.notes || '-')
 
-  // ── Footer ──
+  // -- Footer --
   const footerY = 812
   doc.setDrawColor(220, 220, 220)
   doc.line(margin, footerY, pageW - margin, footerY)
@@ -1276,7 +1276,7 @@ menjadi:
 
 - [ ] **Step 6: Perbarui manualChunks (auth-vendor)**
 
-Di `vite.config.ts`, `manualChunks.auth-vendor` masih valid karena `AuthModal` tetap dipakai `Navbar`. Tidak ada perubahan. (Langkah verifikasi saja — pastikan build tidak error.)
+Di `vite.config.ts`, `manualChunks.auth-vendor` masih valid karena `AuthModal` tetap dipakai `Navbar`. Tidak ada perubahan. (Langkah verifikasi saja - pastikan build tidak error.)
 
 - [ ] **Step 7: Build & test**
 

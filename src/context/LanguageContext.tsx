@@ -114,7 +114,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
     setIsTranslating(true)
 
-    // Retry mechanism — poll until translation takes effect
+    // Retry mechanism - poll until translation takes effect
     let attempts = 0
     const maxAttempts = 20
     const tryTranslate = () => {

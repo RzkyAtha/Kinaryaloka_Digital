@@ -17,7 +17,7 @@
 
 - [ ] **Step 1:** Delete `BlueprintFrame` (lines 89-124) and `BRAND_GRADIENT` (line 80). Keep `BRAND_ACCENT`.
 - [ ] **Step 2:** Rewrite `ValueTile` per spec §"Value module": `aspect-square` button, `background-color` transition to `card.color` when `active`, idle body = index + code / `idleImage` / title + subtitle; active body = index + code + badge / floating `image` with glitch ghosts (`mixBlendMode: 'screen'`) / title + description + "Baca detail →". Remove marquee, scanline, radial glow, blur circle, `whileHover`.
-- [ ] **Step 3:** Run `npx tsc --noEmit -p .` — expected: no errors.
+- [ ] **Step 3:** Run `npx tsc --noEmit -p .` - expected: no errors.
 - [ ] **Step 4:** Commit: `git commit -am "refactor(about): swiss value module, drop blueprint/marquee/scanline"`
 
 ### Task 2: Rebuild section layout as bordered modular grid
@@ -29,7 +29,7 @@
 - [ ] **Step 2:** Headline: `font-poppins font-extrabold tracking-[-0.03em] leading-[0.95]`, `style={{ fontSize: 'clamp(32px, 5vw, 64px)' }}`, line 2 in `BRAND_ACCENT` solid. Paragraph `text-left`.
 - [ ] **Step 3:** Process cells: mono index `0${i+1}` in `valueCards[i].color`, `step.code` caption, `step.label` bold, `step.note` muted.
 - [ ] **Step 4:** Keep grid-paper background div; move `doodle_tech_art.webp` texture into headline cell at opacity 0.04.
-- [ ] **Step 5:** `npx tsc --noEmit -p .` — expected: no errors.
+- [ ] **Step 5:** `npx tsc --noEmit -p .` - expected: no errors.
 - [ ] **Step 6:** Commit: `git commit -am "feat(about): swiss modular grid layout"`
 
 ### Task 3: Restyle popup + Escape to close
@@ -39,12 +39,12 @@
 
 - [ ] **Step 1:** Add `useEffect` in `About()`: when `openIndex !== null`, listen `keydown` Escape → `closePopup()`. Import `useEffect`.
 - [ ] **Step 2:** Popup box: remove `rounded-3xl`, radial glow, `BlueprintFrame`; add `border border-[#2a2a2a]`, top bar `<div className="h-2" style={{ background: popupCard.color }} />`, square close button (`h-8 w-8 border border-[#2a2a2a]`), `role="dialog" aria-modal="true"` on the overlay.
-- [ ] **Step 3:** `npx tsc --noEmit -p .` — expected: no errors.
+- [ ] **Step 3:** `npx tsc --noEmit -p .` - expected: no errors.
 - [ ] **Step 4:** Commit: `git commit -am "feat(about): swiss popup, escape closes"`
 
 ### Task 4: Verify
 
-- [ ] **Step 1:** `npm run build` — expected: `✓ built in …`, no TS errors.
-- [ ] **Step 2:** `npm test -- --run` — expected: all existing tests pass.
+- [ ] **Step 1:** `npm run build` - expected: `✓ built in …`, no TS errors.
+- [ ] **Step 2:** `npm test -- --run` - expected: all existing tests pass.
 - [ ] **Step 3:** `npm run dev`, open `/#tentang` at 375 / 768 / 1280 / 1440px: rules align, no double borders at outer edge, cells square, no layout shift on hover; Tab through modules, Enter opens popup, Escape closes.
 - [ ] **Step 4:** Commit any fixes, then push: `git push origin master`.

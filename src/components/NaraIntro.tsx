@@ -32,13 +32,6 @@ export const naras = [
   },
 ]
 
-const CORNERS = [
-  { pos: 'top-1 left-1', tri: 'polygon(0 0, 100% 0, 0 100%)' },
-  { pos: 'top-1 right-1', tri: 'polygon(0 0, 100% 0, 100% 100%)' },
-  { pos: 'bottom-1 left-1', tri: 'polygon(0 0, 0 100%, 100% 100%)' },
-  { pos: 'bottom-1 right-1', tri: 'polygon(100% 0, 0 100%, 100% 100%)' },
-]
-
 export default function NaraIntro() {
   const [showNara, setShowNara] = useState(false)
   const [active, setActive] = useState(1)
@@ -46,15 +39,43 @@ export default function NaraIntro() {
 
   return (
     <>
-      <button
+      <motion.button
         onClick={() => setShowNara(true)}
-        className="w-full py-3 px-5 rounded-2xl font-semibold text-sm md:text-base text-[#ffffff] transition-all duration-300 hover:scale-[1.02] hover:shadow-lg cursor-pointer"
-        style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}
+        animate={{ y: [0, -4, 0], rotate: -4 }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        whileHover={{ scale: 1.05, rotate: -2 }}
+        whileTap={{ scale: 0.95, rotate: -4 }}
+        className="absolute left-3 top-[30%] z-10 flex cursor-pointer items-center gap-3 rounded-2xl rounded-bl-md bg-[#141414] py-2.5 pl-2 pr-5 font-poppins text-[13px] font-semibold text-white sm:left-4 sm:text-sm"
+        style={{ boxShadow: '0 10px 24px rgba(10,10,12,0.4), 0 2px 6px rgba(0,0,0,0.2)' }}
+        aria-label="Kenalan sama Nara"
       >
-        Tunggu, siapa mereka?
-      </button>
+        {/* Bubble tail */}
+        <span
+          aria-hidden="true"
+          className="absolute -bottom-[7px] left-4 h-3.5 w-4 bg-[#141414]"
+          style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }}
+        />
+        <span className="flex -space-x-2.5">
+          {naras.map((n) => (
+            <span
+              key={n.name}
+              className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white/10 ring-2 ring-[#141414]"
+            >
+              <img
+                src={n.image}
+                alt={n.name}
+                className="h-8 w-8 object-contain"
+                loading="lazy"
+                decoding="async"
+                draggable={false}
+              />
+            </span>
+          ))}
+        </span>
+        Siapa mereka?
+      </motion.button>
 
-      {/* Nara Popup Modal — character select */}
+      {/* Nara Popup Modal - character select */}
       <AnimatePresence>
         {showNara && (
           <motion.div
@@ -70,57 +91,56 @@ export default function NaraIntro() {
               onClick={() => setShowNara(false)}
             />
 
-            {/* Modal */}
+            {/* Modal - light editorial style */}
             <motion.div
-              className="relative w-full max-w-xl overflow-hidden rounded-3xl p-5 sm:p-7"
+              className="relative w-full max-w-xl overflow-hidden rounded-2xl bg-[#f7f7f5] p-5 sm:p-7"
               style={{
-                background: 'linear-gradient(160deg, #15151d 0%, #0a0a0f 100%)',
-                border: '1px solid rgba(245,197,66,0.18)',
-                boxShadow: '0 24px 60px rgba(0,0,0,0.55), inset 0 0 60px rgba(245,197,66,0.03)',
+                border: '1.5px solid rgba(0,0,0,0.08)',
+                boxShadow: '0 24px 60px rgba(10,10,12,0.35)',
               }}
               initial={{ scale: 0.92, opacity: 0, y: 18 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.92, opacity: 0, y: 18 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
-              {/* Scanline texture */}
+              {/* Blueprint paper grid */}
               <div
                 className="pointer-events-none absolute inset-0"
+                aria-hidden="true"
                 style={{
                   backgroundImage:
-                    'repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 3px)',
+                    'linear-gradient(rgba(42,42,42,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(42,42,42,0.03) 1px, transparent 1px)',
+                  backgroundSize: '44px 44px',
+                  maskImage: 'radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 100%)',
+                  WebkitMaskImage: 'radial-gradient(120% 90% at 50% 0%, #000 30%, transparent 100%)',
                 }}
               />
-
-              {/* P1 tag */}
-              <span className="absolute left-4 top-4 font-audiowide text-[10px] tracking-wider text-[#F5C542]/70">
-                P1
-              </span>
 
               {/* Close button */}
               <button
                 onClick={() => setShowNara(false)}
-                className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/[0.07] text-white/50 transition-all hover:bg-white/15 hover:text-white"
+                className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-lg bg-black/[0.05] text-[#8a8a90] transition-all hover:bg-black/10 hover:text-[#141414]"
                 aria-label="Tutup"
               >
                 <X className="h-4 w-4" />
               </button>
 
               {/* Header */}
-              <div className="relative text-center">
-                <span className="font-poppins text-[9px] font-bold uppercase tracking-[0.3em] text-[#F5C542]">
-                  ◄&nbsp; Select Your Assistant &nbsp;►
+              <div className="relative">
+                <span className="block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
+                  Virtual Assistant
                 </span>
-                <h3 className="mt-2 font-audiowide text-[19px] leading-snug text-white sm:text-[23px]">
-                  Kenalan sama Nara
+                <h3 className="mt-1.5 font-poppins text-[24px] font-extrabold uppercase leading-[0.95] tracking-tight text-[#141414] sm:text-[28px]">
+                  <span className="block">Kenalan</span>
+                  <span className="block text-[#c6c7ca]">sama Nara</span>
                 </h3>
-                <p className="mx-auto mt-2 max-w-md text-[11.5px] leading-relaxed text-white/45 sm:text-[12.5px]">
+                <p className="mt-2.5 text-justify text-[11px] leading-relaxed text-[#6b6b70]">
                   {NARA_INTRO}
                 </p>
               </div>
 
               {/* Character slots */}
-              <div className="relative mt-5 grid grid-cols-3 gap-2 sm:gap-3">
+              <div className="relative mt-5 grid grid-cols-3 gap-2.5 sm:gap-3">
                 {naras.map((n, i) => {
                   const isActive = i === active
                   return (
@@ -129,26 +149,17 @@ export default function NaraIntro() {
                       type="button"
                       onPointerEnter={() => setActive(i)}
                       onClick={() => setActive(i)}
-                      whileTap={{ scale: 0.95 }}
-                      className="relative overflow-hidden rounded-xl px-1 pb-2.5 pt-3 text-center transition-all duration-300"
+                      whileTap={{ scale: 0.97 }}
+                      className="relative overflow-hidden rounded-xl bg-white px-1 pb-3 pt-3 text-center transition-all duration-300"
                       style={{
-                        background: isActive ? `${n.color}1a` : 'rgba(255,255,255,0.03)',
-                        border: `1.5px solid ${isActive ? n.color : 'rgba(255,255,255,0.08)'}`,
+                        border: `1.5px solid ${isActive ? n.color : 'rgba(0,0,0,0.08)'}`,
                         boxShadow: isActive
-                          ? `0 0 22px ${n.color}40, inset 0 0 18px ${n.color}14`
-                          : 'none',
+                          ? `0 10px 28px ${n.color}30, 0 2px 8px rgba(0,0,0,0.08)`
+                          : '0 2px 8px rgba(0,0,0,0.04)',
                       }}
                       aria-label={`Pilih ${n.name}`}
+                      aria-pressed={isActive}
                     >
-                      {/* Corner triangles */}
-                      {CORNERS.map((c) => (
-                        <span
-                          key={c.pos}
-                          className={`pointer-events-none absolute h-2.5 w-2.5 ${c.pos} transition-opacity duration-300`}
-                          style={{ background: n.color, clipPath: c.tri, opacity: isActive ? 1 : 0 }}
-                        />
-                      ))}
-
                       <img
                         src={n.image}
                         alt={n.name}
@@ -160,8 +171,8 @@ export default function NaraIntro() {
                         draggable={false}
                       />
                       <span
-                        className="mt-1.5 block font-audiowide text-[10px] uppercase tracking-wider sm:text-[11px] transition-colors duration-300"
-                        style={{ color: isActive ? n.color : 'rgba(255,255,255,0.35)' }}
+                        className="mt-1.5 block font-poppins text-[11px] font-semibold uppercase tracking-wider transition-colors duration-300"
+                        style={{ color: isActive ? n.color : '#8a8a90' }}
                       >
                         {n.name}
                       </span>
@@ -171,8 +182,8 @@ export default function NaraIntro() {
               </div>
 
               {/* Character info panel */}
-              <div className="relative mt-3.5 min-h-[108px] rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                <span className="absolute -top-2 left-3 bg-[#101016] px-2 font-poppins text-[8px] font-bold uppercase tracking-[0.25em] text-white/35">
+              <div className="relative mt-3.5 min-h-[108px] rounded-xl border border-black/[0.08] bg-white p-4 sm:p-5">
+                <span className="mb-3 block font-poppins text-[9px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
                   Character Info
                 </span>
                 <AnimatePresence mode="wait">
@@ -184,34 +195,32 @@ export default function NaraIntro() {
                     transition={{ duration: 0.18 }}
                   >
                     <div className="flex items-baseline justify-between gap-2">
-                      <span className="font-audiowide text-base sm:text-lg" style={{ color: current.color }}>
+                      <span className="font-poppins text-[18px] font-bold leading-tight text-[#141414]">
                         {current.name}
                       </span>
                       <span
-                        className="font-poppins text-[9px] font-bold uppercase tracking-[0.2em]"
+                        className="font-poppins text-[9px] font-semibold uppercase tracking-[0.2em]"
                         style={{ color: current.color }}
                       >
                         {current.role}
                       </span>
                     </div>
 
-                    <div className="mt-2 flex flex-wrap gap-1.5">
+                    <div className="mt-2.5 flex flex-wrap gap-1.5">
                       {current.meanings.map((m) => (
                         <span
                           key={m}
-                          className="rounded-md px-2 py-[3px] font-poppins text-[9px] font-semibold uppercase tracking-wider"
-                          style={{
-                            background: `${current.color}1f`,
-                            color: current.color,
-                            border: `1px solid ${current.color}38`,
-                          }}
+                          className="rounded-md px-2 py-[3px] font-poppins text-[9px] font-semibold uppercase tracking-wider text-white"
+                          style={{ background: current.color }}
                         >
                           {m}
                         </span>
                       ))}
                     </div>
 
-                    <p className="mt-2.5 text-[11px] leading-relaxed text-white/50">{current.blurb}</p>
+                    <p className="mt-3 border-t border-black/10 pt-3 text-[11.5px] leading-relaxed text-[#6b6b70]">
+                      {current.blurb}
+                    </p>
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -220,13 +229,9 @@ export default function NaraIntro() {
               <div className="relative mt-5 text-center">
                 <button
                   onClick={() => setShowNara(false)}
-                  className="rounded-lg px-8 py-2.5 font-poppins text-sm font-bold uppercase tracking-wider text-[#141414] transition-all duration-200 hover:scale-105 active:translate-y-[2px]"
-                  style={{
-                    background: 'linear-gradient(135deg, #F5C542, #D4912A)',
-                    boxShadow: '0 4px 0 #8a5a12, 0 0 20px rgba(245,197,66,0.25)',
-                  }}
+                  className="cursor-pointer rounded-lg bg-[#141414] px-9 py-3.5 font-poppins text-[13px] font-semibold text-white transition-all duration-300 hover:bg-black hover:shadow-lg"
                 >
-                  Oke, paham! ▶
+                  Oke, Paham!
                 </button>
               </div>
             </motion.div>

@@ -1,5 +1,5 @@
 import { useState, lazy, Suspense } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   PaintBrushIcon,
   Squares2X2Icon,
@@ -9,7 +9,7 @@ import type { RequestQuoteProduct } from './RequestQuoteModal'
 
 const RequestQuoteModal = lazy(() => import('./RequestQuoteModal'))
 
-// ─── Inventory Data ──────────────────────────────────────────────────────────
+// --- Inventory Data ----------------------------------------------------------
 const MAIN_ITEM = {
   id: 'main',
   name: 'Business Profile',
@@ -25,7 +25,7 @@ const MAIN_ITEM = {
     { label: 'Konversi', value: 80 },
   ],
   description:
-    'Website company profile profesional sebagai rumah digital bisnismu — identitas, layanan, dan kontak resmi dalam satu tempat.',
+    'Website company profile profesional sebagai rumah digital bisnismu - identitas, layanan, dan kontak resmi dalam satu tempat.',
   details: [
     'Custom website multi-halaman',
     'Profil bisnis, layanan & kontak resmi',
@@ -53,7 +53,7 @@ const ADDONS = [
       { label: 'Konsistensi Brand', value: 92 },
     ],
     description:
-      'Identitas visual lengkap supaya bisnismu mudah diingat — logo, warna, dan gaya yang konsisten di semua titik.',
+      'Identitas visual lengkap supaya bisnismu mudah diingat - logo, warna, dan gaya yang konsisten di semua titik.',
     details: [
       'Desain logo (3 konsep)',
       'Color palette & typography',
@@ -77,7 +77,7 @@ const ADDONS = [
       { label: 'Kemudahan Kelola', value: 78 },
     ],
     description:
-      'Katalog produk online di dalam website — pelanggan bisa jelajahi produk dan pesan langsung via WhatsApp.',
+      'Katalog produk online di dalam website - pelanggan bisa jelajahi produk dan pesan langsung via WhatsApp.',
     details: [
       'Katalog produk (hingga 50 produk)',
       'Halaman detail produk + galeri',
@@ -87,13 +87,6 @@ const ADDONS = [
   },
 ]
 
-const CORNERS = [
-  { pos: 'top-1.5 left-1.5', tri: 'polygon(0 0, 100% 0, 0 100%)' },
-  { pos: 'top-1.5 right-1.5', tri: 'polygon(0 0, 100% 0, 100% 100%)' },
-  { pos: 'bottom-1.5 left-1.5', tri: 'polygon(0 0, 0 100%, 100% 100%)' },
-  { pos: 'bottom-1.5 right-1.5', tri: 'polygon(100% 0, 0 100%, 100% 100%)' },
-]
-
 /** Format harga dalam "K" menjadi teks juta: 1500 → "1,5" · 3000 → "3" */
 function fmtJt(k: number): string {
   return (k / 1000).toLocaleString('id-ID')
@@ -101,18 +94,15 @@ function fmtJt(k: number): string {
 
 export default function Products() {
   const [equipped, setEquipped] = useState<string[]>([])
-  const [infoId, setInfoId] = useState<string>('main')
   const [quoteOpen, setQuoteOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<RequestQuoteProduct | null>(null)
 
-  const info = infoId === 'main' ? MAIN_ITEM : ADDONS.find((a) => a.id === infoId) ?? MAIN_ITEM
   const equippedAddons = ADDONS.filter((a) => equipped.includes(a.id))
   const totalMin = MAIN_ITEM.priceMin + equippedAddons.reduce((s, a) => s + a.price, 0)
   const totalMax = MAIN_ITEM.priceMax + equippedAddons.reduce((s, a) => s + a.price, 0)
 
   const toggleEquip = (id: string) => {
     setEquipped((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
-    setInfoId(id)
   }
 
   const handleCheckout = () => {
@@ -126,430 +116,296 @@ export default function Products() {
   }
 
   return (
-    <section id="produk" className="relative overflow-hidden bg-black py-12 md:py-20">
-      <div className="mx-auto max-w-[1000px] px-4 sm:px-6 lg:px-10">
-        {/* Header */}
-        <motion.div
-          className="mb-8 text-center md:mb-10"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6 }}
-        >
-          <span className="font-poppins text-[9px] font-bold uppercase tracking-[0.3em] text-[#F5C542]">
-            ◄&nbsp; Inventory System &nbsp;►
-          </span>
-          <h2 className="mt-2 font-climate text-[26px] text-white md:text-[34px] lg:text-[40px]">
-            Produk Kami
+    <section id="produk" className="relative overflow-hidden bg-[#f7f7f5] py-16 md:py-24">
+      {/* -- Giant backdrop word -- */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-6 -translate-x-1/2 select-none whitespace-nowrap font-poppins text-[19vw] font-extrabold uppercase leading-none tracking-tight text-[#e9eaec] md:top-2"
+      >
+        Product
+      </span>
+
+      <div className="relative mx-auto max-w-[1120px] px-5 sm:px-8 lg:px-10">
+        {/* -- Editorial header -- */}
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <h2 className="font-poppins text-[38px] font-extrabold uppercase leading-[0.95] tracking-tight sm:text-[48px] md:text-[56px]">
+            <span className="block text-[#141414]">Susun</span>
+            <span className="block text-[#c6c7ca]">Loadout</span>
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/50 md:text-base">
-            Susun loadout digital bisnismu — mulai dari item utama, lalu pasang add-on sesuai kebutuhan.
+          <p className="max-w-xs text-[13px] leading-relaxed text-[#6b6b70] md:text-right">
+            Mulai dari item utama, lalu pasang add-on sesuai kebutuhan bisnismu.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Inventory panel */}
-        <motion.div
-          className="relative overflow-hidden rounded-3xl p-4 sm:p-6"
-          style={{
-            background: 'linear-gradient(160deg, #15151d 0%, #0a0a0f 100%)',
-            border: '1px solid rgba(245,197,66,0.18)',
-            boxShadow: '0 24px 60px rgba(0,0,0,0.45), inset 0 0 60px rgba(245,197,66,0.03)',
-          }}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-        >
-          {/* Scanline + grid texture */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              backgroundImage:
-                'repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 3px)',
-            }}
-          />
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              backgroundImage:
-                'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-              backgroundSize: '26px 26px',
-            }}
-          />
+        {/* -- Asymmetric editorial grid -- */}
+        <div className="mt-10 grid gap-10 md:mt-14 lg:grid-cols-[minmax(0,300px)_1fr_minmax(0,230px)] lg:gap-8">
+          {/* -- Left: selected item detail -- */}
+          <div className="order-2 lg:order-1">
+            <div>
+                <span className="block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
+                  {MAIN_ITEM.type}
+                </span>
+                <h3 className="mt-2 font-poppins text-[26px] font-bold leading-tight text-[#141414] sm:text-[30px]">
+                  {MAIN_ITEM.name}
+                </h3>
+                <p className="mt-2.5 text-[12.5px] leading-relaxed text-[#6b6b70]">
+                  {MAIN_ITEM.description}
+                </p>
 
-          {/* HUD top strip */}
-          <div className="relative -mx-4 -mt-4 mb-4 flex items-center justify-between border-b border-white/10 px-4 py-3 sm:-mx-6 sm:-mt-6 sm:px-6">
-            <span className="font-poppins text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
-              ◤ Loadout // Produk
-            </span>
-            <div className="flex items-center gap-2.5">
-              <span className="font-poppins text-[8px] font-bold uppercase tracking-[0.2em] text-white/30">
-                Slots
-              </span>
-              <span
-                className="px-2 py-0.5 font-poppins text-[10px] font-bold"
-                style={{
-                  color: '#F5C542',
-                  border: '1px solid rgba(245,197,66,0.3)',
-                  clipPath: 'polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px)',
-                  background: 'rgba(245,197,66,0.08)',
-                }}
-              >
-                {equippedAddons.length}/2
-              </span>
-            </div>
-          </div>
-
-          <div className="relative grid gap-5 lg:grid-cols-[230px_1fr_220px]">
-            {/* ── Left: selected item detail ── */}
-            <div className="order-2 lg:order-1">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={infoId}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <span
-                    className="font-poppins text-[9px] font-bold uppercase tracking-[0.28em]"
-                    style={{ color: info.color }}
-                  >
-                    {info.type}
-                  </span>
-                  <h3 className="mt-1 font-fredoka text-[24px] font-semibold leading-tight text-white sm:text-[28px]">
-                    {info.name}
-                  </h3>
-                  <p className="mt-2 text-[11.5px] leading-relaxed text-white/50">{info.description}</p>
-
-                  {/* Stat bars */}
-                  <div className="mt-4 space-y-2.5">
-                    {info.stats.map((s) => (
-                      <div key={s.label} className="flex items-center gap-2">
-                        <span className="w-[92px] shrink-0 font-poppins text-[8px] font-bold uppercase tracking-[0.14em] text-white/40">
+                {/* Stat bars - thin editorial lines */}
+                <div className="mt-6 space-y-3">
+                  {MAIN_ITEM.stats.map((s) => (
+                    <div key={s.label}>
+                      <div className="mb-1 flex items-baseline justify-between">
+                        <span className="font-poppins text-[9px] font-semibold uppercase tracking-[0.16em] text-[#8a8a90]">
                           {s.label}
                         </span>
-                        <div className="h-[3px] flex-1 bg-white/10">
-                          <motion.div
-                            className="h-full"
-                            style={{ background: info.color }}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${s.value}%` }}
-                            transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
-                          />
-                        </div>
-                        <span
-                          className="w-6 shrink-0 text-right font-poppins text-[9px] font-bold"
-                          style={{ color: info.color }}
-                        >
+                        <span className="font-poppins text-[11px] font-bold" style={{ color: MAIN_ITEM.color }}>
                           {s.value}
                         </span>
                       </div>
-                    ))}
-                  </div>
-
-                  {/* Details */}
-                  <ul className="mt-3.5 space-y-1.5 border-t border-white/10 pt-3">
-                    {info.details.map((d) => (
-                      <li key={d} className="flex items-start gap-1.5">
-                        <span
-                          className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full"
-                          style={{ background: info.color }}
+                      <div className="h-[3px] w-full bg-black/[0.08]">
+                        <motion.div
+                          className="h-full"
+                          style={{ background: '#141414' }}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${s.value}%` }}
+                          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
                         />
-                        <span className="text-[10.5px] leading-relaxed text-white/55">{d}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Price + equip control */}
-                  <div className="mt-4 flex items-center justify-between gap-2">
-                    <span className="font-poppins text-[15px] font-bold" style={{ color: info.color }}>
-                      {'priceMin' in info
-                        ? `Rp ${fmtJt(info.priceMin)} – ${fmtJt(info.priceMax)} Jt`
-                        : `+Rp ${fmtJt(info.price)} Jt`}
-                    </span>
-                    {infoId === 'main' ? (
-                      <span className="font-poppins text-[8px] font-bold uppercase tracking-[0.18em] text-white/30">
-                        Always Equipped
-                      </span>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => toggleEquip(infoId)}
-                        className="cursor-pointer px-4 py-2 font-poppins text-[10px] font-bold uppercase tracking-[0.18em] transition-all duration-200 hover:brightness-110 active:translate-y-[1px]"
-                        style={{
-                          clipPath:
-                            'polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px)',
-                          background: equipped.includes(infoId)
-                            ? 'rgba(255,255,255,0.08)'
-                            : `linear-gradient(135deg, ${info.color}, ${info.color}cc)`,
-                          color: equipped.includes(infoId) ? 'rgba(255,255,255,0.55)' : '#141414',
-                        }}
-                      >
-                        {equipped.includes(infoId) ? 'Unequip' : 'Equip'}
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-            {/* ── Center: hero-style annotated visual ── */}
-            <div className="order-1 lg:order-2">
-              <div
-                className="relative aspect-[5/4]"
-                onPointerEnter={() => setInfoId('main')}
-              >
-                {/* Dashed blueprint frame + vertex dots + leader lines */}
-                <svg
-                  className="pointer-events-none absolute inset-0 h-full w-full"
-                  viewBox="0 0 100 80"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                >
-                  <rect
-                    x="2" y="3" width="96" height="74" rx="8"
-                    fill="none"
-                    stroke="rgba(255,255,255,0.16)"
-                    strokeDasharray="3 4"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  {[
-                    [2, 3], [50, 3], [98, 3],
-                    [2, 40], [98, 40],
-                    [2, 77], [50, 77], [98, 77],
-                  ].map(([x, y]) => (
-                    <circle key={`${x}-${y}`} cx={x} cy={y} r={0.9} fill="rgba(255,255,255,0.3)" />
+                      </div>
+                    </div>
                   ))}
+                </div>
 
-                  {/* Leader lines chip → hotspot saat add-on terpasang */}
-                  {ADDONS.filter((a) => equipped.includes(a.id)).map((a) => (
-                    <g key={a.id} stroke={a.color} strokeWidth="1" vectorEffect="non-scaling-stroke">
-                      <line
-                        x1={a.chipPos[0]} y1={a.chipPos[1] * 0.8}
-                        x2={a.dot[0]} y2={a.dot[1] * 0.8}
-                        strokeDasharray="2 2.5"
-                        opacity={0.75}
+                {/* Details */}
+                <ul className="mt-5 space-y-1.5 border-t border-black/10 pt-4">
+                  {MAIN_ITEM.details.map((d) => (
+                    <li key={d} className="flex items-start gap-2">
+                      <span
+                        className="mt-[6px] h-1 w-1 shrink-0 rounded-full"
+                        style={{ background: MAIN_ITEM.color }}
                       />
-                      <circle cx={a.dot[0]} cy={a.dot[1] * 0.8} r={1.1} fill={a.color} stroke="none" />
-                    </g>
+                      <span className="text-[11px] leading-relaxed text-[#6b6b70]">{d}</span>
+                    </li>
                   ))}
+                </ul>
 
-                  {/* Hotspot ring marker — selalu terlihat, redup saat kosong */}
-                  {ADDONS.map((a) => (
-                    <circle
-                      key={`ring-${a.id}`}
-                      cx={a.dot[0]} cy={a.dot[1] * 0.8} r={2.4}
-                      fill="none"
-                      stroke={equipped.includes(a.id) ? a.color : 'rgba(255,255,255,0.25)'}
-                      strokeDasharray="1.5 2"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  ))}
-                </svg>
-
-                {/* Floating image */}
-                <motion.div
-                  className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
-                  animate={{ y: [0, -8, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                  style={{ willChange: 'transform' }}
-                >
-                  <img
-                    src={MAIN_ITEM.image}
-                    alt={MAIN_ITEM.name}
-                    className="w-[76%] object-contain"
-                    loading="eager"
-                    decoding="async"
-                    draggable={false}
-                  />
-                </motion.div>
-
-                {/* Add-on chips — ghost slot saat kosong, chip putih saat equipped */}
-                {ADDONS.map((a) => {
-                  const isEq = equipped.includes(a.id)
-                  const Icon = a.icon
-                  return (
-                    <button
-                      key={a.id}
-                      type="button"
-                      onClick={() => toggleEquip(a.id)}
-                      onPointerEnter={() => setInfoId(a.id)}
-                      className="absolute z-20 cursor-pointer outline-none"
-                      style={{
-                        left: `${a.chipPos[0]}%`,
-                        top: `${a.chipPos[1]}%`,
-                        transform: `translate(${a.chipAlign === 'right' ? '-100%' : '0'}, -50%)`,
-                      }}
-                      aria-pressed={isEq}
-                      aria-label={`${isEq ? 'Lepas' : 'Pasang'} add-on ${a.name}`}
-                    >
-                      <motion.span
-                        animate={{ y: [0, -5, 0] }}
-                        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: a.id === 'katalog' ? 1.2 : 0 }}
-                        className="flex items-center gap-2 rounded-xl px-2.5 py-2 sm:px-3.5 sm:py-2.5"
-                        style={
-                          isEq
-                            ? {
-                                background: '#fff',
-                                border: `1.5px solid ${a.color}`,
-                                boxShadow: `0 6px 18px ${a.color}40`,
-                              }
-                            : {
-                                  background: 'rgba(255,255,255,0.04)',
-                                  border: '1.5px dashed rgba(255,255,255,0.25)',
-                                }
-                        }
-                      >
-                        {isEq ? (
-                          <>
-                            <Icon className="h-4 w-4 sm:h-5 sm:w-5" style={{ color: a.color }} />
-                            <span className="font-poppins text-[10px] font-bold text-[#2a2a2a] sm:text-[11px]">
-                              {a.name}
-                            </span>
-                          </>
-                        ) : (
-                          <>
-                            <PlusIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4" style={{ color: 'rgba(255,255,255,0.35)' }} />
-                            <span className="font-poppins text-[9px] font-semibold text-white/35 sm:text-[10px]">
-                              {a.name}
-                            </span>
-                          </>
-                        )}
-                      </motion.span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Name plate */}
-              <div
-                className="mt-2 flex items-center justify-between gap-2 rounded-xl px-4 py-3"
-                style={{
-                  border: '1px solid rgba(245,197,66,0.25)',
-                  background: 'rgba(245,197,66,0.06)',
-                }}
-              >
-                <div className="flex items-center gap-2">
-                  <span
-                    className="rounded-md px-2 py-0.5 font-poppins text-[8px] font-bold uppercase tracking-[0.18em] text-[#141414]"
-                    style={{ background: MAIN_ITEM.color }}
-                  >
-                    Equipped
+                {/* Price + equip control */}
+                <div className="mt-5 flex items-center justify-between gap-2">
+                  <span className="font-poppins text-[17px] font-bold text-[#141414]">
+                    Rp {fmtJt(MAIN_ITEM.priceMin)} - {fmtJt(MAIN_ITEM.priceMax)} Jt
                   </span>
-                  <span className="font-fredoka text-[14px] text-white sm:text-[16px]">
-                    {MAIN_ITEM.name}
+                  <span className="font-poppins text-[9px] font-semibold uppercase tracking-[0.18em] text-[#a0a0a5]">
+                    Always Equipped
                   </span>
                 </div>
-                <span className="font-poppins text-[12px] font-bold sm:text-[14px]" style={{ color: MAIN_ITEM.color }}>
-                  Rp {fmtJt(MAIN_ITEM.priceMin)} – {fmtJt(MAIN_ITEM.priceMax)} Jt
+            </div>
+          </div>
+
+          {/* -- Center: floating product visual -- */}
+          <div className="order-1 self-center lg:order-2">
+            <div className="relative mx-auto aspect-[5/4] w-full max-w-[520px]">
+              {/* Leader lines + hotspot markers */}
+              <svg
+                className="pointer-events-none absolute inset-0 h-full w-full"
+                viewBox="0 0 100 80"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                {ADDONS.filter((a) => equipped.includes(a.id)).map((a) => (
+                  <g key={a.id} stroke={a.color} strokeWidth="1" vectorEffect="non-scaling-stroke">
+                    <line
+                      x1={a.chipPos[0]} y1={a.chipPos[1] * 0.8}
+                      x2={a.dot[0]} y2={a.dot[1] * 0.8}
+                      strokeDasharray="2 2.5"
+                      opacity={0.8}
+                    />
+                    <circle cx={a.dot[0]} cy={a.dot[1] * 0.8} r={1.1} fill={a.color} stroke="none" />
+                  </g>
+                ))}
+                {ADDONS.map((a) => (
+                  <circle
+                    key={`ring-${a.id}`}
+                    cx={a.dot[0]} cy={a.dot[1] * 0.8} r={2.2}
+                    fill="none"
+                    stroke={equipped.includes(a.id) ? a.color : 'rgba(0,0,0,0.18)'}
+                    strokeDasharray="1.5 2"
+                    vectorEffect="non-scaling-stroke"
+                  />
+                ))}
+              </svg>
+
+              {/* Floating image */}
+              <motion.div
+                className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ willChange: 'transform' }}
+              >
+                <img
+                  src={MAIN_ITEM.image}
+                  alt={MAIN_ITEM.name}
+                  className="w-[78%] object-contain"
+                  style={{ filter: 'drop-shadow(0 20px 28px rgba(0,0,0,0.16))' }}
+                  loading="eager"
+                  decoding="async"
+                  draggable={false}
+                />
+              </motion.div>
+
+              {/* Add-on chips - minimal pills */}
+              {ADDONS.map((a) => {
+                const isEq = equipped.includes(a.id)
+                const Icon = a.icon
+                return (
+                  <button
+                    key={a.id}
+                    type="button"
+                    onClick={() => toggleEquip(a.id)}
+                    className="absolute z-20 cursor-pointer outline-none"
+                    style={{
+                      left: `${a.chipPos[0]}%`,
+                      top: `${a.chipPos[1]}%`,
+                      transform: `translate(${a.chipAlign === 'right' ? '-100%' : '0'}, -50%)`,
+                    }}
+                    aria-pressed={isEq}
+                    aria-label={`${isEq ? 'Lepas' : 'Pasang'} add-on ${a.name}`}
+                  >
+                    <motion.span
+                      animate={{ y: [0, -4, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: a.id === 'katalog' ? 1.2 : 0 }}
+                      className={`flex items-center gap-1.5 rounded-lg px-3 py-2 font-poppins text-[10px] font-semibold shadow-sm transition-colors sm:px-3.5 ${
+                        isEq ? 'bg-[#141414] text-white' : 'bg-white/90 text-[#8a8a90]'
+                      }`}
+                      style={
+                        isEq
+                          ? { boxShadow: `0 6px 16px ${a.color}45, 0 2px 6px rgba(0,0,0,0.15)` }
+                          : { border: '1px dashed rgba(0,0,0,0.22)' }
+                      }
+                    >
+                      {isEq ? (
+                        <>
+                          <Icon className="h-3.5 w-3.5" style={{ color: a.color }} />
+                          {a.name}
+                        </>
+                      ) : (
+                        <>
+                          <PlusIcon className="h-3 w-3" />
+                          {a.name}
+                        </>
+                      )}
+                    </motion.span>
+                  </button>
+                )
+              })}
+            </div>
+
+            {/* Name plate - clean strip */}
+            <div className="mx-auto mt-2 flex max-w-[520px] items-center justify-between border-b border-black/10 px-1 pb-3">
+              <div className="flex items-center gap-2.5">
+                <span className="rounded-md bg-[#141414] px-2.5 py-0.5 font-poppins text-[8px] font-semibold uppercase tracking-[0.18em] text-white">
+                  Equipped
+                </span>
+                <span className="font-poppins text-[14px] font-semibold text-[#141414]">
+                  {MAIN_ITEM.name}
                 </span>
               </div>
-            </div>
-
-            {/* ── Right: equipment slots ── */}
-            <div className="order-3">
-              <span className="mb-2 block font-poppins text-[9px] font-bold uppercase tracking-[0.25em] text-white/35">
-                Equipment
+              <span className="font-poppins text-[13px] font-bold text-[#141414]">
+                Rp {fmtJt(MAIN_ITEM.priceMin)} - {fmtJt(MAIN_ITEM.priceMax)} Jt
               </span>
-              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-1 lg:content-start">
-                {ADDONS.map((a) => {
-                  const isEq = equipped.includes(a.id)
-                  return (
-                    <motion.button
-                      key={a.id}
-                      type="button"
-                      onPointerEnter={() => setInfoId(a.id)}
-                      onClick={() => toggleEquip(a.id)}
-                      whileTap={{ scale: 0.95 }}
-                      className="relative cursor-pointer overflow-hidden rounded-xl text-left transition-all duration-300"
-                      style={{
-                        background: isEq ? `${a.color}1a` : 'rgba(255,255,255,0.03)',
-                        border: `1.5px solid ${isEq ? a.color : 'rgba(255,255,255,0.08)'}`,
-                        boxShadow: isEq ? `0 0 20px ${a.color}38, inset 0 0 16px ${a.color}12` : 'none',
-                      }}
-                      aria-pressed={isEq}
-                      aria-label={`${isEq ? 'Lepas' : 'Pasang'} add-on ${a.name}`}
-                    >
-                      {CORNERS.map((c) => (
-                        <span
-                          key={c.pos}
-                          className={`pointer-events-none absolute z-10 h-2.5 w-2.5 ${c.pos} transition-opacity duration-300`}
-                          style={{ background: a.color, clipPath: c.tri, opacity: isEq ? 1 : 0 }}
-                        />
-                      ))}
+            </div>
+          </div>
 
-                      <div className="relative h-24 overflow-hidden sm:h-28">
-                        <img
-                          src={a.image}
-                          alt={a.name}
-                          className={`h-full w-full object-cover transition-all duration-300 ${
-                            isEq ? 'scale-105' : 'opacity-40 grayscale'
-                          }`}
-                          loading="lazy"
-                          decoding="async"
-                          draggable={false}
-                        />
-                      </div>
-
-                      <div className="px-3 py-2.5">
-                        <div className="flex items-baseline justify-between gap-1">
-                          <span
-                            className="font-poppins text-[12px] font-bold leading-tight transition-colors duration-300"
-                            style={{ color: isEq ? '#fff' : 'rgba(255,255,255,0.5)' }}
-                          >
-                            {a.name}
-                          </span>
-                          <span
-                            className="font-poppins text-[10px] font-bold transition-colors duration-300"
-                            style={{ color: isEq ? a.color : 'rgba(255,255,255,0.3)' }}
-                          >
-                            +1 Jt
-                          </span>
-                        </div>
+          {/* -- Right: equipment slots -- */}
+          <div className="order-3 lg:self-center">
+            <span className="mb-3 block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
+              Equipment
+            </span>
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
+              {ADDONS.map((a) => {
+                const isEq = equipped.includes(a.id)
+                return (
+                  <motion.button
+                    key={a.id}
+                    type="button"
+                    onClick={() => toggleEquip(a.id)}
+                    whileTap={{ scale: 0.97 }}
+                    className="relative cursor-pointer overflow-hidden rounded-xl bg-white text-left transition-all duration-300"
+                    style={{
+                      border: `1.5px solid ${isEq ? a.color : 'rgba(0,0,0,0.08)'}`,
+                      boxShadow: isEq
+                        ? `0 10px 28px ${a.color}30, 0 2px 8px rgba(0,0,0,0.08)`
+                        : '0 2px 8px rgba(0,0,0,0.04)',
+                    }}
+                    aria-pressed={isEq}
+                    aria-label={`${isEq ? 'Lepas' : 'Pasang'} add-on ${a.name}`}
+                  >
+                    <div className="relative aspect-[1280/1028] overflow-hidden">
+                      <img
+                        src={a.image}
+                        alt={a.name}
+                        className={`h-full w-full object-cover transition-all duration-300 ${
+                          isEq ? 'scale-105' : 'opacity-50 grayscale'
+                        }`}
+                        loading="lazy"
+                        decoding="async"
+                        draggable={false}
+                      />
+                    </div>
+                    <div className="px-3.5 py-3">
+                      <div className="flex items-baseline justify-between gap-1">
                         <span
-                          className="mt-1 block font-poppins text-[8px] font-bold uppercase tracking-[0.2em] transition-colors duration-300"
-                          style={{ color: isEq ? a.color : 'rgba(255,255,255,0.3)' }}
+                          className="font-poppins text-[12px] font-semibold leading-tight transition-colors duration-300"
+                          style={{ color: isEq ? '#141414' : '#8a8a90' }}
                         >
-                          {isEq ? '● Equipped' : '○ Tap to equip'}
+                          {a.name}
+                        </span>
+                        <span
+                          className="font-poppins text-[10px] font-bold transition-colors duration-300"
+                          style={{ color: isEq ? '#141414' : '#b0b0b5' }}
+                        >
+                          +1 Jt
                         </span>
                       </div>
-                    </motion.button>
-                  )
-                })}
-              </div>
+                      <span
+                        className="mt-1 block font-poppins text-[8px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300"
+                        style={{ color: isEq ? a.color : '#b0b0b5' }}
+                      >
+                        {isEq ? 'Equipped' : 'Tap to equip'}
+                      </span>
+                    </div>
+                  </motion.button>
+                )
+              })}
             </div>
           </div>
+        </div>
 
-          {/* ── Total bar + CTA ── */}
-          <div
-            className="relative mt-4 flex flex-col items-center justify-between gap-3 rounded-xl px-4 py-4 sm:flex-row"
-            style={{ border: '1px solid rgba(245,197,66,0.22)', background: 'rgba(245,197,66,0.05)' }}
+        {/* -- Total bar + CTA -- */}
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-black/10 pt-8 sm:flex-row">
+          <div className="text-center sm:text-left">
+            <span className="block font-poppins text-[9px] font-semibold uppercase tracking-[0.25em] text-[#8a8a90]">
+              Estimasi Total
+            </span>
+            <span className="font-poppins text-[28px] font-extrabold tracking-tight text-[#141414] sm:text-[34px]">
+              Rp {fmtJt(totalMin)} - {fmtJt(totalMax)} Jt
+            </span>
+            <span className="block text-[10px] text-[#9a9aa0]">
+              {equippedAddons.length > 0
+                ? `${equippedAddons.length} add-on terpasang: ${equippedAddons.map((a) => a.name).join(' + ')}`
+                : 'Belum ada add-on terpasang'}
+            </span>
+          </div>
+
+          <button
+            onClick={handleCheckout}
+            className="w-full shrink-0 cursor-pointer rounded-lg bg-[#141414] px-9 py-3.5 font-poppins text-[13px] font-semibold text-white transition-all duration-300 hover:bg-black hover:shadow-lg sm:w-auto"
           >
-            <div className="text-center sm:text-left">
-              <span className="block font-poppins text-[9px] font-bold uppercase tracking-[0.25em] text-white/40">
-                Estimasi Total
-              </span>
-              <span className="font-poppins text-[20px] font-bold text-[#F5C542] sm:text-[24px]">
-                Rp {fmtJt(totalMin)} – {fmtJt(totalMax)} Jt
-              </span>
-              <span className="block text-[10px] text-white/40">
-                {equippedAddons.length > 0
-                  ? `${equippedAddons.length} add-on terpasang: ${equippedAddons.map((a) => a.name).join(' + ')}`
-                  : 'Belum ada add-on terpasang'}
-              </span>
-            </div>
+            Ambil Paket Ini
+          </button>
+        </div>
 
-            <button
-              onClick={handleCheckout}
-              className="w-full shrink-0 cursor-pointer rounded-2xl px-8 py-3 font-poppins text-sm font-semibold text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-lg sm:w-auto"
-              style={{ background: 'linear-gradient(135deg, #F5C542, #D4912A)' }}
-            >
-              Ambil Paket Ini
-            </button>
-          </div>
-        </motion.div>
-
-        <p className="mt-4 text-center text-[10px] leading-relaxed text-white/35 sm:text-xs">
+        <p className="mt-6 text-center text-[10px] leading-relaxed text-[#9a9aa0] sm:text-xs">
           Harga tertera hanya estimasi, fleksibel dan bisa disesuaikan berdasarkan kebutuhan.
         </p>
       </div>

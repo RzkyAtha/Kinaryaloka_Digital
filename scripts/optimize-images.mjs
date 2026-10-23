@@ -43,7 +43,7 @@ async function run() {
     )
   }
 
-  console.log('\n──────────────────────────────')
+  console.log('\n------------------------------')
   console.log(`Converted: ${converted} files`)
   console.log(`Before: ${(before / 1024 / 1024).toFixed(1)} MB`)
   console.log(`After:  ${(after / 1024 / 1024).toFixed(1)} MB`)

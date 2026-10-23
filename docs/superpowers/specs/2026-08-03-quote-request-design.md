@@ -98,7 +98,7 @@ interface QuoteForm {
 ## Format Email
 
 - **To**: `XERO_INBOX_EMAIL`.
-- **Subject**: `[Quote Request] <businessName> — <product.name>`.
+- **Subject**: `[Quote Request] <businessName> - <product.name>`.
 - **Body (text)**: ringkasan singkat data customer & paket (agar terbaca walau tanpa buka PDF).
 - **Attachment**: `KNY-Quote-Request-<ref>.pdf`.
 

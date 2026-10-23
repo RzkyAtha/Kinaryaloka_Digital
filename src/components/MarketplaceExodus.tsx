@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-/* ─── Design tokens ─── */
+/* --- Design tokens --- */
 const C = {
   orange:  "#FF8C2E",
   orangeD: "#E85410",
@@ -17,7 +17,7 @@ const C = {
   subtle:  "#a0a0a0",
 };
 
-/* ─── Image bento card ─── */
+/* --- Image bento card --- */
 function ImgCard({
   src,
   alt,
@@ -56,7 +56,7 @@ export default function MarketplaceExodus() {
       <div className="absolute inset-x-0 top-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${C.orange}30, transparent)` }} />
 
       <div className="relative z-10 mx-auto max-w-[1220px] px-4 sm:px-6 lg:px-8">
-        {/* ── Header ── */}
+        {/* -- Header -- */}
         <div className="mx-auto mb-9 max-w-2xl text-center md:mb-14">
           <h2 className="font-climate text-[22px] leading-[1.2] text-white sm:text-[30px] lg:text-[38px]">
             Kamu Harus Punya Identitas
@@ -66,32 +66,24 @@ export default function MarketplaceExodus() {
           </p>
         </div>
 
-        {/* ── Bento grid ── */}
+        {/* -- Bento grid -- */}
         <div className="grid grid-cols-2 gap-3.5 md:grid-cols-2 md:gap-4 lg:grid-cols-4 lg:auto-rows-[minmax(200px,auto)]">
 
-          {/* HERO — Properti Digital Milikmu (2×2) */}
-          <ImgCard src="/Assets/PDM.webp" alt="Properti Digital Milikmu — website adalah aset yang kamu miliki" spanClass="col-span-2 md:col-span-2 lg:row-span-2" />
+          {/* HERO - erti Digital Milikmu (2×2) */}
+          <ImgCard src="/Assets/PDM.webp" alt="Properti Digital Milikmu - website adalah aset yang kamu miliki" spanClass="col-span-2 md:col-span-2 lg:row-span-2" />
 
-          {/* STAT — 7 Detik untuk menilai kredibilitas (wide) */}
-          <ImgCard src="/Assets/7D.webp" alt="7 Detik — hanya butuh 7 detik untuk menilai kredibilitas brand" spanClass="col-span-2 md:col-span-2" />
+          {/* STAT - 7 Detik untuk menilai kredibilitas (wide) */}
+          <ImgCard src="/Assets/7D.webp" alt="7 Detik - hanya butuh 7 detik untuk menilai kredibilitas brand" spanClass="col-span-2 md:col-span-2" />
 
-          {/* Tools Praktis & Aset Jangka Panjang */}
-          <ImgCard src="/Assets/TPC.webp" alt="Tools praktis custom untuk bisnismu" />
-          <ImgCard src="/Assets/AJP.webp" alt="Aset jangka panjang — muncul di Google bertahun-tahun" />
+          {/* SHOWCASE - Beda Brand Beda Gaya (wide) */}
+          <ImgCard src="/Assets/BBBG.webp" alt="Beda brand beda gaya - color palette, logo, typography" spanClass="order-1 lg:order-none col-span-2 md:col-span-2" />
 
-          {/* SHOWCASE — Beda Brand Beda Gaya (wide) */}
-          <ImgCard src="/Assets/BBBG.webp" alt="Beda brand beda gaya — color palette, logo, typography" spanClass="order-1 lg:order-none col-span-2 md:col-span-2" />
-
-          {/* Suara Bebas & Brand Identity */}
-          <ImgCard src="/Assets/SBB.webp" alt="Suara bebas bisnismu — kampanyekan sendiri kelebihannya" />
-          <ImgCard src="/Assets/BIP.webp" alt="Brand identity penuh — warna, tone, cerita utuh" />
-
-          {/* COMPANY PROFILE — full width */}
+          {/* COMPANY PROFILE - full width */}
           <ImgCard src="/Assets/WCP.webp" alt="Website company profile adalah identitas profesional bisnismu" spanClass="order-2 lg:order-none col-span-2 md:col-span-2 lg:col-span-4" />
 
         </div>
 
-        {/* COMPANY PROFILE benefits — 2×2 on mobile, 4-across on desktop */}
+        {/* COMPANY PROFILE benefits - 2×2 on mobile, 4-across on desktop */}
         <div className="mt-3.5 grid grid-cols-2 items-center gap-3.5 md:mt-4 md:gap-4 lg:grid-cols-4">
           <ImgCard src="/Assets/kontak.webp" alt="Kontak Resmi" contain radiusClass="rounded-lg md:rounded-xl" />
           <ImgCard src="/Assets/ditemukan.webp" alt="Ditemukan di Internet" contain radiusClass="rounded-lg md:rounded-xl" />

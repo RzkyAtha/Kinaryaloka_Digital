@@ -1,27 +1,23 @@
 ﻿import { motion } from 'framer-motion'
-import type { TargetAndTransition } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   ChevronLeftIcon as ChevronLeft,
   ChevronRightIcon as ChevronRight,
-  PaintBrushIcon,
-  FaceSmileIcon,
-  ServerStackIcon,
 } from '@heroicons/react/24/solid'
-import type { ComponentType, SVGProps } from 'react'
 
 const ACCENT = '#F5C542'
+
+type Suit = 'spade' | 'club' | 'diamond'
 
 type CommitmentCard = {
   image: string
   rank: string
-  Icon: ComponentType<SVGProps<SVGSVGElement>>
-  hp: string
+  suit: Suit
+  ink: string
   stage: string
   title: string
   subtitle: string
   description: string
-  attacks: string[]
   points: string[]
 }
 
@@ -29,37 +25,34 @@ const cards: CommitmentCard[] = [
   {
     image: '/Assets/desain_sip.webp',
     rank: 'A',
-    Icon: PaintBrushIcon,
-    hp: '330',
+    suit: 'spade',
+    ink: '#141414',
     stage: 'Tahap 1',
     title: 'Desain',
     subtitle: 'Presisi Tinggi',
     description: 'Akurasi produk akhir sesuai dengan design figma.',
-    attacks: ['Handoff Figma 1:1', 'Responsif Semua Layar'],
     points: ['Handoff figma ke kode 1:1', 'Responsif di semua ukuran layar', 'Revisi visual sampai pas'],
   },
   {
     image: '/Assets/support_sip.webp',
     rank: 'K',
-    Icon: FaceSmileIcon,
-    hp: '280',
+    suit: 'club',
+    ink: '#141414',
     stage: 'Tahap 2',
     title: 'Support',
     subtitle: 'Tanpa Batas Waktu',
     description: 'Komunikasi aktif dan support tanpa batas waktu.',
-    attacks: ['Kanal Komunikasi Langsung', 'Respons Cepat Kendala'],
     points: ['Kanal komunikasi langsung', 'Respons cepat saat kendala', 'Pendampingan setelah rilis'],
   },
   {
     image: '/Assets/db_sip.webp',
     rank: 'Q',
-    Icon: ServerStackIcon,
-    hp: '300',
+    suit: 'diamond',
+    ink: '#C62828',
     stage: 'Tahap 3',
     title: 'Tools',
     subtitle: 'Praktis & Custom',
     description: 'Tools bisnis praktis yang langsung bisa dipakai, tanpa perlu database rumit.',
-    attacks: ['Tools Custom Sesuai Kebutuhan', 'Langsung Bisa Dipakai'],
     points: ['Tools custom sesuai kebutuhan', 'Tanpa setup teknis yang ribet', 'Langsung bisa dipakai tim'],
   },
 ]
@@ -68,7 +61,6 @@ type Pos = 'left' | 'center' | 'right'
 
 const CARD_W = 260
 const CARD_H = 364
-const spring = { type: 'spring' as const, stiffness: 200, damping: 26, mass: 0.8 }
 
 function getPos(cardIdx: number, active: number): Pos {
   const n = cards.length
@@ -77,51 +69,147 @@ function getPos(cardIdx: number, active: number): Pos {
   return 'right'
 }
 
-const positionStyles: Record<Pos, TargetAndTransition> = {
-  center: { x: 0, y: 0, rotate: 0, scale: 1, zIndex: 10, opacity: 1, transition: spring },
-  left: { x: -CARD_W * 0.62, y: 26, rotate: -9, scale: 0.9, zIndex: 5, opacity: 0.55, transition: spring },
-  right: { x: CARD_W * 0.62, y: 26, rotate: 9, scale: 0.9, zIndex: 5, opacity: 0.55, transition: spring },
+/* Side-card offset in px: tighter on small viewports so side cards only peek */
+function sideOffset(vw: number): number {
+  return Math.round(Math.min(CARD_W * 0.62, Math.max(CARD_W * 0.36, vw * 0.28)))
 }
 
-const FOIL_FRAME = `linear-gradient(150deg, #fdf3c0 0%, ${ACCENT} 18%, #b8860b 38%, #fff3b0 52%, ${ACCENT} 68%, #8a6510 86%, #fde79a 100%)`
+function deckTransform(pos: Pos, sideX: number): string {
+  switch (pos) {
+    case 'left':
+      return `translateX(${-sideX}px) translateY(26px) rotate(-9deg) scale(0.9)`
+    case 'right':
+      return `translateX(${sideX}px) translateY(26px) rotate(9deg) scale(0.9)`
+    default:
+      return 'translateX(0px) translateY(0px) rotate(0deg) scale(1)'
+  }
+}
 
-const HOLO_SHEEN =
-  'linear-gradient(115deg, rgba(255,0,128,0.18) 0%, rgba(255,200,0,0.16) 18%, rgba(0,255,200,0.16) 38%, rgba(80,140,255,0.18) 58%, rgba(200,0,255,0.16) 78%, rgba(255,120,0,0.16) 100%)'
+const deckZ: Record<Pos, number> = { left: 5, center: 10, right: 5 }
 
-function EnergyPip({ Icon, dim }: { Icon: CommitmentCard['Icon']; dim?: boolean }) {
+/* GPU-composited via WAAPI - immune to prefers-reduced-motion CSS overrides,
+   no per-frame JS like spring libraries. */
+const DECK_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'
+
+/* Suit glyphs - viewBox 0 0 100 110 */
+function SuitShapes({ suit }: { suit: Suit }) {
+  if (suit === 'diamond') {
+    return <path d="M50 8 L88 55 L50 102 L12 55 Z" />
+  }
+  if (suit === 'club') {
+    return (
+      <>
+        <circle cx="50" cy="30" r="20" />
+        <circle cx="30" cy="62" r="20" />
+        <circle cx="70" cy="62" r="20" />
+        <path d="M50 56 C55 76 47 90 38 102 L62 102 C53 90 45 76 50 56 Z" />
+      </>
+    )
+  }
   return (
-    <span
-      className="inline-flex h-[14px] w-[14px] items-center justify-center rounded-full leading-none"
-      style={{
-        background: dim ? 'rgba(255,255,255,0.12)' : `radial-gradient(circle at 30% 25%, #fff6cf, ${ACCENT} 60%, #a97c12 100%)`,
-        color: dim ? 'rgba(255,255,255,0.5)' : '#3a2a00',
-        boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.25)',
-      }}
-    >
-      <Icon className="h-[9px] w-[9px]" aria-hidden="true" />
-    </span>
+    <path d="M50 8 C50 8 14 44 14 62 C14 79 28 89 42 82 C40 92 34 99 28 102 L72 102 C66 99 60 92 58 82 C72 89 86 79 86 62 C86 44 50 8 50 8 Z" />
   )
 }
 
-function TypeBadge({ card }: { card: CommitmentCard }) {
+function SuitGlyph({ suit, ink, className }: { suit: Suit; ink: string; className?: string }) {
   return (
-    <span
-      className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full"
-      style={{
-        background: `radial-gradient(circle at 32% 26%, #fff8d8, ${ACCENT} 58%, #9c6f0d 100%)`,
-        color: '#2b1f00',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(0,0,0,0.2)',
-      }}
+    <svg viewBox="0 0 100 110" className={className} fill={ink} aria-hidden="true">
+      <SuitShapes suit={suit} />
+    </svg>
+  )
+}
+
+function CornerPip({ card, rotated }: { card: CommitmentCard; rotated?: boolean }) {
+  return (
+    <div
+      className={`absolute z-20 flex flex-col items-center leading-none ${rotated ? 'bottom-3 right-3 rotate-180' : 'left-3 top-3'}`}
+      style={{ color: card.ink }}
     >
-      <card.Icon className="h-[15px] w-[15px]" aria-hidden="true" />
-    </span>
+      <span className="font-poppins text-[24px] font-extrabold leading-none">{card.rank}</span>
+      <SuitGlyph suit={card.suit} ink={card.ink} className="mt-1 h-[14px] w-[13px]" />
+    </div>
+  )
+}
+
+/** Ilustrasi produk tampil utuh, melayang di tengah kartu dengan ghost suit pucat di belakang */
+function SuitArt({ card }: { card: CommitmentCard }) {
+  return (
+    <div className="relative flex h-full w-full items-center justify-center">
+      <SuitGlyph
+        suit={card.suit}
+        ink={card.ink}
+        className="absolute h-[92%] opacity-[0.06]"
+      />
+      <img
+        src={card.image}
+        alt={card.title}
+        className="relative z-10 h-full w-full scale-[1.1] object-contain"
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+      />
+    </div>
   )
 }
 
 export default function Team() {
-  const isInView = true
   const [active, setActive] = useState(0)
   const [flipped, setFlipped] = useState<number | null>(null)
+  const [vw, setVw] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1280))
+  const cardRefs = useRef<Array<HTMLDivElement | null>>([])
+  const innerRefs = useRef<Array<HTMLDivElement | null>>([])
+  const prevFlipped = useRef<number | null>(null)
+
+  useEffect(() => {
+    const onResize = () => setVw(window.innerWidth)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  const sideX = sideOffset(vw)
+
+  // Deck position animation - WAAPI reads the live computed transform,
+  // so interrupting mid-flight still animates smoothly.
+  useLayoutEffect(() => {
+    cards.forEach((_, i) => {
+      const el = cardRefs.current[i]
+      if (!el) return
+      const pos = getPos(i, active)
+      const target = deckTransform(pos, sideX)
+      const cs = getComputedStyle(el)
+      if (cs.transform === 'none') {
+        el.style.transform = target
+        el.style.opacity = pos === 'center' ? '1' : '0.55'
+        return
+      }
+      el.animate(
+        [
+          { transform: cs.transform, opacity: cs.opacity },
+          { transform: target, opacity: pos === 'center' ? '1' : '0.55' },
+        ],
+        { duration: 520, easing: DECK_EASE, fill: 'forwards' }
+      )
+    })
+  }, [active, sideX])
+
+  // Flip animation - same WAAPI approach
+  useLayoutEffect(() => {
+    if (prevFlipped.current === flipped) return
+    const prev = prevFlipped.current
+    prevFlipped.current = flipped
+    const idx = flipped ?? prev
+    if (idx === null) return
+    const el = innerRefs.current[idx]
+    if (!el) return
+    const current = getComputedStyle(el).transform
+    el.animate(
+      [
+        { transform: current === 'none' ? 'rotateY(0deg)' : current },
+        { transform: `rotateY(${flipped === idx ? 180 : 0}deg)` },
+      ],
+      { duration: 560, easing: DECK_EASE, fill: 'forwards' }
+    )
+  }, [flipped])
 
   const go = (dir: 1 | -1) => {
     setFlipped(null)
@@ -143,59 +231,58 @@ export default function Team() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#050510_70%)]" />
       </div>
 
-      {/* Subtle grid pattern (desktop only) */}
-      <div
-        className="absolute inset-0 opacity-[0.03] pointer-events-none hidden md:block"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-      />
-
       <div className="max-w-5xl mx-auto px-4 sm:px-8 relative z-10">
         {/* Title */}
-        <motion.div
-          className="text-center mb-8 md:mb-12"
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
+        <div className="text-center mb-8 md:mb-12">
           <h2 className="font-climate text-[30px] md:text-[48px] text-white tracking-tight">
             Komitmen Kami
           </h2>
           <p className="mt-3 text-[12px] md:text-[13px] text-white/40">
             Klik kartu untuk membalik dan melihat detailnya.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Card deck */}
-        <motion.div
+        {/* -- Card deck - CSS-composited transitions, no per-frame JS -- */}
+        <div
           className="relative flex items-center justify-center select-none"
           style={{ height: CARD_H + 90, perspective: 1400 }}
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.2 }}
         >
           {cards.map((card, i) => {
             const pos = getPos(i, active)
             const isCenter = pos === 'center'
-            const isFlipped = flipped === i
+
 
             return (
-              <motion.div
+              <div
                 key={card.title}
-                className="absolute"
-                style={{ width: CARD_W, height: CARD_H, transformOrigin: 'bottom center' }}
-                animate={positionStyles[pos]}
+                ref={(el) => {
+                  cardRefs.current[i] = el
+                }}
+                className="absolute left-1/2 top-1/2"
+                style={{
+                  width: CARD_W,
+                  height: CARD_H,
+                  transformOrigin: 'bottom center',
+                  marginTop: -CARD_H / 2,
+                  marginLeft: -CARD_W / 2,
+                  willChange: 'transform',
+                  zIndex: deckZ[pos],
+                }}
               >
-                <motion.div
+                <div
+                  ref={(el) => {
+                    innerRefs.current[i] = el
+                  }}
                   role="button"
                   tabIndex={0}
                   aria-label={card.title}
                   className="relative h-full w-full cursor-pointer outline-none"
-                  style={{ transformStyle: 'preserve-3d' }}
-                  animate={{ rotateY: isFlipped ? 180 : 0 }}
-                  transition={{ type: 'spring', stiffness: 180, damping: 22 }}
+                  style={{
+                    transformStyle: 'preserve-3d',
+                    willChange: 'transform',
+                    touchAction: 'manipulation',
+                    WebkitTapHighlightColor: 'transparent',
+                  }}
                   onClick={() => {
                     if (!isCenter) {
                       go(pos === 'left' ? -1 : 1)
@@ -210,139 +297,100 @@ export default function Team() {
                     }
                   }}
                 >
-                  {/* Front face */}
+                  {/* -- Front face - playing card -- */}
                   <div
-                    className="absolute inset-0 overflow-hidden rounded-[14px] p-[6px]"
+                    className="absolute inset-0 overflow-hidden rounded-[16px] bg-[#F0F0F0]"
                     style={{
                       backfaceVisibility: 'hidden',
-                      background: FOIL_FRAME,
+                      border: '1px solid rgba(0,0,0,0.14)',
                       boxShadow: isCenter
-                        ? `0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.35), 0 0 44px ${ACCENT}33`
-                        : '0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.35)',
+                        ? '0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.2), 0 0 44px rgba(245,197,66,0.2)'
+                        : '0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,0,0,0.2)',
                     }}
                   >
-                    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[9px] bg-[#F0F0F0]">
-                      {/* Header: stage + name + HP + type */}
-                      <div className="relative z-20 flex items-start gap-2 px-2 pt-1.5">
-                        <div className="min-w-0 flex-1">
-                          <span className="inline-block rounded-[3px] bg-[#2b2b2b] px-1.5 py-[1px] font-poppins text-[7px] uppercase tracking-[0.18em] text-white/80">
-                            {card.stage}
-                          </span>
-                          <h3 className="mt-0.5 truncate font-climate text-[14px] leading-tight text-[#141414]">
-                            {card.title}
-                          </h3>
-                          <p className="text-[8px] uppercase tracking-[0.16em] text-[#8a8a8a]">{card.subtitle}</p>
-                        </div>
-                        <div className="flex shrink-0 items-center gap-1 pt-1">
-                          <span className="font-poppins text-[8px] font-bold text-[#7a7a7a]">HP</span>
-                          <span className="font-poppins text-[20px] font-extrabold leading-none text-[#141414]">
-                            {card.hp}
-                          </span>
-                          <TypeBadge card={card} />
-                        </div>
-                      </div>
+                    {/* faint inner card edge */}
+                    <div className="pointer-events-none absolute inset-[5px] rounded-[12px] border border-black/[0.06]" />
 
-                      {/* Full-art illustration */}
-                      <div className="relative mt-1 flex-1 overflow-hidden bg-[#F0F0F0]">
-                        <img
-                          src={card.image}
-                          alt={card.title}
-                          className="relative z-10 h-full w-full scale-[1.28] object-contain"
-                          loading="lazy"
-                          decoding="async"
-                          draggable={false}
-                        />
-                      </div>
+                    <CornerPip card={card} />
+                    <CornerPip card={card} rotated />
 
-                      {/* Attacks */}
-                      <div className="relative z-20 bg-[#F0F0F0]/95 px-2 pb-1 pt-1.5">
-                        {card.attacks.map((attack, idx) => (
-                          <div key={attack} className="border-t border-[#c9c9c9] py-[5px] first:border-t-0 first:pt-0">
-                            <div className="flex items-center gap-1.5">
-                              <span className="flex gap-[2px]">
-                                {Array.from({ length: idx + 1 }).map((_, k) => (
-                                  <EnergyPip key={k} Icon={card.Icon} />
-                                ))}
-                              </span>
-                              <span className="flex-1 font-poppins text-[10px] font-semibold leading-tight text-[#1a1a1a]">
-                                {attack}
-                              </span>
-                              <span className="font-poppins text-[13px] font-extrabold leading-none text-[#1a1a1a]">
-                                {idx === 0 ? '60+' : card.hp}
-                              </span>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
+                    {/* center artwork */}
+                    <div className="absolute inset-x-6 bottom-14 top-11">
+                      <SuitArt card={card} />
+                    </div>
 
-                      {/* Footer bar */}
-                      <div className="relative z-20 flex items-center justify-between border-t border-[#c9c9c9] bg-[#e4e4e8] px-2 py-[3px] font-poppins text-[6.5px] uppercase tracking-[0.12em] text-[#6b6b6b]">
-                        <span>Illus. Kinaryaloka</span>
-                        <span>
-                          {String(i + 1).padStart(3, '0')}/{String(cards.length).padStart(3, '0')} SAR
-                        </span>
-                      </div>
+                    {/* bottom caption */}
+                    <div className="absolute inset-x-0 bottom-3 z-20 text-center">
+                      <span className="font-poppins text-[7px] font-semibold uppercase tracking-[0.22em] text-[#9a9a9e]">
+                        {card.stage} · {card.title} · {card.subtitle}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Back face */}
+                  {/* -- Back face - card back / detail -- */}
                   <div
-                    className="absolute inset-0 overflow-hidden rounded-[14px] p-[6px]"
+                    className="absolute inset-0 overflow-hidden rounded-[16px] bg-[#F0F0F0]"
                     style={{
                       backfaceVisibility: 'hidden',
                       transform: 'rotateY(180deg)',
-                      background: FOIL_FRAME,
-                      boxShadow: `0 24px 60px rgba(0,0,0,0.55), 0 0 44px ${ACCENT}33`,
+                      border: '1px solid rgba(0,0,0,0.14)',
+                      boxShadow: '0 24px 60px rgba(0,0,0,0.55), 0 0 44px rgba(245,197,66,0.2)',
                     }}
                   >
-                    <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[9px] bg-[#101014]">
-                      <div
-                        className="absolute inset-0 opacity-40 mix-blend-screen"
-                        style={{ background: HOLO_SHEEN }}
-                      />
-                      <div
-                        className="absolute inset-0 opacity-25"
-                        style={{
-                          backgroundImage: `repeating-linear-gradient(45deg, ${ACCENT}1a 0 6px, transparent 6px 12px)`,
-                        }}
-                      />
+                    {/* lattice pattern like a card back */}
+                    <div
+                      className="pointer-events-none absolute inset-[5px] rounded-[12px]"
+                      style={{
+                        border: `1.5px solid ${card.ink}`,
+                        backgroundImage: `repeating-linear-gradient(45deg, ${card.ink}14 0 5px, transparent 5px 10px), repeating-linear-gradient(-45deg, ${card.ink}14 0 5px, transparent 5px 10px)`,
+                      }}
+                    />
 
-                      <div className="relative z-10 flex items-center gap-2 px-3 pt-3">
-                        <TypeBadge card={card} />
+                    <div className="relative z-10 flex h-full flex-col px-4 py-4">
+                      <div className="flex items-center gap-2">
+                        <SuitGlyph suit={card.suit} ink={card.ink} className="h-[18px] w-[16px]" />
                         <div className="min-w-0">
-                          <h3 className="truncate font-climate text-[13px] leading-tight text-white">{card.title}</h3>
-                          <p className="text-[8px] uppercase tracking-[0.16em] text-white/40">{card.subtitle}</p>
+                          <h3 className="truncate font-poppins text-[14px] font-extrabold leading-tight text-[#141414]">
+                            {card.title}
+                          </h3>
+                          <p className="font-poppins text-[7px] font-semibold uppercase tracking-[0.2em] text-[#8a8a90]">
+                            {card.stage} · {card.subtitle}
+                          </p>
                         </div>
+                        <span
+                          className="ml-auto font-poppins text-[16px] font-extrabold leading-none"
+                          style={{ color: card.ink }}
+                        >
+                          {card.rank}
+                        </span>
                       </div>
 
-                      <div className="relative z-10 mx-3 mt-3 rounded-[6px] border border-white/10 bg-white/[0.04] px-3 py-2">
-                        <p className="text-[10.5px] italic leading-relaxed text-white/60">{card.description}</p>
-                      </div>
+                      <p className="mt-3 rounded-md border border-black/[0.08] bg-white/70 px-3 py-2 text-[10.5px] italic leading-relaxed text-[#55555a]">
+                        {card.description}
+                      </p>
 
-                      <ul className="relative z-10 mt-3 space-y-2 px-3">
-                        {card.points.map((point, idx) => (
+                      <ul className="mt-3 space-y-2">
+                        {card.points.map((point) => (
                           <li
                             key={point}
-                            className="flex items-start gap-2 border-t border-white/10 pt-2 text-[11px] leading-snug text-white/75 first:border-t-0 first:pt-0"
+                            className="flex items-start gap-2 border-t border-black/[0.08] pt-2 text-[11px] font-medium leading-snug text-[#3a3a3e] first:border-t-0 first:pt-0"
                           >
-                            <span className="mt-[1px] flex gap-[2px]">
-                              <EnergyPip Icon={card.Icon} dim={idx > 0} />
-                            </span>
+                            <SuitGlyph suit={card.suit} ink={card.ink} className="mt-[1px] h-[11px] w-[10px] shrink-0" />
                             {point}
                           </li>
                         ))}
                       </ul>
 
-                      <div className="relative z-10 mt-auto flex items-center justify-between border-t border-white/10 bg-black/40 px-3 py-[5px] font-poppins text-[6.5px] uppercase tracking-[0.14em] text-white/35">
+                      <div className="mt-auto flex items-center justify-between border-t border-black/[0.08] pt-2 font-poppins text-[6.5px] font-semibold uppercase tracking-[0.16em] text-[#9a9a9e]">
                         <span>Klik untuk kembali</span>
                         <span>
-                          {String(i + 1).padStart(3, '0')}/{String(cards.length).padStart(3, '0')} SAR
+                          {String(i + 1).padStart(3, '0')}/{String(cards.length).padStart(3, '0')} KNR
                         </span>
                       </div>
                     </div>
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             )
           })}
 
@@ -365,25 +413,24 @@ export default function Team() {
           >
             <ChevronRight className="h-5 w-5" />
           </motion.button>
-        </motion.div>
+        </div>
 
         {/* Dot indicators */}
         <div className="mt-6 flex items-center justify-center gap-3">
           {cards.map((card, i) => (
-            <motion.button
+            <button
               key={card.title}
               onClick={() => {
                 setFlipped(null)
                 setActive(i)
               }}
               aria-label={`Lihat kartu ${card.title}`}
-              className="rounded-full"
-              animate={{
+              className="rounded-full transition-all duration-300"
+              style={{
                 width: i === active ? 32 : 8,
                 height: 8,
                 backgroundColor: i === active ? ACCENT : 'rgba(255,255,255,0.15)',
               }}
-              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
             />
           ))}
         </div>

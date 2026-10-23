@@ -132,7 +132,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
         text: buildWhatsAppMessage(form, product, lastRef),
       })
     } catch {
-      /* user batal share — abaikan */
+      /* user batal share - abaikan */
     }
   }
 
@@ -264,7 +264,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                           <span className="font-bold text-black">
                             PDF sudah otomatis terlampir
                           </span>{' '}
-                          di chat — tinggal kirim. Terima kasih!
+                          di chat - tinggal kirim. Terima kasih!
                         </p>
                         <button
                           onClick={shareAgain}
@@ -277,7 +277,7 @@ export default function RequestQuoteModal({ isOpen, onClose, product }: Props) {
                     ) : (
                       <>
                         <h4 className="text-xl font-black text-black mb-2">
-                          PDF Terunduh — Lampirkan di WhatsApp
+                          PDF Terunduh - Lampirkan di WhatsApp
                         </h4>
                         <p className="text-gray-600 text-sm mb-4">
                           File brief{' '}
