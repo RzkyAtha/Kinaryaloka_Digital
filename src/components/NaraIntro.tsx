@@ -119,10 +119,7 @@ export default function NaraIntro() {
 
               {/* Header */}
               <div className="relative">
-                <span className="block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
-                  Virtual Assistant
-                </span>
-                <h3 className="mt-1.5 font-poppins text-[24px] font-extrabold uppercase leading-[0.95] tracking-tight text-[#141414] sm:text-[28px]">
+                <h3 className="font-poppins text-[24px] font-extrabold uppercase leading-[0.95] tracking-tight text-[#141414] sm:text-[28px]">
                   <span className="block">Kenalan</span>
                   <span className="block text-[#c6c7ca]">sama Nara</span>
                 </h3>
@@ -175,9 +172,6 @@ export default function NaraIntro() {
 
               {/* Character info panel */}
               <div className="relative mt-3.5 min-h-[108px] rounded-xl border border-black/[0.08] bg-white p-4 sm:p-5">
-                <span className="mb-3 block font-poppins text-[9px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
-                  Character Info
-                </span>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={active}

@@ -14,8 +14,10 @@ export interface PortfolioProject {
   status: PortfolioStatus
   /** Local showcase image shown in the browser mockup (falls back to live mshot) */
   showcase?: string
-  /** Logo/wordmark image shown on the selection card */
-  select?: string
+  /** Client logo shown as avatar on the selection card */
+  logo?: string
+  /** Mini stats row on the selection card (3 items) */
+  stats?: { value: string; label: string }[]
   images?: string[]
   /** Accent color - border, glow, highlight */
   color: string
@@ -34,8 +36,13 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
     category: 'Website',
     status: 'Deployed',
     showcase: '/Assets/fullink_showcase.webp',
-    select: '/Assets/flk_select.webp',
+    logo: '/Assets/fullink_logo.webp',
     color: '#0E7FA8',
+    stats: [
+      { value: '2', label: 'custom tools' },
+      { value: 'SG', label: 'based' },
+      { value: '100%', label: 'responsive' },
+    ],
     details: [
       'Company profile multi-halaman',
       'Desain modern & clean',
@@ -46,15 +53,20 @@ export const PORTFOLIO_PROJECTS: PortfolioProject[] = [
   {
     id: 'proj-slz',
     name: 'Slazete',
-    url: 'https://slazete.vercel.app/',
+    url: 'https://slazete.com/',
     description:
       'Website art commission yang berfokus kepada fitur pemesanan, daftar layanan komisi, dan alur pemesanan yang jelas untuk para calon klien.',
     badge: 'Art Commission',
     category: 'Website',
     status: 'Under Development',
     showcase: '/Assets/slazete_showcase.webp',
-    select: '/Assets/slz_select.webp',
+    logo: '/Assets/slazete_logo.webp',
     color: '#B04EDF',
+    stats: [
+      { value: '3', label: 'tier komisi' },
+      { value: 'EN·ID', label: 'bilingual' },
+      { value: '100%', label: 'responsive' },
+    ],
     details: [
       'Desain sesuai dengan gaya klien',
       'Pricelist & terms komisi yang jelas',

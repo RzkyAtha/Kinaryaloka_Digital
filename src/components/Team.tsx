@@ -1,4 +1,4 @@
-﻿import { motion } from 'framer-motion'
+﻿import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   ChevronLeftIcon as ChevronLeft,
@@ -48,7 +48,7 @@ const cards: CommitmentCard[] = [
     image: '/Assets/db_sip.webp',
     rank: 'Q',
     suit: 'diamond',
-    ink: '#C62828',
+    ink: '#141414',
     stage: 'Tahap 3',
     title: 'Tools',
     subtitle: 'Praktis & Custom',
@@ -125,7 +125,7 @@ function CornerPip({ card, rotated }: { card: CommitmentCard; rotated?: boolean 
       className={`absolute z-20 flex flex-col items-center leading-none ${rotated ? 'bottom-3 right-3 rotate-180' : 'left-3 top-3'}`}
       style={{ color: card.ink }}
     >
-      <span className="font-poppins text-[24px] font-extrabold leading-none">{card.rank}</span>
+      <span className="font-climate text-[24px] leading-none">{card.rank}</span>
       <SuitGlyph suit={card.suit} ink={card.ink} className="mt-1 h-[14px] w-[13px]" />
     </div>
   )
@@ -154,17 +154,29 @@ function SuitArt({ card }: { card: CommitmentCard }) {
 
 export default function Team() {
   const [active, setActive] = useState(0)
-  const [flipped, setFlipped] = useState<number | null>(null)
+  const [openIdx, setOpenIdx] = useState<number | null>(null)
   const [vw, setVw] = useState(() => (typeof window !== 'undefined' ? window.innerWidth : 1280))
   const cardRefs = useRef<Array<HTMLDivElement | null>>([])
-  const innerRefs = useRef<Array<HTMLDivElement | null>>([])
-  const prevFlipped = useRef<number | null>(null)
 
   useEffect(() => {
     const onResize = () => setVw(window.innerWidth)
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
+
+  // Lock scroll + Escape to close saat popup detail terbuka
+  useEffect(() => {
+    if (openIdx === null) return
+    document.body.style.overflow = 'hidden'
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpenIdx(null)
+    }
+    window.addEventListener('keydown', handler)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', handler)
+    }
+  }, [openIdx])
 
   const sideX = sideOffset(vw)
 
@@ -192,27 +204,7 @@ export default function Team() {
     })
   }, [active, sideX])
 
-  // Flip animation - same WAAPI approach
-  useLayoutEffect(() => {
-    if (prevFlipped.current === flipped) return
-    const prev = prevFlipped.current
-    prevFlipped.current = flipped
-    const idx = flipped ?? prev
-    if (idx === null) return
-    const el = innerRefs.current[idx]
-    if (!el) return
-    const current = getComputedStyle(el).transform
-    el.animate(
-      [
-        { transform: current === 'none' ? 'rotateY(0deg)' : current },
-        { transform: `rotateY(${flipped === idx ? 180 : 0}deg)` },
-      ],
-      { duration: 560, easing: DECK_EASE, fill: 'forwards' }
-    )
-  }, [flipped])
-
   const go = (dir: 1 | -1) => {
-    setFlipped(null)
     setActive((p) => (p + dir + cards.length) % cards.length)
   }
 
@@ -238,7 +230,7 @@ export default function Team() {
             Komitmen Kami
           </h2>
           <p className="mt-3 text-[12px] md:text-[13px] text-white/40">
-            Klik kartu untuk membalik dan melihat detailnya.
+            Klik kartu untuk melihat detailnya.
           </p>
         </div>
 
@@ -270,16 +262,11 @@ export default function Team() {
                 }}
               >
                 <div
-                  ref={(el) => {
-                    innerRefs.current[i] = el
-                  }}
                   role="button"
                   tabIndex={0}
                   aria-label={card.title}
                   className="relative h-full w-full cursor-pointer outline-none"
                   style={{
-                    transformStyle: 'preserve-3d',
-                    willChange: 'transform',
                     touchAction: 'manipulation',
                     WebkitTapHighlightColor: 'transparent',
                   }}
@@ -288,12 +275,12 @@ export default function Team() {
                       go(pos === 'left' ? -1 : 1)
                       return
                     }
-                    setFlipped((p) => (p === i ? null : i))
+                    setOpenIdx(i)
                   }}
                   onKeyDown={(e: React.KeyboardEvent) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
-                      setFlipped((p) => (p === i ? null : i))
+                      setOpenIdx(i)
                     }
                   }}
                 >
@@ -301,7 +288,6 @@ export default function Team() {
                   <div
                     className="absolute inset-0 overflow-hidden rounded-[16px] bg-[#F0F0F0]"
                     style={{
-                      backfaceVisibility: 'hidden',
                       border: '1px solid rgba(0,0,0,0.14)',
                       boxShadow: isCenter
                         ? '0 24px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.2), 0 0 44px rgba(245,197,66,0.2)'
@@ -314,77 +300,20 @@ export default function Team() {
                     <CornerPip card={card} />
                     <CornerPip card={card} rotated />
 
-                    {/* center artwork */}
-                    <div className="absolute inset-x-6 bottom-14 top-11">
-                      <SuitArt card={card} />
-                    </div>
-
-                    {/* bottom caption */}
-                    <div className="absolute inset-x-0 bottom-3 z-20 text-center">
-                      <span className="font-poppins text-[7px] font-semibold uppercase tracking-[0.22em] text-[#9a9a9e]">
-                        {card.stage} · {card.title} · {card.subtitle}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* -- Back face - card back / detail -- */}
-                  <div
-                    className="absolute inset-0 overflow-hidden rounded-[16px] bg-[#F0F0F0]"
-                    style={{
-                      backfaceVisibility: 'hidden',
-                      transform: 'rotateY(180deg)',
-                      border: '1px solid rgba(0,0,0,0.14)',
-                      boxShadow: '0 24px 60px rgba(0,0,0,0.55), 0 0 44px rgba(245,197,66,0.2)',
-                    }}
-                  >
-                    {/* lattice pattern like a card back */}
-                    <div
-                      className="pointer-events-none absolute inset-[5px] rounded-[12px]"
-                      style={{
-                        border: `1.5px solid ${card.ink}`,
-                        backgroundImage: `repeating-linear-gradient(45deg, ${card.ink}14 0 5px, transparent 5px 10px), repeating-linear-gradient(-45deg, ${card.ink}14 0 5px, transparent 5px 10px)`,
-                      }}
-                    />
-
-                    <div className="relative z-10 flex h-full flex-col px-4 py-4">
-                      <div className="flex items-center gap-2">
-                        <SuitGlyph suit={card.suit} ink={card.ink} className="h-[18px] w-[16px]" />
-                        <div className="min-w-0">
-                          <h3 className="truncate font-poppins text-[14px] font-extrabold leading-tight text-[#141414]">
-                            {card.title}
-                          </h3>
-                          <p className="font-poppins text-[7px] font-semibold uppercase tracking-[0.2em] text-[#8a8a90]">
-                            {card.stage} · {card.subtitle}
-                          </p>
-                        </div>
+                    {/* artwork + title directly below it */}
+                    <div className="absolute inset-x-6 bottom-10 top-11 flex flex-col">
+                      <div className="min-h-0 flex-1">
+                        <SuitArt card={card} />
+                      </div>
+                      <div className="z-20 flex flex-col items-center gap-0.5 pt-1 text-center">
                         <span
-                          className="ml-auto font-poppins text-[16px] font-extrabold leading-none"
+                          className="font-climate text-[20px] leading-tight"
                           style={{ color: card.ink }}
                         >
-                          {card.rank}
+                          {card.title}
                         </span>
-                      </div>
-
-                      <p className="mt-3 rounded-md border border-black/[0.08] bg-white/70 px-3 py-2 text-[10.5px] italic leading-relaxed text-[#55555a]">
-                        {card.description}
-                      </p>
-
-                      <ul className="mt-3 space-y-2">
-                        {card.points.map((point) => (
-                          <li
-                            key={point}
-                            className="flex items-start gap-2 pt-2 text-[11px] font-medium leading-snug text-[#3a3a3e] first:pt-0"
-                          >
-                            <SuitGlyph suit={card.suit} ink={card.ink} className="mt-[1px] h-[11px] w-[10px] shrink-0" />
-                            {point}
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div className="mt-auto flex items-center justify-between pt-2 font-poppins text-[6.5px] font-semibold uppercase tracking-[0.16em] text-[#9a9a9e]">
-                        <span>Klik untuk kembali</span>
-                        <span>
-                          {String(i + 1).padStart(3, '0')}/{String(cards.length).padStart(3, '0')} KNR
+                        <span className="font-poppins text-[7px] font-semibold uppercase tracking-[0.22em] text-[#9a9a9e]">
+                          {card.stage} · {card.subtitle}
                         </span>
                       </div>
                     </div>
@@ -420,10 +349,7 @@ export default function Team() {
           {cards.map((card, i) => (
             <button
               key={card.title}
-              onClick={() => {
-                setFlipped(null)
-                setActive(i)
-              }}
+              onClick={() => setActive(i)}
               aria-label={`Lihat kartu ${card.title}`}
               className="rounded-full transition-all duration-300"
               style={{
@@ -435,6 +361,87 @@ export default function Team() {
           ))}
         </div>
       </div>
+
+      {/* -- Detail popup -- */}
+      <AnimatePresence>
+        {openIdx !== null && (
+          <motion.div
+            key="card-detail"
+            className="fixed inset-0 z-[9999] flex items-center justify-center px-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div
+              className="absolute inset-0 bg-black/85 backdrop-blur-sm"
+              onClick={() => setOpenIdx(null)}
+            />
+            <motion.div
+              initial={{ opacity: 0, y: 24, scale: 0.94 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.96 }}
+              transition={{ duration: 0.28, ease: 'easeOut' }}
+              className="relative z-10 flex w-full max-w-[320px] flex-col items-center"
+            >
+              {(() => {
+                const card = cards[openIdx]
+                return (
+                  <div className="relative w-full rounded-[16px] bg-[#F7F7F5] px-5 py-5 shadow-2xl">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <SuitGlyph suit={card.suit} ink={card.ink} className="h-[18px] w-[16px]" />
+                        <div className="min-w-0">
+                          <h3 className="truncate font-climate text-[16px] leading-tight text-[#141414]">
+                            {card.title}
+                          </h3>
+                          <p className="font-poppins text-[7px] font-semibold uppercase tracking-[0.2em] text-[#8a8a90]">
+                            {card.stage} · {card.subtitle}
+                          </p>
+                        </div>
+                        <span
+                          className="ml-auto font-climate text-[16px] leading-none"
+                          style={{ color: card.ink }}
+                        >
+                          {card.rank}
+                        </span>
+                      </div>
+
+                      <p className="mt-3.5 rounded-md border border-black/[0.08] bg-white px-3 py-2 text-[10.5px] italic leading-relaxed text-[#55555a]">
+                        {card.description}
+                      </p>
+
+                      <ul className="mt-3.5 space-y-2">
+                        {card.points.map((point) => (
+                          <li
+                            key={point}
+                            className="flex items-start gap-2 pt-2 text-[11px] font-medium leading-snug text-[#3a3a3e] first:pt-0"
+                          >
+                            <SuitGlyph
+                              suit={card.suit}
+                              ink={card.ink}
+                              className="mt-[1px] h-[11px] w-[10px] shrink-0"
+                            />
+                            {point}
+                          </li>
+                        ))}
+                      </ul>
+
+                      <button
+                        type="button"
+                        onClick={() => setOpenIdx(null)}
+                        className="mt-4 w-full cursor-pointer rounded-lg bg-[#141414] py-2.5 font-poppins text-[12px] font-semibold text-white transition-all duration-300 hover:bg-black"
+                      >
+                        Tutup
+                      </button>
+                    </div>
+                  </div>
+                )
+              })()}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   )
 }

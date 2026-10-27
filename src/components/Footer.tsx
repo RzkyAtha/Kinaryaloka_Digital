@@ -315,10 +315,7 @@ export default function Footer() {
             </button>
 
             <div className="relative">
-              <span className="block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
-                Bantuan
-              </span>
-              <h3 className="mt-1.5 pr-8 font-poppins text-[22px] font-extrabold uppercase leading-tight tracking-tight text-[#141414] sm:text-[26px]">
+              <h3 className="pr-8 font-poppins text-[22px] font-extrabold uppercase leading-tight tracking-tight text-[#141414] sm:text-[26px]">
                 {policy.title}
               </h3>
 

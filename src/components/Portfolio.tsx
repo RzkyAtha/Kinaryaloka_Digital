@@ -5,8 +5,10 @@ import {
   ChevronLeftIcon as ChevronLeft,
   ChevronRightIcon as ChevronRight,
   LockClosedIcon as Lock,
+  EyeIcon as Eye,
+  CodeBracketIcon as CodeBracket,
 } from '@heroicons/react/24/solid'
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useRef } from 'react'
 import { PORTFOLIO_PROJECTS, PortfolioProject } from '../context/PortfolioContext'
 
 const mshot = (url: string, w: number, h: number) =>
@@ -223,13 +225,18 @@ function Lightbox({
 // --- Main Portfolio Component ------------------------------------------------
 export default function Portfolio() {
   const projects = PORTFOLIO_PROJECTS
-  const [selectedId, setSelectedId] = useState(projects[0]?.id ?? '')
+  const [selectedId, setSelectedId] = useState<string | null>(null)
   const [lightboxProject, setLightboxProject] = useState<PortfolioProject | null>(null)
+  const detailRef = useRef<HTMLDivElement>(null)
 
   const selected = useMemo(
-    () => projects.find((p) => p.id === selectedId) ?? projects[0],
+    () => projects.find((p) => p.id === selectedId) ?? null,
     [projects, selectedId]
   )
+
+  useEffect(() => {
+    if (selectedId) detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [selectedId])
   const hasGallery = !!selected?.images && selected.images.length > 0
   const hostname = useMemo(() => {
     try {
@@ -240,6 +247,7 @@ export default function Portfolio() {
   }, [selected])
 
   const handleOpen = () => {
+    if (!selected) return
     if (hasGallery) setLightboxProject(selected)
     else if (selected?.url) window.open(selected.url, '_blank', 'noopener,noreferrer')
   }
@@ -256,230 +264,268 @@ export default function Portfolio() {
 
       <div className="relative mx-auto max-w-[1120px] px-5 sm:px-8 lg:px-10">
         {/* -- Editorial header -- */}
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-4">
           <h2 className="text-[38px] uppercase leading-[0.95] tracking-tight sm:text-[48px] md:text-[56px]">
             <span className="block font-prompt font-extrabold text-[#141414]">Tampilan</span>
             <span className="block font-prompt font-extrabold text-[#757575]">Portfolio</span>
           </h2>
-          <p className="max-w-xs text-[13px] leading-relaxed text-[#6b6b70] md:text-right">
+          <p className="max-w-md text-[13px] leading-relaxed text-[#6b6b70]">
             Lihat langsung website yang sudah kami bangun, pilih projek di panel showcase, lalu
             kunjungi versi live-nya.
           </p>
         </div>
 
-        {/* -- Asymmetric editorial grid -- */}
-        <div className="mt-10 grid gap-10 md:mt-14 lg:grid-cols-[1fr_minmax(0,300px)] lg:gap-10">
-          {/* -- Right: selected project detail -- */}
-          <div className="order-2">
-            <div key={selected.id}>
-              <div className="flex items-center gap-2.5">
-                <span className="block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
-                  {selected.category}
-                </span>
-                {selected.badge && (
-                  <span
-                    className="rounded-md px-2 py-0.5 font-poppins text-[8px] font-semibold uppercase tracking-[0.16em] text-white"
-                    style={{ background: selected.color }}
-                  >
-                    {selected.badge}
-                  </span>
-                )}
-              </div>
-              <h3 className="mt-2 font-poppins text-[26px] font-bold leading-tight text-[#141414] sm:text-[30px]">
-                {selected.name}
-              </h3>
-              <p className="mt-2.5 text-justify text-[12.5px] leading-relaxed text-[#6b6b70]">
-                {selected.description}
-              </p>
-
-              {/* Details */}
-              <ul className="mt-4 space-y-1.5">
-                {selected.details.map((d) => (
-                  <li key={d} className="flex items-start gap-2">
-                    <span
-                      className="mt-[6px] h-1 w-1 shrink-0 rounded-full"
-                      style={{ background: selected.color }}
-                    />
-                    <span className="text-[11px] leading-relaxed text-[#6b6b70]">{d}</span>
-                  </li>
-                ))}
-              </ul>
-
-              {/* CTA */}
-              <button
-                onClick={handleOpen}
-                className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#141414] px-6 py-3 font-poppins text-[12px] font-semibold text-white transition-all duration-300 hover:bg-black hover:shadow-lg"
-              >
-                {hasGallery ? 'Lihat Gallery' : 'Kunjungi Website'}
-              </button>
-            </div>
-          </div>
-
-          {/* -- Left: floating browser mockup -- */}
-          <div className="order-1">
-            <div className="relative mx-auto w-full max-w-[560px]">
-              {/* Browser window */}
-              <div className="relative z-10 flex justify-center">
-                <div
-                  className="w-[86%] overflow-hidden rounded-xl bg-[#141414]"
-                  style={{
-                    boxShadow: `0 24px 48px ${selected.color}26, 0 12px 24px rgba(0,0,0,0.12)`,
-                    transition: 'box-shadow 400ms ease',
-                  }}
-                >
-                  {/* Chrome bar */}
-                  <div className="flex items-center gap-2 px-3 py-2">
-                    <span className="flex gap-1.5">
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#3a3a3e]" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#55555c]" />
-                      <span className="h-2.5 w-2.5 rounded-full bg-[#F5C542]" />
-                    </span>
-                    <span className="mx-auto flex min-w-0 items-center gap-1.5 rounded-md bg-[#26262b] px-3 py-1 font-poppins text-[9px] font-medium tracking-wide text-white/60">
-                      <Lock className="h-2.5 w-2.5 shrink-0 text-[#F5C542]" />
-                      <span className="truncate">{hostname || selected.name}</span>
-                    </span>
-                    <span className="w-[46px] shrink-0" aria-hidden="true" />
-                  </div>
-                  {/* Viewport */}
-                  <button
-                    type="button"
-                    onClick={handleOpen}
-                    className="relative block aspect-[7588/6296] w-full cursor-pointer outline-none"
-                    aria-label={`Buka ${selected.name}`}
-                  >
-                    <SiteShot key={selected.id} project={selected} w={880} h={550} fit="contain" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Floating status chip */}
-              <motion.span
-                animate={{ y: [0, -4, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute right-[2%] top-0 z-20 flex items-center gap-1.5 rounded-lg px-3 py-2 font-poppins text-[10px] font-semibold text-white shadow-sm"
-                style={{
-                  background: hasGallery ? selected.color : STATUS_GLOW[selected.status],
-                  boxShadow: `0 6px 16px ${hasGallery ? selected.color : STATUS_GLOW[selected.status]}66, 0 2px 6px rgba(0,0,0,0.15)`,
-                }}
-              >
-                {hasGallery ? 'Gallery' : selected.status}
-              </motion.span>
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* -- Showcase strip - horizontal list -- */}
-        <div className="mt-10 md:mt-14">
-          <span className="mb-3 block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
-            Showcase
-          </span>
-          <div className="flex gap-3 overflow-x-auto pb-2 sm:gap-4">
+        {/* -- Grid / Detail view - swap layaknya pindah halaman -- */}
+        <AnimatePresence mode="wait" initial={false}>
+          {selected === null && (
+            <motion.div
+              key="cards"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="mt-10 md:mt-14"
+            >
+          <div className="flex flex-wrap justify-center gap-4 pb-2">
             {projects.map((p) => {
-              const isSel = p.id === selected.id
+              const isSel = p.id === selectedId
               return (
                 <motion.button
                   key={p.id}
                   type="button"
-                  onClick={() => setSelectedId(p.id)}
+                  onClick={() =>
+                    setSelectedId((prev) => (prev === p.id ? null : p.id))
+                  }
                   whileTap={{ scale: 0.97 }}
-                  className="relative w-[220px] shrink-0 cursor-pointer overflow-hidden rounded-xl bg-white text-left transition-all duration-300"
+                  className="group relative aspect-[3/4] w-[calc(50%-8px)] shrink-0 cursor-pointer overflow-hidden rounded-[20px] border-4 border-white bg-white text-left transition-all duration-300 sm:w-[300px] sm:rounded-[30px] sm:border-[6px]"
                   style={{
-                    border: `1.5px solid ${isSel ? p.color : 'rgba(0,0,0,0.08)'}`,
                     boxShadow: isSel
-                      ? `0 10px 28px ${p.color}30, 0 2px 8px rgba(0,0,0,0.08)`
-                      : '0 2px 8px rgba(0,0,0,0.04)',
+                      ? `0 0 0 2px ${p.color}, 0 14px 32px ${p.color}38, 0 4px 12px rgba(0,0,0,0.10)`
+                      : '0 0 0 1px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.06)',
                   }}
                   aria-pressed={isSel}
                   aria-label={`Lihat projek ${p.name}`}
                 >
-                  <div
-                    className={`relative aspect-[2592/1608] overflow-hidden bg-white transition-all duration-300 ${
-                      isSel ? '' : 'opacity-50 grayscale'
-                    }`}
-                  >
-                    {p.select ? (
-                      <img
-                        src={p.select}
-                        alt={p.name}
-                        loading="lazy"
-                        decoding="async"
-                        draggable={false}
-                        className="h-full w-full object-contain"
-                      />
-                    ) : p.showcase ? (
-                      <SiteShot project={p} w={400} h={250} fit="contain" />
-                    ) : p.url ? (
-                      <SiteShot project={p} w={400} h={250} />
-                    ) : (
-                      <img
-                        src={p.thumbnail || p.images?.[0]}
-                        alt={p.name}
-                        loading="lazy"
-                        decoding="async"
-                        draggable={false}
-                        className="h-full w-full object-cover"
-                      />
-                    )}
+                  {/* Banner - showcase image */}
+                  <div className="absolute inset-x-0 top-0 h-[44%] overflow-hidden">
+                    <SiteShot project={p} w={600} h={420} />
+                    <div className="absolute inset-0 bg-black/20" />
                   </div>
-                  <div className="px-3.5 py-3">
-                    <div className="flex items-baseline justify-between gap-1">
-                      <span
-                        className="font-poppins text-[12px] font-semibold leading-tight transition-colors duration-300"
-                        style={{ color: isSel ? '#141414' : '#8a8a90' }}
-                      >
+
+                  {/* Status pill - kanan atas card */}
+                  <span className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full bg-black/50 py-0.5 pl-1 pr-2 backdrop-blur-md sm:right-4 sm:top-4 sm:gap-1.5 sm:py-1 sm:pl-1.5 sm:pr-3">
+                    <span
+                      className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full sm:h-5 sm:w-5"
+                      style={{ background: STATUS_GLOW[p.status] }}
+                    >
+                      <span className="h-1 w-1 rounded-full bg-white sm:h-1.5 sm:w-1.5" />
+                    </span>
+                    <span className="font-poppins text-[8px] font-semibold text-white sm:text-[10px]">
+                      {p.status}
+                    </span>
+                  </span>
+
+                  {/* Avatar - numpuk di tepi bawah banner */}
+                  <span
+                    className="absolute left-3 top-[44%] z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-white transition-shadow duration-300 sm:left-4 sm:h-14 sm:w-14"
+                    style={{
+                      boxShadow: isSel
+                        ? `0 0 0 3px #fff, 0 0 0 5px ${p.color}, 0 4px 12px rgba(0,0,0,0.2)`
+                        : '0 0 0 3px #fff, 0 4px 12px rgba(0,0,0,0.15)',
+                    }}
+                  >
+                    {p.logo ? (
+                      <img
+                        src={p.logo}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        draggable={false}
+                        className="h-7 w-7 object-contain sm:h-10 sm:w-10"
+                      />
+                    ) : (
+                      <Globe className="h-5 w-5 text-black/40 sm:h-6 sm:w-6" />
+                    )}
+                  </span>
+
+                  {/* Body - konten di background putih */}
+                  <div className="absolute inset-x-0 bottom-0 top-[44%] flex flex-col px-3 pb-3 pt-6 sm:px-4 sm:pb-4 sm:pt-10">
+                    {/* Name + bookmark */}
+                    <div className="flex shrink-0 items-center justify-between gap-2">
+                      <h4 className="truncate font-poppins text-[14px] font-bold leading-tight text-[#141414] sm:text-[19px]">
                         {p.name}
+                      </h4>
+                      <span className="flex shrink-0 items-center gap-1.5 text-[#141414]/60">
+                        <CodeBracket className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" />
+                        <Globe className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" />
                       </span>
                     </div>
-                    <span
-                      className="mt-1 block font-poppins text-[8px] font-semibold uppercase tracking-[0.18em] transition-colors duration-300"
-                      style={{ color: isSel ? p.color : '#b0b0b5' }}
-                    >
-                      {isSel ? 'Selected' : 'Tap to view'}
+                    <span className="mt-0.5 block shrink-0 truncate font-poppins text-[9px] text-[#8a8a90] sm:mt-1 sm:text-[12px]">
+                      {p.badge || p.category}
                     </span>
+
+
+                    {/* Stats + CTA */}
+                    <div className="mt-auto shrink-0">
+                      {p.stats && (
+                        <div className="grid grid-cols-3 gap-1">
+                          {p.stats.map((s) => (
+                            <div key={s.label}>
+                              <span className="block font-poppins text-[11px] font-bold text-[#141414] sm:text-[16px]">
+                                {s.value}
+                              </span>
+                              <span className="block truncate font-poppins text-[8px] text-[#9a9aa0] sm:text-[10px]">
+                                {s.label}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      <div className="mt-2 sm:mt-3.5">
+                        <span className="flex h-7 flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#141414] font-poppins text-[11px] font-semibold text-white transition-all duration-300 group-hover:bg-black sm:h-11 sm:gap-2 sm:text-[13px]">
+                          <span className="leading-none">
+                            {isSel ? 'Selected' : 'Tap to view'}
+                          </span>
+                          <Eye className="h-3.5 w-3.5 shrink-0 sm:h-[18px] sm:w-[18px]" />
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </motion.button>
               )
             })}
-
-            {/* Coming-soon slot */}
-            <div className="flex min-h-[120px] w-[220px] shrink-0 flex-col items-center justify-center self-stretch rounded-xl border-[1.5px] border-dashed border-black/15 bg-white/40 p-4 text-center">
-              <Globe className="mb-2 h-6 w-6 text-black/15" />
-              <span className="font-poppins text-[10px] font-semibold text-black/30">
-                Projek Selanjutnya
-              </span>
-              <span className="font-poppins text-[8px] uppercase tracking-[0.18em] text-black/25">
-                Segera hadir
-              </span>
-            </div>
           </div>
-        </div>
+            </motion.div>
+          )}
 
-        {/* -- Bottom bar -- */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 pt-8 sm:flex-row">
-          <div className="text-center sm:text-left">
-            <span className="block font-poppins text-[9px] font-semibold uppercase tracking-[0.25em] text-[#8a8a90]">
-              Projek Terkirim
-            </span>
-            <span className="font-poppins text-[28px] font-extrabold tracking-tight text-[#141414] sm:text-[34px]">
-              {String(projects.length).padStart(2, '0')}
-            </span>
-            <span className="block text-[10px] text-[#9a9aa0]">
-              Sedang ditampilkan: {selected.name}
-            </span>
-          </div>
-        </div>
+          {/* -- Detail view - menggantikan grid setelah card diklik -- */}
+          {selected && (
+            <motion.div
+              key={`detail-${selected.id}`}
+              ref={detailRef}
+              initial={{ opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="mt-10 scroll-mt-28 md:mt-14"
+            >
+              {/* Back button */}
+              <button
+                type="button"
+                onClick={() => setSelectedId(null)}
+                className="group flex cursor-pointer items-center gap-1.5 rounded-full border border-black/10 bg-white py-2 pl-3 pr-4 font-poppins text-[11px] font-semibold text-[#141414] transition-all duration-300 hover:border-black/25 hover:shadow-md"
+              >
+                <ChevronLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-0.5" />
+                Kembali
+              </button>
 
-        <p className="mt-6 text-center text-[10px] leading-relaxed text-[#9a9aa0] sm:text-xs">
+              <div className="mt-6 grid gap-10 lg:grid-cols-[1fr_minmax(0,300px)] lg:gap-10">
+              {/* -- Right: selected project detail -- */}
+              <div className="order-2">
+                <div>
+                  <h3 className="font-poppins text-[26px] font-bold leading-tight text-[#141414] sm:text-[30px]">
+                    {selected.name}
+                  </h3>
+                  {selected.badge && (
+                    <span
+                      className="mt-1 block font-poppins text-[12px] font-medium"
+                      style={{ color: selected.color }}
+                    >
+                      {selected.badge}
+                    </span>
+                  )}
+                  <p className="mt-2.5 text-justify text-[12.5px] leading-relaxed text-[#6b6b70]">
+                    {selected.description}
+                  </p>
+
+                  {/* Details */}
+                  <ul className="mt-4 space-y-1.5">
+                    {selected.details.map((d) => (
+                      <li key={d} className="flex items-start gap-2">
+                        <span
+                          className="mt-[6px] h-1 w-1 shrink-0 rounded-full"
+                          style={{ background: selected.color }}
+                        />
+                        <span className="text-[11px] leading-relaxed text-[#6b6b70]">{d}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* CTA */}
+                  <button
+                    onClick={handleOpen}
+                    className="mt-5 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-[#141414] px-6 py-3 font-poppins text-[12px] font-semibold text-white transition-all duration-300 hover:bg-black hover:shadow-lg"
+                  >
+                    {hasGallery ? 'Lihat Gallery' : 'Kunjungi Website'}
+                  </button>
+                </div>
+              </div>
+
+              {/* -- Left: floating browser mockup -- */}
+              <div className="order-1">
+                <div className="relative mx-auto w-full max-w-[560px]">
+                  {/* Browser window */}
+                  <div className="relative z-10 flex justify-center">
+                    <div
+                      className="w-[86%] overflow-hidden rounded-xl bg-[#141414]"
+                      style={{
+                        boxShadow: `0 24px 48px ${selected.color}26, 0 12px 24px rgba(0,0,0,0.12)`,
+                        transition: 'box-shadow 400ms ease',
+                      }}
+                    >
+                      {/* Chrome bar */}
+                      <div className="flex items-center gap-2 px-3 py-2">
+                        <span className="flex gap-1.5">
+                          <span className="h-2.5 w-2.5 rounded-full bg-[#3a3a3e]" />
+                          <span className="h-2.5 w-2.5 rounded-full bg-[#55555c]" />
+                          <span className="h-2.5 w-2.5 rounded-full bg-[#F5C542]" />
+                        </span>
+                        <span className="mx-auto flex min-w-0 items-center gap-1.5 rounded-md bg-[#26262b] px-3 py-1 font-poppins text-[9px] font-medium tracking-wide text-white/60">
+                          <Lock className="h-2.5 w-2.5 shrink-0 text-[#F5C542]" />
+                          <span className="truncate">{hostname || selected.name}</span>
+                        </span>
+                        <span className="w-[46px] shrink-0" aria-hidden="true" />
+                      </div>
+                      {/* Viewport */}
+                      <button
+                        type="button"
+                        onClick={handleOpen}
+                        className="relative block aspect-[7588/6296] w-full cursor-pointer outline-none"
+                        aria-label={`Buka ${selected.name}`}
+                      >
+                        <SiteShot key={selected.id} project={selected} w={880} h={550} fit="contain" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Floating status chip */}
+                  <motion.span
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+                    className="absolute right-[2%] top-0 z-20 flex items-center gap-1.5 rounded-lg px-3 py-2 font-poppins text-[10px] font-semibold text-white shadow-sm"
+                    style={{
+                      background: hasGallery ? selected.color : STATUS_GLOW[selected.status],
+                      boxShadow: `0 6px 16px ${hasGallery ? selected.color : STATUS_GLOW[selected.status]}66, 0 2px 6px rgba(0,0,0,0.15)`,
+                    }}
+                  >
+                    {hasGallery ? 'Gallery' : selected.status}
+                  </motion.span>
+                </div>
+              </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <p className="mt-10 text-center text-[10px] leading-relaxed text-[#9a9aa0] sm:text-xs">
           Preview di atas adalah live screenshot dari situs aslinya - klik untuk membukanya. Produk
           kami dapat dikenali dengan adanya{' '}
-          <span className="inline-flex translate-y-[2px] items-center gap-1 rounded-md bg-[#2a2a2a] px-2 py-0.5 align-baseline">
-            <span className="text-[9px] font-medium text-gray-300">Powered by</span>
+          <span className="inline-flex translate-y-[1px] items-center gap-1 rounded-md bg-[#2a2a2a] px-2 py-[3px] align-middle">
+            <span className="text-[9px] font-medium leading-none text-gray-300">Powered by</span>
             <img
               src="/Assets/logo_kinarya.webp"
               alt="Kinaryaloka"
-              className="h-3 w-3 object-contain"
+              className="h-3.5 w-3.5 shrink-0 object-contain"
             />
           </span>{' '}
           di tiap footer websitenya, hak cipta dilindungi.

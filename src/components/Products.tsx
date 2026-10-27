@@ -2,7 +2,7 @@ import { useState, lazy, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import {
   PaintBrushIcon,
-  Squares2X2Icon,
+  WrenchScrewdriverIcon,
   PlusIcon,
 } from '@heroicons/react/24/solid'
 import type { RequestQuoteProduct } from './RequestQuoteModal'
@@ -12,20 +12,20 @@ const RequestQuoteModal = lazy(() => import('./RequestQuoteModal'))
 // --- Inventory Data ----------------------------------------------------------
 const MAIN_ITEM = {
   id: 'main',
-  name: 'Business Profile',
+  name: 'Website Bisnis',
   type: 'Main Item',
   rarity: 'Core Service',
   image: '/Assets/nara_coding.webp',
   color: '#F5C542',
-  priceMin: 1500,
-  priceMax: 3000,
+  priceMin: 3000,
+  priceMax: 5000,
   stats: [
-    { label: 'Kredibilitas', value: 92 },
-    { label: 'Jangkauan', value: 85 },
-    { label: 'Konversi', value: 80 },
+    { value: '5+', label: 'halaman' },
+    { value: 'ID·EN', label: 'bilingual' },
+    { value: '100%', label: 'responsive' },
   ],
   description:
-    'Website company profile profesional sebagai rumah digital bisnismu - identitas, layanan, dan kontak resmi dalam satu tempat.',
+    'Website company profile profesional sebagai rumah digital bisnismu ; identitas, layanan, dan kontak resmi dalam satu tempat. Kami juga menerima brand identity settlement, serta pengembangan fitur/tools custom yang disesuaikan dengan kebutuhan bisnis klien.',
   details: [
     'Custom website multi-halaman',
     'Profil bisnis, layanan & kontak resmi',
@@ -38,7 +38,7 @@ const MAIN_ITEM = {
 const ADDONS = [
   {
     id: 'branding',
-    name: 'Branding',
+    name: 'Brand Identity',
     type: 'Add-On',
     image: '/Assets/brnd_oren.webp',
     color: '#FF8C2E',
@@ -63,12 +63,12 @@ const ADDONS = [
   },
   {
     id: 'katalog',
-    name: 'Katalog Produk',
+    name: 'Tools/Fitur Custom',
     type: 'Add-On',
     image: '/Assets/brnd_biru.webp',
     color: '#0080FF',
-    price: 1000,
-    icon: Squares2X2Icon,
+    price: 'discuss' as const,
+    icon: WrenchScrewdriverIcon,
     dot: [70, 30] as [number, number],
     chipPos: [96, 26] as [number, number],
     chipAlign: 'right' as const,
@@ -77,12 +77,12 @@ const ADDONS = [
       { label: 'Kemudahan Kelola', value: 78 },
     ],
     description:
-      'Katalog produk online di dalam website - pelanggan bisa jelajahi produk dan pesan langsung via WhatsApp.',
+      'Tools atau fitur custom yang disesuaikan dengan workflow bisnismu - mulai dari pengelola dokumen hingga sistem internal.',
     details: [
-      'Katalog produk (hingga 50 produk)',
-      'Halaman detail produk + galeri',
-      'Tombol pesan via WhatsApp',
-      'Manajemen produk & kategori',
+      'Fitur custom sesuai kebutuhan bisnis',
+      'Contoh: invoice, PO, booking, dashboard',
+      'Integrasi dengan sistem internal',
+      'Konsultasi scope fitur gratis',
     ],
   },
 ]
@@ -98,8 +98,13 @@ export default function Products() {
   const [selectedProduct, setSelectedProduct] = useState<RequestQuoteProduct | null>(null)
 
   const equippedAddons = ADDONS.filter((a) => equipped.includes(a.id))
-  const totalMin = MAIN_ITEM.priceMin + equippedAddons.reduce((s, a) => s + a.price, 0)
-  const totalMax = MAIN_ITEM.priceMax + equippedAddons.reduce((s, a) => s + a.price, 0)
+  const pricedTotal = equippedAddons.reduce(
+    (s, a) => s + (typeof a.price === 'number' ? a.price : 0),
+    0
+  )
+  const hasCustom = equippedAddons.some((a) => a.price === 'discuss')
+  const totalMin = MAIN_ITEM.priceMin + pricedTotal
+  const totalMax = MAIN_ITEM.priceMax + pricedTotal
 
   const toggleEquip = (id: string) => {
     setEquipped((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
@@ -107,7 +112,7 @@ export default function Products() {
 
   const handleCheckout = () => {
     setSelectedProduct({
-      title: ['Business Profile', ...equippedAddons.map((a) => a.name)].join(' + '),
+      title: [MAIN_ITEM.name, ...equippedAddons.map((a) => a.name)].join(' + '),
       price: `${fmtJt(totalMin)} - ${fmtJt(totalMax)} Jt`,
       color: MAIN_ITEM.color,
       details: [...MAIN_ITEM.details, ...equippedAddons.flatMap((a) => a.details)],
@@ -127,52 +132,38 @@ export default function Products() {
 
       <div className="relative mx-auto max-w-[1120px] px-5 sm:px-8 lg:px-10">
         {/* -- Editorial header -- */}
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-4">
           <h2 className="text-[38px] uppercase leading-[0.95] tracking-tight sm:text-[48px] md:text-[56px]">
             <span className="block font-prompt font-extrabold text-[#141414]">Susun</span>
             <span className="block font-prompt font-extrabold text-[#757575]">Loadout</span>
           </h2>
-          <p className="max-w-xs text-[13px] leading-relaxed text-[#6b6b70] md:text-right">
+          <p className="max-w-md text-[13px] leading-relaxed text-[#6b6b70]">
             Mulai dari item utama, lalu pasang add-on sesuai kebutuhan bisnismu.
           </p>
         </div>
 
         {/* -- Asymmetric editorial grid -- */}
-        <div className="mt-10 grid gap-10 md:mt-14 lg:grid-cols-[minmax(0,300px)_1fr_minmax(0,230px)] lg:gap-8">
+        <div className="mt-6 grid gap-5 md:mt-14 lg:grid-cols-[minmax(0,300px)_1fr_minmax(0,230px)] lg:gap-8">
           {/* -- Left: selected item detail -- */}
           <div className="order-2 lg:order-1">
             <div>
-                <span className="block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
-                  {MAIN_ITEM.type}
-                </span>
-                <h3 className="mt-2 font-poppins text-[26px] font-bold leading-tight text-[#141414] sm:text-[30px]">
+                <h3 className="font-poppins text-[26px] font-bold leading-tight text-[#141414] sm:text-[30px]">
                   {MAIN_ITEM.name}
                 </h3>
-                <p className="mt-2.5 text-[12.5px] leading-relaxed text-[#6b6b70]">
+                <p className="mt-2.5 text-justify text-[12.5px] leading-relaxed text-[#6b6b70]">
                   {MAIN_ITEM.description}
                 </p>
 
-                {/* Stat bars - thin editorial lines */}
-                <div className="mt-6 space-y-3">
+                {/* Stats - 3 kolom ala profile card */}
+                <div className="mt-6 grid grid-cols-3 gap-2">
                   {MAIN_ITEM.stats.map((s) => (
                     <div key={s.label}>
-                      <div className="mb-1 flex items-baseline justify-between">
-                        <span className="font-poppins text-[9px] font-semibold uppercase tracking-[0.16em] text-[#8a8a90]">
-                          {s.label}
-                        </span>
-                        <span className="font-poppins text-[11px] font-bold" style={{ color: MAIN_ITEM.color }}>
-                          {s.value}
-                        </span>
-                      </div>
-                      <div className="h-[3px] w-full bg-black/[0.08]">
-                        <motion.div
-                          className="h-full"
-                          style={{ background: '#141414' }}
-                          initial={{ width: 0 }}
-                          animate={{ width: `${s.value}%` }}
-                          transition={{ duration: 0.6, ease: 'easeOut', delay: 0.1 }}
-                        />
-                      </div>
+                      <span className="block font-poppins text-[18px] font-extrabold tracking-tight text-[#141414] sm:text-[20px]">
+                        {s.value}
+                      </span>
+                      <span className="mt-0.5 block font-poppins text-[10px] text-[#8a8a90]">
+                        {s.label}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -190,21 +181,12 @@ export default function Products() {
                   ))}
                 </ul>
 
-                {/* Price + equip control */}
-                <div className="mt-5 flex items-center justify-between gap-2">
-                  <span className="font-poppins text-[17px] font-bold text-[#141414]">
-                    Rp {fmtJt(MAIN_ITEM.priceMin)} - {fmtJt(MAIN_ITEM.priceMax)} Jt
-                  </span>
-                  <span className="font-poppins text-[9px] font-semibold uppercase tracking-[0.18em] text-[#a0a0a5]">
-                    Always Equipped
-                  </span>
-                </div>
             </div>
           </div>
 
           {/* -- Center: floating product visual -- */}
           <div className="order-1 self-center lg:order-2">
-            <div className="relative mx-auto aspect-[5/4] w-full max-w-[520px]">
+            <div className="relative mx-auto aspect-[5/4] w-full max-w-[520px] origin-center lg:scale-[1.15]">
               {/* Leader lines + hotspot markers */}
               <svg
                 className="pointer-events-none absolute inset-0 h-full w-full"
@@ -274,7 +256,7 @@ export default function Products() {
                     <motion.span
                       animate={{ y: [0, -4, 0] }}
                       transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: a.id === 'katalog' ? 1.2 : 0 }}
-                      className={`flex items-center gap-1.5 rounded-lg px-3 py-2 font-poppins text-[10px] font-semibold shadow-sm transition-colors sm:px-3.5 ${
+                      className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5 font-poppins text-[12px] font-semibold shadow-sm transition-colors sm:gap-1.5 sm:px-3.5 sm:py-2 sm:text-[10px] ${
                         isEq ? 'bg-[#141414] text-white' : 'bg-white/90 text-[#8a8a90]'
                       }`}
                       style={
@@ -285,12 +267,12 @@ export default function Products() {
                     >
                       {isEq ? (
                         <>
-                          <Icon className="h-3.5 w-3.5" style={{ color: a.color }} />
+                          <Icon className="h-4 w-4 sm:h-3.5 sm:w-3.5" style={{ color: a.color }} />
                           {a.name}
                         </>
                       ) : (
                         <>
-                          <PlusIcon className="h-3 w-3" />
+                          <PlusIcon className="h-4 w-4 sm:h-3 sm:w-3" />
                           {a.name}
                         </>
                       )}
@@ -300,27 +282,11 @@ export default function Products() {
               })}
             </div>
 
-            {/* Name plate - clean strip */}
-            <div className="mx-auto mt-2 flex max-w-[520px] items-center justify-between px-1 pb-3">
-              <div className="flex items-center gap-2.5">
-                <span className="rounded-md bg-[#141414] px-2.5 py-0.5 font-poppins text-[8px] font-semibold uppercase tracking-[0.18em] text-white">
-                  Equipped
-                </span>
-                <span className="font-poppins text-[14px] font-semibold text-[#141414]">
-                  {MAIN_ITEM.name}
-                </span>
-              </div>
-              <span className="font-poppins text-[13px] font-bold text-[#141414]">
-                Rp {fmtJt(MAIN_ITEM.priceMin)} - {fmtJt(MAIN_ITEM.priceMax)} Jt
-              </span>
-            </div>
+
           </div>
 
           {/* -- Right: equipment slots -- */}
           <div className="order-3 lg:self-center">
-            <span className="mb-3 block font-poppins text-[10px] font-semibold uppercase tracking-[0.24em] text-[#8a8a90]">
-              Equipment
-            </span>
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
               {ADDONS.map((a) => {
                 const isEq = equipped.includes(a.id)
@@ -364,7 +330,7 @@ export default function Products() {
                           className="font-poppins text-[10px] font-bold transition-colors duration-300"
                           style={{ color: isEq ? '#141414' : '#b0b0b5' }}
                         >
-                          +1 Jt
+                          {typeof a.price === 'number' ? `+${fmtJt(a.price)} Jt` : '(discuss)'}
                         </span>
                       </div>
                       <span
@@ -384,15 +350,12 @@ export default function Products() {
         {/* -- Total bar + CTA -- */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 pt-8 sm:flex-row">
           <div className="text-center sm:text-left">
-            <span className="block font-poppins text-[9px] font-semibold uppercase tracking-[0.25em] text-[#8a8a90]">
-              Estimasi Total
-            </span>
             <span className="font-poppins text-[28px] font-extrabold tracking-tight text-[#141414] sm:text-[34px]">
               Rp {fmtJt(totalMin)} - {fmtJt(totalMax)} Jt
             </span>
             <span className="block text-[10px] text-[#9a9aa0]">
               {equippedAddons.length > 0
-                ? `${equippedAddons.length} add-on terpasang: ${equippedAddons.map((a) => a.name).join(' + ')}`
+                ? `${equippedAddons.length} add-on terpasang: ${equippedAddons.map((a) => a.name).join(' + ')}${hasCustom ? ' · harga custom didiskusikan' : ''}`
                 : 'Belum ada add-on terpasang'}
             </span>
           </div>
