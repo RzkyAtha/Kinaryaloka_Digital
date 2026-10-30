@@ -1,5 +1,5 @@
 import { useState, useEffect, Component, ErrorInfo, ReactNode, lazy, Suspense } from 'react'
-import { motion, useScroll, useSpring } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
@@ -11,20 +11,6 @@ import { LanguageProvider } from './context/LanguageContext'
 
 // Code-split heavy, non-critical components (interactive / off-route)
 const Portfolio = lazy(() => import('./components/Portfolio'))
-
-function ScrollProgressBar() {
-  const { scrollYProgress } = useScroll()
-  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30 })
-  return (
-    <motion.div
-      className="fixed top-0 left-0 right-0 h-[3px] z-[9998] origin-left"
-      style={{
-        scaleX,
-        background: 'linear-gradient(90deg, #F5C542, #D4912A, #0080FF)',
-      }}
-    />
-  )
-}
 
 function MainSite() {
   const [activeSection, setActiveSection] = useState('')
@@ -61,7 +47,6 @@ function MainSite() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] overflow-x-hidden">
-      <ScrollProgressBar />
       <Navbar activeSection={activeSection} activePage={activePage} onPageChange={setActivePage} />
       <motion.main
         key={activePage}

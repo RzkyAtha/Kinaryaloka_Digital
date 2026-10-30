@@ -431,7 +431,7 @@ export default function HeroBrandVisual() {
                       exit={{ opacity: 0, scale: 0.96, y: '-50%' }}
                       transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
                     >
-                      <span className="block font-poppins font-semibold text-[11px] sm:text-[13px] tracking-wide text-[#2a2a2a]">
+                      <span className="block font-gasoek text-[15px] leading-snug sm:text-[17px] text-[#2a2a2a]">
                         {copy[p.id].label}
                       </span>
                       <span className="block text-[9px] sm:text-[11px] leading-snug text-[#828282]">
