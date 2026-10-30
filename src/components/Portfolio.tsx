@@ -286,7 +286,7 @@ export default function Portfolio() {
               transition={{ duration: 0.3, ease: 'easeOut' }}
               className="mt-10 md:mt-14"
             >
-          <div className="flex flex-wrap justify-center gap-4 pb-2">
+          <div className="-mx-3 flex flex-wrap justify-center gap-3 pb-2 sm:mx-0 sm:gap-4">
             {projects.map((p) => {
               const isSel = p.id === selectedId
               return (
@@ -297,7 +297,7 @@ export default function Portfolio() {
                     setSelectedId((prev) => (prev === p.id ? null : p.id))
                   }
                   whileTap={{ scale: 0.97 }}
-                  className="group relative aspect-[3/4] w-[calc(50%-8px)] shrink-0 cursor-pointer overflow-hidden rounded-[20px] border-4 border-white bg-white text-left transition-all duration-300 sm:w-[300px] sm:rounded-[30px] sm:border-[6px]"
+                  className="group relative h-[320px] w-[calc(50%-6px)] shrink-0 cursor-pointer overflow-hidden rounded-[20px] border-4 border-white bg-white text-left transition-all duration-300 sm:aspect-[3/4] sm:h-auto sm:w-[300px] sm:rounded-[30px] sm:border-[6px]"
                   style={{
                     boxShadow: isSel
                       ? `0 0 0 2px ${p.color}, 0 14px 32px ${p.color}38, 0 4px 12px rgba(0,0,0,0.10)`
@@ -313,21 +313,21 @@ export default function Portfolio() {
                   </div>
 
                   {/* Status pill - kanan atas card */}
-                  <span className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full bg-black/50 py-0.5 pl-1 pr-2 backdrop-blur-md sm:right-4 sm:top-4 sm:gap-1.5 sm:py-1 sm:pl-1.5 sm:pr-3">
+                  <span className="absolute right-3 top-3 z-10 flex items-center gap-1 rounded-full bg-black/50 py-0.5 pl-1 pr-2.5 backdrop-blur-md sm:right-4 sm:top-4 sm:gap-1.5 sm:py-1 sm:pl-1.5 sm:pr-3">
                     <span
-                      className="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full sm:h-5 sm:w-5"
+                      className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full sm:h-5 sm:w-5"
                       style={{ background: STATUS_GLOW[p.status] }}
                     >
-                      <span className="h-1 w-1 rounded-full bg-white sm:h-1.5 sm:w-1.5" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-white" />
                     </span>
-                    <span className="font-poppins text-[8px] font-semibold text-white sm:text-[10px]">
+                    <span className="font-poppins text-[9px] font-semibold text-white sm:text-[10px]">
                       {p.status}
                     </span>
                   </span>
 
                   {/* Avatar - numpuk di tepi bawah banner */}
                   <span
-                    className="absolute left-3 top-[44%] z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-white transition-shadow duration-300 sm:left-4 sm:h-14 sm:w-14"
+                    className="absolute left-3 top-[44%] z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center overflow-hidden rounded-full bg-white transition-shadow duration-300 sm:left-4 sm:h-14 sm:w-14"
                     style={{
                       boxShadow: isSel
                         ? `0 0 0 3px #fff, 0 0 0 5px ${p.color}, 0 4px 12px rgba(0,0,0,0.2)`
@@ -341,7 +341,7 @@ export default function Portfolio() {
                         loading="lazy"
                         decoding="async"
                         draggable={false}
-                        className="h-7 w-7 object-contain sm:h-10 sm:w-10"
+                        className="h-8 w-8 object-contain sm:h-10 sm:w-10"
                       />
                     ) : (
                       <Globe className="h-5 w-5 text-black/40 sm:h-6 sm:w-6" />
@@ -349,44 +349,44 @@ export default function Portfolio() {
                   </span>
 
                   {/* Body - konten di background putih */}
-                  <div className="absolute inset-x-0 bottom-0 top-[44%] flex flex-col px-3 pb-3 pt-6 sm:px-4 sm:pb-4 sm:pt-10">
+                  <div className="absolute inset-x-0 bottom-0 top-[44%] flex flex-col px-3 pb-3 pt-9 sm:px-4 sm:pb-4 sm:pt-10">
                     {/* Name + bookmark */}
                     <div className="flex shrink-0 items-center justify-between gap-2">
-                      <h4 className="truncate font-poppins text-[14px] font-bold leading-tight text-[#141414] sm:text-[19px]">
+                      <h4 className="truncate font-poppins text-[15px] font-bold leading-tight text-[#141414] sm:text-[19px]">
                         {p.name}
                       </h4>
                       <span className="flex shrink-0 items-center gap-1.5 text-[#141414]/60">
-                        <CodeBracket className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" />
-                        <Globe className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]" />
+                        <CodeBracket className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
+                        <Globe className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
                       </span>
                     </div>
-                    <span className="mt-0.5 block shrink-0 truncate font-poppins text-[9px] text-[#8a8a90] sm:mt-1 sm:text-[12px]">
+                    <span className="mt-0.5 block shrink-0 truncate font-poppins text-[10px] text-[#8a8a90] sm:mt-1 sm:text-[12px]">
                       {p.badge || p.category}
                     </span>
 
 
                     {/* Stats + CTA */}
-                    <div className="mt-auto shrink-0">
-                      {p.stats && (
-                        <div className="grid grid-cols-3 gap-1">
-                          {p.stats.map((s) => (
-                            <div key={s.label}>
-                              <span className="block font-poppins text-[11px] font-bold text-[#141414] sm:text-[16px]">
-                                {s.value}
-                              </span>
-                              <span className="block truncate font-poppins text-[8px] text-[#9a9aa0] sm:text-[10px]">
-                                {s.label}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      <div className="mt-2 sm:mt-3.5">
-                        <span className="flex h-7 flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#141414] font-poppins text-[11px] font-semibold text-white transition-all duration-300 group-hover:bg-black sm:h-11 sm:gap-2 sm:text-[13px]">
+                    {p.stats && (
+                      <div className="mt-auto grid shrink-0 grid-cols-3 gap-1">
+                        {p.stats.map((s) => (
+                          <div key={s.label}>
+                            <span className="block font-poppins text-[13px] font-bold text-[#141414] sm:text-[16px]">
+                              {s.value}
+                            </span>
+                            <span className="block truncate font-poppins text-[9px] text-[#9a9aa0] sm:text-[10px]">
+                              {s.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-auto shrink-0 sm:mt-0">
+                      <div className="mt-2.5 sm:mt-3.5">
+                        <span className="flex h-10 flex-1 items-center justify-center gap-2 rounded-xl bg-[#141414] font-poppins text-[13px] font-semibold text-white transition-all duration-300 group-hover:bg-black sm:h-11">
                           <span className="leading-none">
                             {isSel ? 'Selected' : 'Tap to view'}
                           </span>
-                          <Eye className="h-3.5 w-3.5 shrink-0 sm:h-[18px] sm:w-[18px]" />
+                          <Eye className="h-[18px] w-[18px] shrink-0" />
                         </span>
                       </div>
                     </div>

@@ -391,10 +391,10 @@ export default function HeroBrandVisual() {
                   onPointerEnter={() => focus(p.id)}
                   onFocus={() => focus(p.id)}
                   onClick={() => focus(p.id, true)}
-                  className="inline-block max-w-full rounded-xl border bg-white px-3.5 py-2.5 outline-none sm:px-4 sm:py-3"
+                  className="inline-block max-w-full rounded-xl border bg-[#141414] px-3.5 py-2.5 outline-none sm:px-4 sm:py-3"
                   style={{
-                    borderColor: 'rgba(42,42,42,0.10)',
-                    boxShadow: '0 2px 8px rgba(42,42,42,0.06)',
+                    borderColor: 'rgba(255,255,255,0.12)',
+                    boxShadow: '0 4px 14px rgba(42,42,42,0.22)',
                     opacity: isActive(p.id) ? 0 : 1,
                     transition: 'opacity 200ms ease',
                     willChange: 'opacity',
